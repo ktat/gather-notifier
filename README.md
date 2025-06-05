@@ -1,0 +1,36 @@
+# Gather.town Wave Notifier
+
+※ このコードは、Claude Code によって書かれました。
+
+gather.townでwaveされたときにデスクトップ通知を表示するChrome拡張機能です。
+
+## 機能
+
+1. gather.townのコンソールログを監視（`Alerting Wave event` `Skipping ChatV2 notification`）
+2. waveが検出されたときにデスクトップ通知を表示
+3. 拡張機能アイコンにバッジで通知状態を表示
+4. アイコンクリックで通知をクリアしてgather.townタブをアクティブ化
+5. gather.townタブがアクティブになると自動的に通知をクリア
+6. 通知中に音楽をループ再生（通知クリア時に停止）
+
+## インストール方法
+
+1. Chromeで `chrome://extensions/` を開く
+2. 「デベロッパーモード」を有効にする
+3. 「パッケージ化されていない拡張機能を読み込む」をクリック
+4. このフォルダを選択
+
+## アイコンの作成
+
+`create-icons.html` をブラウザで開いて各サイズのアイコンをダウンロードしてください。
+
+## ファイル構成
+
+- `manifest.json` - 拡張機能の設定
+- `background.js` - バックグラウンドスクリプト（通知処理）
+- `content.js` - コンテンツスクリプト（コンソールログ監視）
+- `offscreen.html` - オフスクリーンドキュメント（音声再生用）
+- `offscreen.js` - 音声再生処理
+- `popup.html` - ポップアップUI
+- `popup.js` - ポップアップの動作
+- `icon*.png` - 拡張機能のアイコン

@@ -1,0 +1,57 @@
+{
+  "manifest_version": 3,
+  "name": "Gather.town Wave/Chat Notifier",
+  "version": "1.0",
+  "description": "Notifies when someone waves/chat at you in gather.town",
+  
+  "permissions": [
+    "notifications",
+    "tabs",
+    "activeTab",
+    "storage",
+    "offscreen"
+  ],
+  
+  "host_permissions": [
+    "*://cdn.gather.town/*",
+    "*://gather.town/*",
+    "*://app.gather.town/*"
+  ],
+  
+  "background": {
+    "service_worker": "background.js"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["*://gather.town/*", "*://app.gather.town/*"],
+      "js": ["content_main.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["*://gather.town/*", "*://app.gather.town/*"],
+      "js": ["content.js"],
+      "run_at": "document_start",
+      "world": "ISOLATED"
+    }
+  ],
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Gather.town Wave Notifier",
+    "default_icon": {
+      "16": "icon16.png",
+      "32": "icon32.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}

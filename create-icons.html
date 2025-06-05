@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Extension Icons</title>
+</head>
+<body>
+    <canvas id="canvas" width="128" height="128"></canvas>
+    <div>
+        <button onclick="downloadIcon(16)">Download 16x16</button>
+        <button onclick="downloadIcon(32)">Download 32x32</button>
+        <button onclick="downloadIcon(48)">Download 48x48</button>
+        <button onclick="downloadIcon(128)">Download 128x128</button>
+    </div>
+    
+    <script>
+        function createIcon(size) {
+            const canvas = document.getElementById('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            // 背景を青色に
+            ctx.fillStyle = '#4285f4';
+            ctx.fillRect(0, 0, size, size);
+            
+            // 白い "G" 文字を中央に
+            ctx.fillStyle = 'white';
+            ctx.font = `bold ${Math.floor(size * 0.6)}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('G', size / 2, size / 2);
+            
+            return canvas;
+        }
+        
+        function downloadIcon(size) {
+            const canvas = createIcon(size);
+            const link = document.createElement('a');
+            link.download = `icon${size}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        // ページ読み込み時にデフォルトアイコンを表示
+        window.onload = () => createIcon(128);
+    </script>
+</body>
+</html>
