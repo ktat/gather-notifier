@@ -1,0 +1,43 @@
+# テスト手順
+
+## 基本動作テスト
+
+### 1. インストール確認
+```
+1. chrome://extensions/ を開く
+2. 拡張機能が読み込まれていることを確認
+3. gather.townページでF12を開く
+4. [WAVE-NOTIFIER-MAIN] ログが表示されることを確認
+```
+
+### 2. コンソール監視テスト
+```
+1. gather.townページのコンソールで testMainConsole() を実行
+2. [WAVE-NOTIFIER-MAIN] Intercepted log: が表示されることを確認
+3. 🌊 WAVE DETECTED: が表示されることを確認
+```
+
+### 3. 通知テスト
+```
+1. testMainConsole() 実行後にデスクトップ通知が表示されることを確認
+2. 拡張機能アイコンに ! バッジが表示されることを確認
+3. 音声が再生されることを確認
+```
+
+### 4. クリア機能テスト
+```
+1. 拡張機能アイコンをクリック
+2. バッジが消えることを確認
+3. 音声が停止することを確認
+4. gather.townタブがアクティブになることを確認
+```
+
+## 手動テスト関数
+- `testMainConsole()` - メイン検出テスト
+- `testWaveNotifier()` - 従来方式テスト  
+- `testChatV2Notifier()` - ChatV2検出テスト
+- `testConsoleOverride()` - コンソール上書きテスト
+
+## 自動監視確認
+- 30秒ごとに監視状況ログが出力されるか
+- gather.townでの実際のwave操作で通知が発生するか
