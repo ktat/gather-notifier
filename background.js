@@ -138,6 +138,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   } else if (message.action === 'waveDetected') {
     // content scriptからのwave検出メッセージ
     handleWaveDetection(message.message);
+  } else if (message.action === 'clearNotificationOnClick') {
+    // gather.townページでクリックされた時の通知クリア
+    if (hasNotification) {
+      hasNotification = false;
+      updateBadge();
+      stopNotificationSound();
+      chrome.storage.local.set({ hasNotification: false });
+    }
   } else if (message.action === 'playSound' || message.action === 'stopSound') {
     // offscreenドキュメントからのメッセージは無視
     return;

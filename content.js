@@ -141,3 +141,13 @@ window.testChatV2Notifier = function() {
   console.log('Skipping ChatV2 notification - MANUAL TEST');
   console.log('This should trigger a ChatV2 notification');
 };
+
+// gather.townページでのクリック検出
+document.addEventListener('click', function() {
+  // gather.townのページでクリックされた場合、通知をクリア
+  chrome.runtime.sendMessage({
+    action: 'clearNotificationOnClick'
+  }).catch(error => {
+    console.error('Error sending clear notification message:', error);
+  });
+});
