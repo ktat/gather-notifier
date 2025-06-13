@@ -33,21 +33,39 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 });
 
 // wave検出時の処理
-function handleWaveDetection(message) {
-  console.log('Wave detected from console:', message);
+function handleWaveDetection(message, notificationType = 'wave') {
+  console.log('Notification detected from console:', message, 'Type:', notificationType);
+  
+  // 通知タイプに応じたタイトルとメッセージ
+  let title, notificationMessage;
+  switch(notificationType) {
+    case 'chat':
+      title = 'Gather.town Chat!';
+      notificationMessage = 'Someone sent you a chat message in gather.town!';
+      break;
+    case 'call':
+      title = 'Gather.town Call!';
+      notificationMessage = 'Someone is calling you in gather.town!';
+      break;
+    case 'wave':
+    default:
+      title = 'Gather.town Wave!';
+      notificationMessage = 'Someone waved at you in gather.town!';
+      break;
+  }
   
   // デスクトップ通知を表示
   chrome.notifications.create({
     type: 'basic',
     iconUrl: 'icon48.png',
-    title: 'Gather.town Wave!',
-    message: 'Someone waved at you in gather.town!'
+    title: title,
+    message: notificationMessage
   });
   
   // 通知フラグを設定
   hasNotification = true;
   updateBadge();
-  playNotificationSound();
+  playNotificationSound(notificationType);
   
   // ストレージに保存
   chrome.storage.local.set({ hasNotification: true });
@@ -112,10 +130,10 @@ async function createOffscreen() {
 }
 
 // 音声再生関数
-async function playNotificationSound() {
+async function playNotificationSound(notificationType = 'wave') {
   try {
     await createOffscreen();
-    chrome.runtime.sendMessage({ action: 'playSound' });
+    chrome.runtime.sendMessage({ action: 'playSound', notificationType: notificationType });
   } catch (error) {
     console.error('Error playing notification sound:', error);
   }
@@ -137,15 +155,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     stopNotificationSound();
   } else if (message.action === 'waveDetected') {
     // content scriptからのwave検出メッセージ
-    handleWaveDetection(message.message);
-  } else if (message.action === 'clearNotificationOnClick') {
-    // gather.townページでクリックされた時の通知クリア
-    if (hasNotification) {
-      hasNotification = false;
-      updateBadge();
-      stopNotificationSound();
-      chrome.storage.local.set({ hasNotification: false });
-    }
+    handleWaveDetection(message.message, message.notificationType);
   } else if (message.action === 'playSound' || message.action === 'stopSound') {
     // offscreenドキュメントからのメッセージは無視
     return;
