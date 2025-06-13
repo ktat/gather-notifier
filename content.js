@@ -156,29 +156,57 @@ document.addEventListener('click', function() {
 // ポップアップからのメッセージを処理
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'sendCtrlU') {
-    // Ctrl+Uキーイベントを送信
-    const event = new KeyboardEvent('keydown', {
-      key: 'u',
-      code: 'KeyU',
-      ctrlKey: true,
-      bubbles: true,
-      cancelable: true
-    });
+    console.log('[WAVE-NOTIFIER] Attempting to send Ctrl+U');
     
-    document.dispatchEvent(event);
-    
-    // keyupイベントも送信
-    const eventUp = new KeyboardEvent('keyup', {
-      key: 'u',
-      code: 'KeyU',
-      ctrlKey: true,
-      bubbles: true,
-      cancelable: true
-    });
-    
-    document.dispatchEvent(eventUp);
-    
-    console.log('[WAVE-NOTIFIER] Ctrl+U sent to page');
-    sendResponse({ success: true });
+    // 複数のアプローチを試行
+    try {
+      // アプローチ1: アクティブな要素にイベントを送信
+      const activeElement = document.activeElement || document.body;
+      
+      const eventDown = new KeyboardEvent('keydown', {
+        key: 'u',
+        code: 'KeyU',
+        keyCode: 85,
+        which: 85,
+        ctrlKey: true,
+        bubbles: true,
+        cancelable: true,
+        composed: true
+      });
+      
+      const eventUp = new KeyboardEvent('keyup', {
+        key: 'u',
+        code: 'KeyU',
+        keyCode: 85,
+        which: 85,
+        ctrlKey: true,
+        bubbles: true,
+        cancelable: true,
+        composed: true
+      });
+      
+      // アクティブ要素、document、windowの順で試行
+      activeElement.dispatchEvent(eventDown);
+      activeElement.dispatchEvent(eventUp);
+      
+      document.dispatchEvent(eventDown);
+      document.dispatchEvent(eventUp);
+      
+      window.dispatchEvent(eventDown);
+      window.dispatchEvent(eventUp);
+      
+      // アプローチ2: フォーカスを body に移してから再試行
+      document.body.focus();
+      setTimeout(() => {
+        document.body.dispatchEvent(eventDown);
+        document.body.dispatchEvent(eventUp);
+      }, 100);
+      
+      console.log('[WAVE-NOTIFIER] Ctrl+U events dispatched to multiple targets');
+      sendResponse({ success: true });
+    } catch (error) {
+      console.error('[WAVE-NOTIFIER] Error sending Ctrl+U:', error);
+      sendResponse({ success: false, error: error.message });
+    }
   }
 });

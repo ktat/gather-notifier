@@ -1,36 +1,26 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const statusDiv = document.getElementById('status');
+  const goToGatherBtn = document.getElementById('goToGatherBtn');
   const lunchBtn = document.getElementById('lunchBtn');
   const enableWaveCheckbox = document.getElementById('enableWave');
   const enableChatCheckbox = document.getElementById('enableChat');
   const enableCallCheckbox = document.getElementById('enableCall');
   
-  // ポップアップが開かれた時に自動的に通知をクリアしてgather.townに移動
-  // (improvement/done/1.md の要求に従い)
-  async function autoClearAndMove() {
+  // ポップアップが開かれた時に自動的に通知をクリア
+  // (improvement/done/1.md の要求に従い、ただしimprovement/5.mdで自動移動は削除)
+  async function autoClear() {
     try {
       // 通知をクリア
       chrome.storage.local.set({ hasNotification: false });
       chrome.action.setBadgeText({ text: '' });
       chrome.runtime.sendMessage({ action: 'stopSound' });
-      
-      // gather.townタブに移動
-      const tabs = await chrome.tabs.query({});
-      const gatherTab = tabs.find(tab => 
-        tab.url && (tab.url.includes('gather.town') || tab.url.includes('app.gather.town'))
-      );
-      
-      if (gatherTab) {
-        await chrome.tabs.update(gatherTab.id, { active: true });
-        await chrome.windows.update(gatherTab.windowId, { focused: true });
-      }
     } catch (error) {
-      console.error('Error in auto clear and move:', error);
+      console.error('Error in auto clear:', error);
     }
   }
   
   // ポップアップ開始時に自動実行
-  autoClearAndMove();
+  autoClear();
   
   // 現在の通知状態を取得して表示
   function updateStatus() {
@@ -69,6 +59,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
   
+  // Gather.townタブに移動ボタン
+  goToGatherBtn.addEventListener('click', async () => {
+    try {
+      const tabs = await chrome.tabs.query({});
+      const gatherTab = tabs.find(tab => 
+        tab.url && (tab.url.includes('gather.town') || tab.url.includes('app.gather.town'))
+      );
+      
+      if (gatherTab) {
+        await chrome.tabs.update(gatherTab.id, { active: true });
+        await chrome.windows.update(gatherTab.windowId, { focused: true });
+        
+        // ポップアップを閉じる
+        window.close();
+      } else {
+        alert('Gather.townのタブが見つかりません');
+      }
+    } catch (error) {
+      console.error('Error focusing gather.town tab:', error);
+      alert('エラーが発生しました');
+    }
+  });
   
   // 設定変更のイベントハンドラ
   enableWaveCheckbox.addEventListener('change', () => {
@@ -108,11 +120,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           // タブがアクティブになるのを待ってからCtrl+Uを送信
           setTimeout(async () => {
             try {
-              await chrome.tabs.sendMessage(gatherTab.id, { action: 'sendCtrlU' });
+              const response = await chrome.tabs.sendMessage(gatherTab.id, { action: 'sendCtrlU' });
+              console.log('Ctrl+U response:', response);
             } catch (error) {
               console.error('Error sending Ctrl+U:', error);
             }
-          }, 500); // 500ms待機
+          }, 1000); // 1000ms待機に延長
         } else {
           alert('Gather.townのタブが見つかりません');
           return;
