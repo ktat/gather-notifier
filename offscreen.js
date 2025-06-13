@@ -3,7 +3,7 @@ let audioPlayer = null;
 // バックグラウンドスクリプトからのメッセージを受信
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'playSound') {
-    playNotificationSound();
+    playNotificationSound(message.notificationType || 'wave');
     sendResponse({ success: true });
   } else if (message.action === 'stopSound') {
     stopNotificationSound();
@@ -11,55 +11,81 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-function playNotificationSound() {
+function playNotificationSound(notificationType = 'wave') {
   try {
     // 既存の音声を停止
     stopNotificationSound();
     
-    // 通知音を生成（ベル音のような音）
-    const audioContext = new AudioContext();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
+    // 通知タイプに応じた音声設定
+    let soundConfig = getSoundConfig(notificationType);
     
-    // 音の設定
-    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
-    
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    oscillator.start();
-    oscillator.stop(audioContext.currentTime + 0.5);
+    // 初回の音声を再生
+    playSingleSound(soundConfig);
     
     // ループ音声を作成
     audioPlayer = setInterval(() => {
       try {
-        const newAudioContext = new AudioContext();
-        const newOscillator = newAudioContext.createOscillator();
-        const newGainNode = newAudioContext.createGain();
-        
-        newOscillator.frequency.setValueAtTime(800, newAudioContext.currentTime);
-        newOscillator.frequency.exponentialRampToValueAtTime(400, newAudioContext.currentTime + 0.1);
-        
-        newGainNode.gain.setValueAtTime(0.3, newAudioContext.currentTime);
-        newGainNode.gain.exponentialRampToValueAtTime(0.01, newAudioContext.currentTime + 0.5);
-        
-        newOscillator.connect(newGainNode);
-        newGainNode.connect(newAudioContext.destination);
-        
-        newOscillator.start();
-        newOscillator.stop(newAudioContext.currentTime + 0.5);
+        playSingleSound(soundConfig);
       } catch (error) {
         console.error('Error in audio loop:', error);
       }
-    }, 2000); // 2秒ごとにベル音を鳴らす
+    }, soundConfig.interval);
     
   } catch (error) {
     console.error('Error playing notification sound:', error);
   }
+}
+
+function getSoundConfig(notificationType) {
+  switch(notificationType) {
+    case 'chat':
+      // Chat: more silent, clearer and longer interval sound
+      return {
+        startFreq: 600,
+        endFreq: 300,
+        volume: 0.15,      // more silent
+        duration: 0.3,     // clearer (shorter)
+        interval: 4000     // longer interval (4 seconds)
+      };
+    case 'call':
+      // Call: use current sound (same as wave)
+      return {
+        startFreq: 800,
+        endFreq: 400,
+        volume: 0.3,
+        duration: 0.5,
+        interval: 2000
+      };
+    case 'wave':
+    default:
+      // Wave: use current sound
+      return {
+        startFreq: 800,
+        endFreq: 400,
+        volume: 0.3,
+        duration: 0.5,
+        interval: 2000
+      };
+  }
+}
+
+function playSingleSound(config) {
+  const audioContext = new AudioContext();
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  // 音の設定
+  oscillator.frequency.setValueAtTime(config.startFreq, audioContext.currentTime);
+  oscillator.frequency.exponentialRampToValueAtTime(config.endFreq, audioContext.currentTime + 0.1);
+  
+  gainNode.gain.setValueAtTime(config.volume, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + config.duration);
+  
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + config.duration);
 }
 
 function stopNotificationSound() {

@@ -100,7 +100,8 @@ window.addEventListener('waveDetectedMain', function(event) {
   chrome.runtime.sendMessage({
     action: 'waveDetected',
     message: event.detail.message,
-    type: event.detail.type
+    type: event.detail.type,
+    notificationType: event.detail.notificationType
   }).catch(error => {
     console.error('Error sending wave detection message:', error);
   });

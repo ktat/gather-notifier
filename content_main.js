@@ -40,15 +40,21 @@
       // originalConsole.log(PREFIX + ' Intercepted ' + type + ':', message.substring(0, 200));
       
       // wave関連のメッセージを検出
-      if (message.includes('Alerting Wave event') ||          // Wave
-          message.includes('Skipping ChatV2 notification') || // Chat
-          message.includes('Alerting Ring event')             // Call
-      ) {
-        originalConsole.log(PREFIX + ' 🌊 WAVE DETECTED:', message);
+      let notificationType = null;
+      if (message.includes('Alerting Wave event')) {
+        notificationType = 'wave';
+      } else if (message.includes('Skipping ChatV2 notification')) {
+        notificationType = 'chat';
+      } else if (message.includes('Alerting Ring event')) {
+        notificationType = 'call';
+      }
+      
+      if (notificationType) {
+        originalConsole.log(PREFIX + ' 🌊 NOTIFICATION DETECTED (' + notificationType + '):', message);
         
         // カスタムイベントを発火
         window.dispatchEvent(new CustomEvent('waveDetectedMain', {
-          detail: { message: message, type: type }
+          detail: { message: message, type: type, notificationType: notificationType }
         }));
       }
     } catch (error) {
