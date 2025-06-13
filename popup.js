@@ -12,7 +12,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       // 通知をクリア
       chrome.storage.local.set({ hasNotification: false });
-      chrome.action.setBadgeText({ text: '' });
+      
+      // ランチタイム中の場合はバッジをクリアしない
+      const result = await chrome.storage.local.get(['isLunchTime']);
+      const isLunchTime = result.isLunchTime || false;
+      
+      if (!isLunchTime) {
+        chrome.action.setBadgeText({ text: '' });
+      }
+      
       chrome.runtime.sendMessage({ action: 'stopSound' });
     } catch (error) {
       console.error('Error in auto clear:', error);
@@ -29,14 +37,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       const isLunchTime = result.isLunchTime || false;
       
       if (isLunchTime) {
+        statusDiv.style.display = 'block';
         statusDiv.className = 'status lunch-mode';
         statusDiv.textContent = 'ランチタイム中です';
       } else if (hasNotification) {
+        statusDiv.style.display = 'block';
         statusDiv.className = 'status has-notification';
         statusDiv.textContent = '新しい通知があります！';
       } else {
-        statusDiv.className = 'status no-notification';
-        statusDiv.textContent = '通知はありません';
+        statusDiv.style.display = 'none';
       }
     });
   }
