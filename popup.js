@@ -117,15 +117,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           await chrome.tabs.update(gatherTab.id, { active: true });
           await chrome.windows.update(gatherTab.windowId, { focused: true });
           
-          // タブがアクティブになるのを待ってからCtrl+Uを送信
-          setTimeout(async () => {
-            try {
-              const response = await chrome.tabs.sendMessage(gatherTab.id, { action: 'sendCtrlU' });
-              console.log('Ctrl+U response:', response);
-            } catch (error) {
-              console.error('Error sending Ctrl+U:', error);
-            }
-          }, 1000); // 1000ms待機に延長
+          // Note: Ctrl+U cannot be programmatically triggered due to browser security restrictions
+          // The lunch mode will only show the badge indicator and disable notifications
         } else {
           alert('Gather.townのタブが見つかりません');
           return;
