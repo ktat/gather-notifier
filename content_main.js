@@ -40,7 +40,10 @@
       // originalConsole.log(PREFIX + ' Intercepted ' + type + ':', message.substring(0, 200));
       
       // wave関連のメッセージを検出
-      if (message.includes('Alerting Wave event') || message.includes('Skipping ChatV2 notification')) {
+      if (message.includes('Alerting Wave event') ||          // Wave
+          message.includes('Skipping ChatV2 notification') || // Chat
+          message.includes('Alerting Ring event')             // Call
+      ) {
         originalConsole.log(PREFIX + ' 🌊 WAVE DETECTED:', message);
         
         // カスタムイベントを発火
