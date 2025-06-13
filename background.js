@@ -36,74 +36,99 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 function handleWaveDetection(message, notificationType = 'wave') {
   console.log('Notification detected from console:', message, 'Type:', notificationType);
   
-  // 通知タイプに応じたタイトルとメッセージ
-  let title, notificationMessage;
-  switch(notificationType) {
-    case 'chat':
-      title = 'Gather.town Chat!';
-      notificationMessage = 'Someone sent you a chat message in gather.town!';
-      break;
-    case 'call':
-      title = 'Gather.town Call!';
-      notificationMessage = 'Someone is calling you in gather.town!';
-      break;
-    case 'wave':
-    default:
-      title = 'Gather.town Wave!';
-      notificationMessage = 'Someone waved at you in gather.town!';
-      break;
-  }
-  
-  // デスクトップ通知を表示
-  chrome.notifications.create({
-    type: 'basic',
-    iconUrl: 'icon48.png',
-    title: title,
-    message: notificationMessage
+  // 設定を確認して通知が有効かチェック
+  chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'isLunchTime'], (result) => {
+    const isLunchTime = result.isLunchTime || false;
+    let isNotificationEnabled = false;
+    
+    // ランチタイム中は通知しない
+    if (isLunchTime) {
+      console.log('Lunch time active, skipping notification');
+      return;
+    }
+    
+    // 通知タイプごとの有効性をチェック
+    switch(notificationType) {
+      case 'chat':
+        isNotificationEnabled = result.enableChat !== false; // デフォルトtrue
+        break;
+      case 'call':
+        isNotificationEnabled = result.enableCall !== false; // デフォルトtrue
+        break;
+      case 'wave':
+      default:
+        isNotificationEnabled = result.enableWave !== false; // デフォルトtrue
+        break;
+    }
+    
+    if (!isNotificationEnabled) {
+      console.log(`${notificationType} notifications are disabled`);
+      return;
+    }
+    
+    // 通知タイプに応じたタイトルとメッセージ
+    let title, notificationMessage;
+    switch(notificationType) {
+      case 'chat':
+        title = 'Gather.town Chat!';
+        notificationMessage = 'Someone sent you a chat message in gather.town!';
+        break;
+      case 'call':
+        title = 'Gather.town Call!';
+        notificationMessage = 'Someone is calling you in gather.town!';
+        break;
+      case 'wave':
+      default:
+        title = 'Gather.town Wave!';
+        notificationMessage = 'Someone waved at you in gather.town!';
+        break;
+    }
+    
+    // デスクトップ通知を表示
+    chrome.notifications.create({
+      type: 'basic',
+      iconUrl: 'icon48.png',
+      title: title,
+      message: notificationMessage
+    });
+    
+    // 通知フラグを設定
+    hasNotification = true;
+    updateBadge();
+    playNotificationSound(notificationType);
+    
+    // ストレージに保存
+    chrome.storage.local.set({ hasNotification: true });
   });
-  
-  // 通知フラグを設定
-  hasNotification = true;
-  updateBadge();
-  playNotificationSound(notificationType);
-  
-  // ストレージに保存
-  chrome.storage.local.set({ hasNotification: true });
 }
 
 // バッジの更新
 function updateBadge() {
-  if (hasNotification) {
-    chrome.action.setBadgeText({ text: '!' });
-    chrome.action.setBadgeBackgroundColor({ color: '#FF0000' });
-  } else {
-    chrome.action.setBadgeText({ text: '' });
-  }
+  chrome.storage.local.get(['isLunchTime'], (result) => {
+    const isLunchTime = result.isLunchTime || false;
+    
+    if (isLunchTime) {
+      chrome.action.setBadgeText({ text: 'L' });
+      chrome.action.setBadgeBackgroundColor({ color: '#FFA500' });
+    } else if (hasNotification) {
+      chrome.action.setBadgeText({ text: '!' });
+      chrome.action.setBadgeBackgroundColor({ color: '#FF0000' });
+    } else {
+      chrome.action.setBadgeText({ text: '' });
+    }
+  });
 }
 
-// 拡張機能のアイコンがクリックされたときの処理
-chrome.action.onClicked.addListener(async () => {
-  // 通知をクリア
-  hasNotification = false;
-  updateBadge();
-  stopNotificationSound();
-  chrome.storage.local.set({ hasNotification: false });
-  
-  // gather.townのタブを探してアクティブにする
-  try {
-    const tabs = await chrome.tabs.query({});
-    const gatherTab = tabs.find(tab => 
-      tab.url && (tab.url.includes('gather.town') || tab.url.includes('app.gather.town'))
-    );
-    
-    if (gatherTab) {
-      await chrome.tabs.update(gatherTab.id, { active: true });
-      await chrome.windows.update(gatherTab.windowId, { focused: true });
-    }
-  } catch (error) {
-    console.error('Error focusing gather.town tab:', error);
+// ランチタイムの切り替え処理
+function toggleLunchTime(isLunchTime) {
+  if (isLunchTime) {
+    // ランチタイム開始時は通知をクリア
+    hasNotification = false;
+    stopNotificationSound();
+    chrome.storage.local.set({ hasNotification: false });
   }
-});
+  updateBadge();
+}
 
 // 起動時に保存された通知状態を復元
 chrome.runtime.onStartup.addListener(() => {
@@ -156,6 +181,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   } else if (message.action === 'waveDetected') {
     // content scriptからのwave検出メッセージ
     handleWaveDetection(message.message, message.notificationType);
+  } else if (message.action === 'toggleLunchTime') {
+    // ランチタイム切り替え
+    toggleLunchTime(message.isLunchTime);
   } else if (message.action === 'playSound' || message.action === 'stopSound') {
     // offscreenドキュメントからのメッセージは無視
     return;
@@ -166,5 +194,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 chrome.runtime.onInstalled.addListener(() => {
   hasNotification = false;
   updateBadge();
-  chrome.storage.local.set({ hasNotification: false });
+  chrome.storage.local.set({ 
+    hasNotification: false,
+    enableWave: true,
+    enableChat: true,
+    enableCall: true,
+    isLunchTime: false
+  });
 });

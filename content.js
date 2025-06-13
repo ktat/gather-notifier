@@ -152,3 +152,33 @@ document.addEventListener('click', function() {
     console.error('Error sending clear notification message:', error);
   });
 });
+
+// ポップアップからのメッセージを処理
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'sendCtrlU') {
+    // Ctrl+Uキーイベントを送信
+    const event = new KeyboardEvent('keydown', {
+      key: 'u',
+      code: 'KeyU',
+      ctrlKey: true,
+      bubbles: true,
+      cancelable: true
+    });
+    
+    document.dispatchEvent(event);
+    
+    // keyupイベントも送信
+    const eventUp = new KeyboardEvent('keyup', {
+      key: 'u',
+      code: 'KeyU',
+      ctrlKey: true,
+      bubbles: true,
+      cancelable: true
+    });
+    
+    document.dispatchEvent(eventUp);
+    
+    console.log('[WAVE-NOTIFIER] Ctrl+U sent to page');
+    sendResponse({ success: true });
+  }
+});

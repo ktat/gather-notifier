@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <style>
     body {
-      width: 200px;
+      width: 250px;
       padding: 10px;
       font-family: Arial, sans-serif;
     }
@@ -26,6 +26,32 @@
       background-color: #fff3cd;
       color: #856404;
     }
+    .lunch-mode {
+      background-color: #ffd700;
+      color: #b8860b;
+    }
+    .config-section {
+      margin: 15px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .config-section h4 {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+    }
+    .checkbox-group {
+      margin: 5px 0;
+    }
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .checkbox-group input[type="checkbox"] {
+      margin-right: 8px;
+    }
     button {
       width: 100%;
       padding: 8px;
@@ -35,9 +61,22 @@
       background-color: #007cba;
       color: white;
       cursor: pointer;
+      font-size: 12px;
     }
     button:hover {
       background-color: #005a87;
+    }
+    .lunch-btn {
+      background-color: #ff6b35;
+    }
+    .lunch-btn:hover {
+      background-color: #e55a2b;
+    }
+    .lunch-btn.active {
+      background-color: #28a745;
+    }
+    .lunch-btn.active:hover {
+      background-color: #218838;
     }
   </style>
 </head>
@@ -50,8 +89,31 @@
     <!-- ステータスがここに表示される -->
   </div>
   
+  <div class="config-section">
+    <h4>通知設定</h4>
+    <div class="checkbox-group">
+      <label>
+        <input type="checkbox" id="enableWave" checked>
+        Wave通知を有効にする
+      </label>
+    </div>
+    <div class="checkbox-group">
+      <label>
+        <input type="checkbox" id="enableChat" checked>
+        Chat通知を有効にする
+      </label>
+    </div>
+    <div class="checkbox-group">
+      <label>
+        <input type="checkbox" id="enableCall" checked>  
+        Call通知を有効にする
+      </label>
+    </div>
+  </div>
+  
   <button id="clearBtn">通知をクリア</button>
   <button id="goToGatherBtn">Gather.townに移動</button>
+  <button id="lunchBtn" class="lunch-btn">ランチタイム開始</button>
   
   <script src="popup.js"></script>
 </body>
