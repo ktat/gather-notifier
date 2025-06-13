@@ -39,12 +39,12 @@ function playNotificationSound(notificationType = 'wave') {
 function getSoundConfig(notificationType) {
   switch(notificationType) {
     case 'chat':
-      // Chat: more silent, clearer and longer interval sound
+      // Chat: high tone bell-like sound, clear and crisp
       return {
-        startFreq: 600,
-        endFreq: 300,
-        volume: 0.15,      // more silent
-        duration: 0.3,     // clearer (shorter)
+        startFreq: 1200,   // higher frequency for bell-like sound
+        endFreq: 800,      // still high for clarity
+        volume: 0.2,       // slightly louder for clarity
+        duration: 0.2,     // shorter for crispness
         interval: 4000     // longer interval (4 seconds)
       };
     case 'call':
@@ -58,13 +58,13 @@ function getSoundConfig(notificationType) {
       };
     case 'wave':
     default:
-      // Wave: use current sound
+      // Wave: longer interval sound
       return {
         startFreq: 800,
         endFreq: 400,
         volume: 0.3,
         duration: 0.5,
-        interval: 2000
+        interval: 5000     // much longer interval (5 seconds)
       };
   }
 }
