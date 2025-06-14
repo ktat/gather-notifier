@@ -1,13 +1,13 @@
-# Gather.town Wave Notifier
+# Gather.town Notification Notifier
 
 ※ このコードは、Claude Code によって書かれました。
 
-gather.townでwaveされたときにデスクトップ通知を表示するChrome拡張機能です。
+gather.townでwave、chat、callの通知を受信したときにデスクトップ通知を表示するChrome拡張機能です。
 
 ## 機能
 
-1. gather.townのコンソールログを監視（`Alerting Wave event` `Skipping ChatV2 notification`）
-2. waveが検出されたときにデスクトップ通知を表示
+1. gather.townのコンソールログを監視してwave、chat、call通知を検出
+2. 通知が検出されたときにデスクトップ通知を表示
 3. 拡張機能アイコンにバッジで通知状態を表示
 4. アイコンクリックで通知をクリアしてgather.townタブをアクティブ化
 5. gather.townタブがアクティブになると自動的に通知をクリア
