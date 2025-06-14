@@ -136,6 +136,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         lunchBtn.textContent = 'ランチタイム終了';
         lunchBtn.classList.add('active');
       } else {
+        // ランチタイム終了: gather.townタブをアクティブにして「応答可能にする」ボタンをクリック
+        const tabs = await chrome.tabs.query({});
+        const gatherTab = tabs.find(tab => 
+          tab.url && (tab.url.includes('gather.town') || tab.url.includes('app.gather.town'))
+        );
+        
+        if (gatherTab) {
+          await chrome.tabs.update(gatherTab.id, { active: true });
+          await chrome.windows.update(gatherTab.windowId, { focused: true });
+          
+          // コンテンツスクリプトに「応答可能にする」ボタンをクリックするよう指示
+          chrome.tabs.sendMessage(gatherTab.id, {
+            action: 'clickResponseButton'
+          }).catch(error => {
+            console.error('Error sending click response button message:', error);
+          });
+        }
+        
         lunchBtn.textContent = 'ランチタイム開始';
         lunchBtn.classList.remove('active');
       }

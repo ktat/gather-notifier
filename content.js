@@ -155,3 +155,17 @@ document.addEventListener('click', function() {
 
 // Note: Ctrl+U functionality removed due to browser security restrictions
 // Chrome extensions cannot programmatically trigger browser keyboard shortcuts
+
+// メッセージリスナー: ポップアップからの指示を受信
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'clickResponseButton') {
+    // 「応答可能にする」ボタンを探してクリック
+    document.querySelectorAll("button").forEach(e => {
+      if (e.innerHTML === "応答可能にする") {
+        e.click();
+        console.log('[WAVE-NOTIFIER] Clicked 応答可能にする button');
+      }
+    });
+    sendResponse({ success: true });
+  }
+});
