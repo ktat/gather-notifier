@@ -2,8 +2,9 @@
 
 ## 検出対象
 gather.townページのコンソールログで以下の文字列を検出：
-- `Alerting Wave event`
-- `Skipping ChatV2 notification`
+- `Alerting Wave event` - Wave通知
+- `Skipping ChatV2 notification` - Chat通知  
+- `Alerting Ring event` - Call通知
 
 ## 検出方法
 
