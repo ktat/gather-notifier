@@ -3,7 +3,7 @@
 ## 通知状態
 - **hasNotification** (boolean) - 未読通知の有無
 - **offscreenCreated** (boolean) - offscreenドキュメント作成状態
-- **isLunchTime** (boolean) - ランチタイムモード状態
+- **isConcentrationMode** (boolean) - 応答不可モード状態
 - **notificationSettings** (object) - 通知種別設定
   - **wave** (boolean) - Wave通知の有効/無効
   - **chat** (boolean) - Chat通知の有効/無効  
@@ -24,17 +24,17 @@
 ### 通知クリア条件
 - 拡張機能アイコンクリック（設定メニューと同時）
 - gather.townページ内のクリック
-- ランチタイムモード時は通知自体が無効化
+- 応答不可モード時は通知自体が無効化
 
 ### 通知クリア時
 1. `hasNotification = false`
-2. バッジ非表示（ランチタイムバッジは保持）
+2. バッジ非表示（応答不可モードバッジは保持）
 3. 音声停止
 4. ローカルストレージ更新
 
-### ランチタイムモード
-- **開始時**: `isLunchTime = true`、バッジに「L」表示、gather.townタブ移動
-- **終了時**: `isLunchTime = false`、ランチタイムバッジ削除
+### 応答不可モード
+- **開始時**: `isConcentrationMode = true`、バッジに「C」表示、gather.townタブ移動
+- **終了時**: `isConcentrationMode = false`、応答不可モードバッジ削除
 - **効果**: 全通知を無効化、音声再生なし
 
 ## タブ管理

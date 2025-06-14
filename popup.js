@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const statusDiv = document.getElementById('status');
   const goToGatherBtn = document.getElementById('goToGatherBtn');
-  const lunchBtn = document.getElementById('lunchBtn');
+  const concentrationBtn = document.getElementById('concentrationBtn');
   const enableWaveCheckbox = document.getElementById('enableWave');
   const enableChatCheckbox = document.getElementById('enableChat');
   const enableCallCheckbox = document.getElementById('enableCall');
@@ -13,11 +13,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       // 通知をクリア
       chrome.storage.local.set({ hasNotification: false });
       
-      // ランチタイム中の場合はバッジをクリアしない
-      const result = await chrome.storage.local.get(['isLunchTime']);
-      const isLunchTime = result.isLunchTime || false;
+      // 応答不可モード中の場合はバッジをクリアしない
+      const result = await chrome.storage.local.get(['isConcentrationMode']);
+      const isConcentrationMode = result.isConcentrationMode || false;
       
-      if (!isLunchTime) {
+      if (!isConcentrationMode) {
         chrome.action.setBadgeText({ text: '' });
       }
       
@@ -32,13 +32,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // 現在の通知状態を取得して表示
   function updateStatus() {
-    chrome.storage.local.get(['hasNotification', 'isLunchTime'], (result) => {
+    chrome.storage.local.get(['hasNotification', 'isConcentrationMode'], (result) => {
       const hasNotification = result.hasNotification || false;
-      const isLunchTime = result.isLunchTime || false;
+      const isConcentrationMode = result.isConcentrationMode || false;
       
-      if (isLunchTime) {
+      if (isConcentrationMode) {
         statusDiv.style.display = 'block';
-        statusDiv.className = 'status lunch-mode';
+        statusDiv.className = 'status concentration-mode';
         statusDiv.textContent = '応答不可モード中です';
       } else if (hasNotification) {
         statusDiv.style.display = 'block';
@@ -52,18 +52,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // 設定を読み込み
   function loadSettings() {
-    chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'isLunchTime'], (result) => {
+    chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'isConcentrationMode'], (result) => {
       enableWaveCheckbox.checked = result.enableWave !== false; // デフォルトtrue
       enableChatCheckbox.checked = result.enableChat !== false; // デフォルトtrue
       enableCallCheckbox.checked = result.enableCall !== false; // デフォルトtrue
       
-      const isLunchTime = result.isLunchTime || false;
-      if (isLunchTime) {
-        lunchBtn.textContent = '応答不可モード終了';
-        lunchBtn.classList.add('active');
+      const isConcentrationMode = result.isConcentrationMode || false;
+      if (isConcentrationMode) {
+        concentrationBtn.textContent = '応答不可モード終了';
+        concentrationBtn.classList.add('active');
+        concentrationBtn.style.display = 'block';
       } else {
-        lunchBtn.textContent = '応答不可モード開始';
-        lunchBtn.classList.remove('active');
+        concentrationBtn.style.display = 'none';
+        concentrationBtn.classList.remove('active');
       }
     });
   }
@@ -104,19 +105,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     chrome.storage.local.set({ enableCall: enableCallCheckbox.checked });
   });
   
-  // ランチタイムボタンのイベントハンドラ
-  lunchBtn.addEventListener('click', async () => {
+  // 応答不可モードボタンのイベントハンドラ
+  concentrationBtn.addEventListener('click', async () => {
     try {
-      const result = await chrome.storage.local.get(['isLunchTime']);
-      const currentLunchTime = result.isLunchTime || false;
-      const newLunchTime = !currentLunchTime;
+      const result = await chrome.storage.local.get(['isConcentrationMode']);
+      const currentConcentrationMode = result.isConcentrationMode || false;
+      const newConcentrationMode = !currentConcentrationMode;
       
-      // ランチタイム状態を切り替え
-      chrome.storage.local.set({ isLunchTime: newLunchTime });
-      chrome.runtime.sendMessage({ action: 'toggleLunchTime', isLunchTime: newLunchTime });
+      // 応答不可モード状態を切り替え
+      chrome.storage.local.set({ isConcentrationMode: newConcentrationMode });
+      chrome.runtime.sendMessage({ action: 'toggleConcentrationMode', isConcentrationMode: newConcentrationMode });
       
-      if (newLunchTime) {
-        // ランチタイム開始: gather.townタブをアクティブにしてCtrl+Uを送信
+      if (newConcentrationMode) {
+        // 応答不可モード開始: gather.townタブをアクティブにする
         const tabs = await chrome.tabs.query({});
         const gatherTab = tabs.find(tab => 
           tab.url && (tab.url.includes('gather.town') || tab.url.includes('app.gather.town'))
@@ -127,14 +128,14 @@ document.addEventListener('DOMContentLoaded', async () => {
           await chrome.windows.update(gatherTab.windowId, { focused: true });
           
           // Note: Ctrl+U cannot be programmatically triggered due to browser security restrictions
-          // The lunch mode will only show the badge indicator and disable notifications
+          // The concentration mode will only show the badge indicator and disable notifications
         } else {
           alert('Gather.townのタブが見つかりません');
           return;
         }
         
-        lunchBtn.textContent = '応答不可モード終了';
-        lunchBtn.classList.add('active');
+        concentrationBtn.textContent = '応答不可モード終了';
+        concentrationBtn.classList.add('active');
       } else {
         // 応答不可モード終了: gather.townタブをアクティブにする
         const tabs = await chrome.tabs.query({});
@@ -147,8 +148,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           await chrome.windows.update(gatherTab.windowId, { focused: true });
         }
         
-        lunchBtn.textContent = '応答不可モード開始';
-        lunchBtn.classList.remove('active');
+        concentrationBtn.style.display = 'none';
+        concentrationBtn.classList.remove('active');
       }
       
       updateStatus();
@@ -158,7 +159,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.close();
       }, 100);
     } catch (error) {
-      console.error('Error toggling lunch time:', error);
+      console.error('Error toggling concentration mode:', error);
       alert('エラーが発生しました');
     }
   });
@@ -170,10 +171,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ストレージの変更を監視
   chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace === 'local') {
-      if (changes.hasNotification || changes.isLunchTime) {
+      if (changes.hasNotification || changes.isConcentrationMode) {
         updateStatus();
       }
-      if (changes.isLunchTime) {
+      if (changes.isConcentrationMode) {
         loadSettings();
       }
     }

@@ -1,7 +1,7 @@
 let gatherTabs = new Set();
 let hasNotification = false;
 let offscreenCreated = false;
-let previousLunchTime = false;
+let previousConcentrationMode = false;
 
 // タブの更新を監視してgather.townのタブを追跡
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -38,13 +38,13 @@ function handleWaveDetection(message, notificationType = 'wave') {
   console.log('Notification detected from console:', message, 'Type:', notificationType);
   
   // 設定を確認して通知が有効かチェック
-  chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'isLunchTime'], (result) => {
-    const isLunchTime = result.isLunchTime || false;
+  chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'isConcentrationMode'], (result) => {
+    const isConcentrationMode = result.isConcentrationMode || false;
     let isNotificationEnabled = false;
     
-    // ランチタイム中は通知しない
-    if (isLunchTime) {
-      console.log('Lunch time active, skipping notification');
+    // 応答不可モード中は通知しない
+    if (isConcentrationMode) {
+      console.log('Concentration mode active, skipping notification');
       return;
     }
     
@@ -105,10 +105,10 @@ function handleWaveDetection(message, notificationType = 'wave') {
 
 // バッジの更新
 function updateBadge() {
-  chrome.storage.local.get(['isLunchTime'], (result) => {
-    const isLunchTime = result.isLunchTime || false;
+  chrome.storage.local.get(['isConcentrationMode'], (result) => {
+    const isConcentrationMode = result.isConcentrationMode || false;
     
-    if (isLunchTime) {
+    if (isConcentrationMode) {
       chrome.action.setBadgeText({ text: 'C' });
       chrome.action.setBadgeBackgroundColor({ color: '#FFA500' });
     } else if (hasNotification) {
@@ -120,13 +120,14 @@ function updateBadge() {
   });
 }
 
-// ランチタイムの切り替え処理
-function toggleLunchTime(isLunchTime) {
-  if (isLunchTime) {
-    // ランチタイム開始時は通知をクリア
+// 応答不可モードの切り替え処理
+function toggleConcentrationMode(isConcentrationMode) {
+  if (isConcentrationMode) {
+    // 応答不可モード開始時は通知をクリア
     hasNotification = false;
     stopNotificationSound();
     chrome.storage.local.set({ hasNotification: false });
+    chrome.runtime.sendMessage({ action: 'startConcentrationMode'});
   }
   updateBadge();
 }
@@ -182,23 +183,23 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   } else if (message.action === 'waveDetected') {
     // content scriptからのwave検出メッセージ
     handleWaveDetection(message.message, message.notificationType);
-  } else if (message.action === 'toggleLunchTime') {
-    // ランチタイム切り替え
-    toggleLunchTime(message.isLunchTime);
+  } else if (message.action === 'toggleConcentrationMode') {
+    // 応答不可モード切り替え
+    toggleConcentrationMode(message.isConcentrationMode);
   } else if (message.action === 'playSound' || message.action === 'stopSound') {
     // offscreenドキュメントからのメッセージは無視
     return;
   }
 });
 
-// ランチタイムの状態を定期的にチェック
-function checkLunchTimeStatus() {
-  chrome.storage.local.get(['isLunchTime'], (result) => {
-    const currentLunchTime = result.isLunchTime || false;
+// 応答不可モードの状態を定期的にチェック
+function checkConcentrationModeStatus() {
+  chrome.storage.local.get(['isConcentrationMode'], (result) => {
+    const currentConcentrationMode = result.isConcentrationMode || false;
     
-    // ランチタイムが終了した場合（true -> false）
-    if (previousLunchTime && !currentLunchTime) {
-      console.log('[BACKGROUND] Lunch time ended, sending message to gather tabs');
+    // 応答不可モードが終了した場合（true -> false）
+    if (previousConcentrationMode && !currentConcentrationMode) {
+      console.log('[BACKGROUND] Concentration mode ended, sending message to gather tabs');
       
       // 全てのgather.townタブに「応答可能にする」ボタンクリック指示を送信
       chrome.tabs.query({}, (tabs) => {
@@ -214,12 +215,12 @@ function checkLunchTimeStatus() {
       });
     }
     
-    previousLunchTime = currentLunchTime;
+    previousConcentrationMode = currentConcentrationMode;
   });
 }
 
-// 1秒ごとにランチタイムの状態をチェック
-setInterval(checkLunchTimeStatus, 1000);
+// 1秒ごとに応答不可モードの状態をチェック
+setInterval(checkConcentrationModeStatus, 1000);
 
 // インストール時の初期化
 chrome.runtime.onInstalled.addListener(() => {
@@ -230,11 +231,11 @@ chrome.runtime.onInstalled.addListener(() => {
     enableWave: true,
     enableChat: true,
     enableCall: true,
-    isLunchTime: false
+    isConcentrationMode: false
   });
   
   // 初期状態を設定
-  chrome.storage.local.get(['isLunchTime'], (result) => {
-    previousLunchTime = result.isLunchTime || false;
+  chrome.storage.local.get(['isConcentrationMode'], (result) => {
+    previousConcentrationMode = result.isConcentrationMode || false;
   });
 });

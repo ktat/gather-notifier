@@ -133,17 +133,17 @@ function checkResponseButton() {
   );
   
   // 現在の状態を取得
-  chrome.storage.local.get(['isLunchTime'], (result) => {
-    const currentConcentrationMode = result.isLunchTime || false;
+  chrome.storage.local.get(['isConcentrationMode'], (result) => {
+    const currentConcentrationMode = result.isConcentrationMode || false;
     const shouldBeInConcentrationMode = !!responseButton;
     
     // 状態が変わった場合のみ更新
     if (currentConcentrationMode !== shouldBeInConcentrationMode) {
       console.log('[WAVE-NOTIFIER] Auto-toggling concentration mode:', shouldBeInConcentrationMode);
-      chrome.storage.local.set({ isLunchTime: shouldBeInConcentrationMode });
+      chrome.storage.local.set({ isConcentrationMode: shouldBeInConcentrationMode });
       chrome.runtime.sendMessage({ 
-        action: 'toggleLunchTime', 
-        isLunchTime: shouldBeInConcentrationMode 
+        action: 'toggleConcentrationMode', 
+        isConcentrationMode: shouldBeInConcentrationMode 
       }).catch(error => {
         console.error('Error sending auto-toggle message:', error);
       });
@@ -186,7 +186,20 @@ document.addEventListener('click', function() {
 
 // メッセージリスナー: バックグラウンドスクリプトからの指示を受信
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === 'clickResponseButton') {
+  if (message.action === "startConcentrationMode") {
+        const event = new KeyboardEvent(type, {
+        key: key,
+        code: key, // 多くの場合、keyと同じか、より具体的な値
+        ctrlKey: ctrlKey,
+        shiftKey: shiftKey,
+        altKey: altKey,
+        metaKey: metaKey,
+        bubbles: true, // イベントがDOMツリーをバブリングするようにする
+        cancelable: true // イベントがキャンセル可能であるようにする
+    });
+    document.dispatchEvent(event);
+  }
+  else if (message.action === 'clickResponseButton') {
     // ボタンを探してクリックする関数
     function findAndClickButton(retryCount = 0) {
       const buttons = document.querySelectorAll("button");
