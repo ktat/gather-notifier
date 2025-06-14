@@ -1,6 +1,7 @@
 let gatherTabs = new Set();
 let hasNotification = false;
 let offscreenCreated = false;
+let previousLunchTime = false;
 
 // タブの更新を監視してgather.townのタブを追跡
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -190,6 +191,36 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
+// ランチタイムの状態を定期的にチェック
+function checkLunchTimeStatus() {
+  chrome.storage.local.get(['isLunchTime'], (result) => {
+    const currentLunchTime = result.isLunchTime || false;
+    
+    // ランチタイムが終了した場合（true -> false）
+    if (previousLunchTime && !currentLunchTime) {
+      console.log('[BACKGROUND] Lunch time ended, sending message to gather tabs');
+      
+      // 全てのgather.townタブに「応答可能にする」ボタンクリック指示を送信
+      chrome.tabs.query({}, (tabs) => {
+        tabs.forEach(tab => {
+          if (tab.url && (tab.url.includes('gather.town') || tab.url.includes('app.gather.town'))) {
+            chrome.tabs.sendMessage(tab.id, {
+              action: 'clickResponseButton'
+            }).catch(error => {
+              console.log('[BACKGROUND] Failed to send message to tab', tab.id, ':', error.message);
+            });
+          }
+        });
+      });
+    }
+    
+    previousLunchTime = currentLunchTime;
+  });
+}
+
+// 1秒ごとにランチタイムの状態をチェック
+setInterval(checkLunchTimeStatus, 1000);
+
 // インストール時の初期化
 chrome.runtime.onInstalled.addListener(() => {
   hasNotification = false;
@@ -200,5 +231,10 @@ chrome.runtime.onInstalled.addListener(() => {
     enableChat: true,
     enableCall: true,
     isLunchTime: false
+  });
+  
+  // 初期状態を設定
+  chrome.storage.local.get(['isLunchTime'], (result) => {
+    previousLunchTime = result.isLunchTime || false;
   });
 });

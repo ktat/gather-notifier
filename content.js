@@ -156,16 +156,28 @@ document.addEventListener('click', function() {
 // Note: Ctrl+U functionality removed due to browser security restrictions
 // Chrome extensions cannot programmatically trigger browser keyboard shortcuts
 
-// メッセージリスナー: ポップアップからの指示を受信
+// メッセージリスナー: バックグラウンドスクリプトからの指示を受信
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'clickResponseButton') {
-    // 「応答可能にする」ボタンを探してクリック
-    document.querySelectorAll("button").forEach(e => {
-      if (e.innerHTML === "応答可能にする") {
-        e.click();
-        console.log('[WAVE-NOTIFIER] Clicked 応答可能にする button');
+    // ボタンを探してクリックする関数
+    function findAndClickButton(retryCount = 0) {
+      const buttons = document.querySelectorAll("button");
+      
+      let buttonFound = false;
+      buttons.forEach((button) => {
+        if (button.innerHTML.trim() === "応答可能にする" || button.textContent.trim() === "応答可能にする") {
+          button.click();
+          console.log('[WAVE-NOTIFIER] Successfully clicked 応答可能にする button');
+          buttonFound = true;
+        }
+      });
+      
+      if (!buttonFound && retryCount < 3) {
+        setTimeout(() => findAndClickButton(retryCount + 1), 1000);
       }
-    });
+    }
+    
+    findAndClickButton();
     sendResponse({ success: true });
   }
 });

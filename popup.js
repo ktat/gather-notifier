@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         lunchBtn.textContent = 'ランチタイム終了';
         lunchBtn.classList.add('active');
       } else {
-        // ランチタイム終了: gather.townタブをアクティブにして「応答可能にする」ボタンをクリック
+        // ランチタイム終了: gather.townタブをアクティブにする
         const tabs = await chrome.tabs.query({});
         const gatherTab = tabs.find(tab => 
           tab.url && (tab.url.includes('gather.town') || tab.url.includes('app.gather.town'))
@@ -145,13 +145,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (gatherTab) {
           await chrome.tabs.update(gatherTab.id, { active: true });
           await chrome.windows.update(gatherTab.windowId, { focused: true });
-          
-          // コンテンツスクリプトに「応答可能にする」ボタンをクリックするよう指示
-          chrome.tabs.sendMessage(gatherTab.id, {
-            action: 'clickResponseButton'
-          }).catch(error => {
-            console.error('Error sending click response button message:', error);
-          });
         }
         
         lunchBtn.textContent = 'ランチタイム開始';
@@ -160,8 +153,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       updateStatus();
       
-      // ポップアップを閉じる
-      window.close();
+      // ポップアップを閉じる（少し遅延させてUI更新を確実に行う）
+      setTimeout(() => {
+        window.close();
+      }, 100);
     } catch (error) {
       console.error('Error toggling lunch time:', error);
       alert('エラーが発生しました');
