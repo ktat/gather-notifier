@@ -109,7 +109,7 @@ function updateBadge() {
     const isLunchTime = result.isLunchTime || false;
     
     if (isLunchTime) {
-      chrome.action.setBadgeText({ text: 'L' });
+      chrome.action.setBadgeText({ text: 'C' });
       chrome.action.setBadgeBackgroundColor({ color: '#FFA500' });
     } else if (hasNotification) {
       chrome.action.setBadgeText({ text: '!' });

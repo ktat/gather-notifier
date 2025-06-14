@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (isLunchTime) {
         statusDiv.style.display = 'block';
         statusDiv.className = 'status lunch-mode';
-        statusDiv.textContent = 'ランチタイム中です';
+        statusDiv.textContent = '応答不可モード中です';
       } else if (hasNotification) {
         statusDiv.style.display = 'block';
         statusDiv.className = 'status has-notification';
@@ -59,10 +59,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       const isLunchTime = result.isLunchTime || false;
       if (isLunchTime) {
-        lunchBtn.textContent = 'ランチタイム終了';
+        lunchBtn.textContent = '応答不可モード終了';
         lunchBtn.classList.add('active');
       } else {
-        lunchBtn.textContent = 'ランチタイム開始';
+        lunchBtn.textContent = '応答不可モード開始';
         lunchBtn.classList.remove('active');
       }
     });
@@ -133,10 +133,10 @@ document.addEventListener('DOMContentLoaded', async () => {
           return;
         }
         
-        lunchBtn.textContent = 'ランチタイム終了';
+        lunchBtn.textContent = '応答不可モード終了';
         lunchBtn.classList.add('active');
       } else {
-        // ランチタイム終了: gather.townタブをアクティブにする
+        // 応答不可モード終了: gather.townタブをアクティブにする
         const tabs = await chrome.tabs.query({});
         const gatherTab = tabs.find(tab => 
           tab.url && (tab.url.includes('gather.town') || tab.url.includes('app.gather.town'))
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           await chrome.windows.update(gatherTab.windowId, { focused: true });
         }
         
-        lunchBtn.textContent = 'ランチタイム開始';
+        lunchBtn.textContent = '応答不可モード開始';
         lunchBtn.classList.remove('active');
       }
       

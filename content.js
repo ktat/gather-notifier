@@ -126,6 +126,34 @@ script.remove();
 
 console.log('Gather.town Wave Notifier: Content script initialized');
 
+// 応答可能にするボタンの状態を監視して自動的に応答不可モードを制御
+function checkResponseButton() {
+  const responseButton = Array.from(document.querySelectorAll('button')).find(button => 
+    button.innerHTML.trim() === "応答可能にする" || button.textContent.trim() === "応答可能にする"
+  );
+  
+  // 現在の状態を取得
+  chrome.storage.local.get(['isLunchTime'], (result) => {
+    const currentConcentrationMode = result.isLunchTime || false;
+    const shouldBeInConcentrationMode = !!responseButton;
+    
+    // 状態が変わった場合のみ更新
+    if (currentConcentrationMode !== shouldBeInConcentrationMode) {
+      console.log('[WAVE-NOTIFIER] Auto-toggling concentration mode:', shouldBeInConcentrationMode);
+      chrome.storage.local.set({ isLunchTime: shouldBeInConcentrationMode });
+      chrome.runtime.sendMessage({ 
+        action: 'toggleLunchTime', 
+        isLunchTime: shouldBeInConcentrationMode 
+      }).catch(error => {
+        console.error('Error sending auto-toggle message:', error);
+      });
+    }
+  });
+}
+
+// 5秒ごとに応答可能にするボタンの状態をチェック
+setInterval(checkResponseButton, 5000);
+
 // デバッグ用: テストログを定期的に出力
 setInterval(() => {
   console.log('[WAVE-NOTIFIER-CONTENT] Monitoring active at', new Date().toLocaleTimeString());
