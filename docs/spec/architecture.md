@@ -1,7 +1,7 @@
 # Architecture
 
 ## 概要
-gather.townでのwave通知を検出してデスクトップ通知とサウンド再生を行うChrome拡張機能
+gather.townでのwave、chat、call通知を検出してデスクトップ通知とサウンド再生を行うChrome拡張機能。応答不可モード（集中モード）機能と自動タブ管理機能を提供。
 
 ## コンポーネント構成
 
@@ -29,8 +29,14 @@ gather.townでのwave通知を検出してデスクトップ通知とサウン�
 5. background.js が通知表示・音声再生・バッジ更新
 
 ### 通知クリアフロー
-- 拡張機能ボタンクリック → 設定メニュー表示・通知クリア・gather.townタブ移動
+- 拡張機能ボタンクリック → 設定メニュー表示・通知クリア・gather.townタブ移動/作成
 - gather.townページ内クリック → content.js検出 → background.js通知クリア
+- gather.townタブアクティブ化 → background.js検出 → 通知クリア・音声停止
+
+### 応答不可モードフロー
+1. ユーザーが応答不可ボタンクリック → background.js状態切替
+2. background.js定期監視 → gather.town「応答可能にする」ボタン検出時に自動ON/OFF
+3. 応答不可モード終了時 → content.jsに自動「応答可能にする」ボタン押下指示
 
 ## 通信フロー
 ```
