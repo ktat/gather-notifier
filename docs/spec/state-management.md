@@ -4,6 +4,7 @@
 - **hasNotification** (boolean) - 未読通知の有無
 - **offscreenCreated** (boolean) - offscreenドキュメント作成状態
 - **isConcentrationMode** (boolean) - 応答不可モード状態
+- **language** (string) - UI言語設定 ('auto', 'en', 'ja', 'de', 'fr')
 - **notificationSettings** (object) - 通知種別設定
   - **wave** (boolean) - Wave通知の有効/無効
   - **chat** (boolean) - Chat通知の有効/無効  

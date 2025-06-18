@@ -24,8 +24,15 @@
 - **状態確認**: ポップアップUI、バッジ表示
 - **ストレージ**: DevToolsのApplicationタブでlocalStorage確認
 
+## 言語選択が機能しない
+1. **ストレージ確認**: chrome.storage.localの`language`キー
+2. **リソース読み込み**: `/_locales/*/messages.json`ファイルの存在
+3. **ネットワーク**: DevToolsのNetworkタブでfetch失敗確認
+4. **フォールバック**: Chrome標準i18nへの自動切り替え
+
 ## よくある問題
 - **Chrome更新**: MV3仕様変更による動作不良
 - **gather.town仕様変更**: ログメッセージの変更
 - **権限不足**: manifest.jsonの権限不備
+- **言語リソース**: _localesディレクトリの破損や不完全
 - **タイミング問題**: スクリプト注入が遅すぎる

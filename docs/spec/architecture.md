@@ -11,7 +11,7 @@ gather.townでのwave、chat、call通知を検出してデスクトップ通知
 - **content_main.js** - MAIN worldでconsoleログ監視
 - **content.js** - ISOLATED worldでメッセージ中継・クリック検出
 - **offscreen.js** - 音声再生処理
-- **popup.js** - 設定メニュー表示
+- **popup.js** - 設定メニュー表示・言語選択・カスタムi18n処理
 
 ### 実行環境
 - **Service Worker** (background.js) - バックグラウンド処理
@@ -37,6 +37,11 @@ gather.townでのwave、chat、call通知を検出してデスクトップ通知
 1. ユーザーが応答不可ボタンクリック → background.js状態切替
 2. background.js定期監視 → gather.town「応答可能にする」ボタン検出時に自動ON/OFF
 3. 応答不可モード終了時 → content.jsに自動「応答可能にする」ボタン押下指示
+
+### 言語選択フロー
+1. ユーザーが言語ドロップダウン選択 → popup.js言語設定保存
+2. popup.js → カスタムi18nリソース読み込み → UI動的更新
+3. 設定保存 → chrome.storage.local → 次回起動時に復元
 
 ## 通信フロー
 ```
