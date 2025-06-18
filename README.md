@@ -43,7 +43,7 @@ A Chrome extension that displays desktop notifications when you receive wave, ch
 3. Click the extension icon to change settings from the popup
 4. Use do not disturb mode to temporarily disable notifications
 5. Use the "Go to Gather.town" button to automatically create/switch tabs
-6. Select your preferred language from the dropdown at the bottom right of the popup
+6. Select your preferred language from the dropdown (marked with 🌐) at the bottom right of the popup
 
 ## Creating Icons
 
