@@ -26,7 +26,8 @@ A Chrome extension that displays desktop notifications when you receive wave, ch
 7. **Focus Mode**: Do not disturb mode functionality that disables notifications for a certain period
 8. **Settings Management**: Individual enable/disable toggle for each notification type
 9. **Auto Tab Creation**: Automatic tab creation when gather.town tab is not found
-10. **Internationalization**: Automatically displays messages in appropriate language based on browser language settings
+10. **Language Selection**: Manual language selection dropdown in popup (Auto/English/Japanese/German/French)
+11. **Internationalization**: Automatically displays messages in appropriate language based on browser language settings or manual selection
 
 ## Installation
 
@@ -42,6 +43,7 @@ A Chrome extension that displays desktop notifications when you receive wave, ch
 3. Click the extension icon to change settings from the popup
 4. Use do not disturb mode to temporarily disable notifications
 5. Use the "Go to Gather.town" button to automatically create/switch tabs
+6. Select your preferred language from the dropdown at the bottom right of the popup
 
 ## Creating Icons
 

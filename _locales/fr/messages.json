@@ -70,5 +70,9 @@
   "errorOccurred": {
     "message": "Une erreur s'est produite",
     "description": "Message d'erreur générique"
+  },
+  "languageAuto": {
+    "message": "Automatique",
+    "description": "Option de sélecteur de langue pour la détection automatique"
   }
 }

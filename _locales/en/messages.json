@@ -70,5 +70,9 @@
   "errorOccurred": {
     "message": "An error occurred",
     "description": "Generic error message"
+  },
+  "languageAuto": {
+    "message": "Auto",
+    "description": "Language selector option for automatic detection"
   }
 }

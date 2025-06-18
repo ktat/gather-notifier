@@ -1,24 +1,56 @@
+// 言語リソースキャッシュ
+let languageCache = {};
+
 // Initialize i18n
-function initializeI18n() {
+async function initializeI18n(selectedLanguage = null) {
   const elements = document.querySelectorAll('[data-i18n]');
-  elements.forEach(element => {
+  
+  for (let element of elements) {
     const messageKey = element.getAttribute('data-i18n');
-    const message = chrome.i18n.getMessage(messageKey);
+    let message;
+    
+    if (selectedLanguage && selectedLanguage !== 'auto') {
+      // カスタム言語が選択されている場合、該当する言語リソースを使用
+      message = await getCustomMessage(messageKey, selectedLanguage);
+    } else {
+      // 自動またはデフォルトの場合はChrome標準のi18nを使用
+      message = chrome.i18n.getMessage(messageKey);
+    }
+    
     if (message) {
       element.textContent = message;
     }
-  });
+  }
+}
+
+// カスタム言語メッセージ取得
+async function getCustomMessage(messageKey, language) {
+  try {
+    // キャッシュチェック
+    if (!languageCache[language]) {
+      const response = await fetch(`/_locales/${language}/messages.json`);
+      languageCache[language] = await response.json();
+    }
+    
+    return languageCache[language][messageKey] && languageCache[language][messageKey].message;
+  } catch (error) {
+    console.error('Error loading custom language:', error);
+    return chrome.i18n.getMessage(messageKey); // フォールバック
+  }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Initialize i18n first
-  initializeI18n();
+  // Get saved language preference and initialize i18n
+  const result = await chrome.storage.local.get(['language']);
+  const savedLanguage = result.language || 'auto';
+  await initializeI18n(savedLanguage);
   const statusDiv = document.getElementById('status');
   const goToGatherBtn = document.getElementById('goToGatherBtn');
   const concentrationBtn = document.getElementById('concentrationBtn');
   const enableWaveCheckbox = document.getElementById('enableWave');
   const enableChatCheckbox = document.getElementById('enableChat');
   const enableCallCheckbox = document.getElementById('enableCall');
+  const languageSelect = document.getElementById('languageSelect');
   
   // ポップアップが開かれた時に自動的に通知をクリア
   // (improvement/done/1.md の要求に従い、ただしimprovement/5.mdで自動移動は削除)
@@ -65,22 +97,33 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   
   // 設定を読み込み
-  function loadSettings() {
-    chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'isConcentrationMode'], (result) => {
-      enableWaveCheckbox.checked = result.enableWave !== false; // デフォルトtrue
-      enableChatCheckbox.checked = result.enableChat !== false; // デフォルトtrue
-      enableCallCheckbox.checked = result.enableCall !== false; // デフォルトtrue
+  async function loadSettings() {
+    const result = await chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'isConcentrationMode', 'language']);
+    
+    enableWaveCheckbox.checked = result.enableWave !== false; // デフォルトtrue
+    enableChatCheckbox.checked = result.enableChat !== false; // デフォルトtrue
+    enableCallCheckbox.checked = result.enableCall !== false; // デフォルトtrue
+    
+    // 言語設定を読み込み
+    languageSelect.value = result.language || 'auto'; // デフォルトは自動
+    
+    const isConcentrationMode = result.isConcentrationMode || false;
+    const savedLanguage = result.language || 'auto';
+    
+    if (isConcentrationMode) {
+      const endConcentrationMessage = savedLanguage !== 'auto'
+        ? await getCustomMessage('endConcentrationMode', savedLanguage)
+        : chrome.i18n.getMessage('endConcentrationMode');
       
-      const isConcentrationMode = result.isConcentrationMode || false;
-      if (isConcentrationMode) {
-        concentrationBtn.textContent = chrome.i18n.getMessage('endConcentrationMode');
-        concentrationBtn.classList.add('active');
-        concentrationBtn.style.display = 'block';
-      } else {
-        concentrationBtn.style.display = 'none';
-        concentrationBtn.classList.remove('active');
+      if (endConcentrationMessage) {
+        concentrationBtn.textContent = endConcentrationMessage;
       }
-    });
+      concentrationBtn.classList.add('active');
+      concentrationBtn.style.display = 'block';
+    } else {
+      concentrationBtn.style.display = 'none';
+      concentrationBtn.classList.remove('active');
+    }
   }
   
   // Gather.townタブに移動ボタン
@@ -124,6 +167,26 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   enableCallCheckbox.addEventListener('change', () => {
     chrome.storage.local.set({ enableCall: enableCallCheckbox.checked });
+  });
+  
+  languageSelect.addEventListener('change', async () => {
+    const selectedLanguage = languageSelect.value;
+    chrome.storage.local.set({ language: selectedLanguage });
+    
+    // 言語変更後にUIを再初期化
+    await initializeI18n(selectedLanguage);
+    
+    // 応答不可モードボタンのテキストも更新
+    const result = await chrome.storage.local.get(['isConcentrationMode']);
+    const isConcentrationMode = result.isConcentrationMode || false;
+    if (isConcentrationMode) {
+      const endConcentrationMessage = selectedLanguage && selectedLanguage !== 'auto'
+        ? await getCustomMessage('endConcentrationMode', selectedLanguage)
+        : chrome.i18n.getMessage('endConcentrationMode');
+      if (endConcentrationMessage) {
+        concentrationBtn.textContent = endConcentrationMessage;
+      }
+    }
   });
   
   // 応答不可モードボタンのイベントハンドラ
@@ -187,16 +250,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // 初期状態を更新
   updateStatus();
-  loadSettings();
+  await loadSettings();
   
   // ストレージの変更を監視
-  chrome.storage.onChanged.addListener((changes, namespace) => {
+  chrome.storage.onChanged.addListener(async (changes, namespace) => {
     if (namespace === 'local') {
       if (changes.hasNotification || changes.isConcentrationMode) {
         updateStatus();
       }
       if (changes.isConcentrationMode) {
-        loadSettings();
+        await loadSettings();
       }
     }
   });

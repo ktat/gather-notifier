@@ -70,5 +70,9 @@
   "errorOccurred": {
     "message": "エラーが発生しました",
     "description": "一般的なエラーメッセージ"
+  },
+  "languageAuto": {
+    "message": "自動",
+    "description": "言語選択での自動検出オプション"
   }
 }

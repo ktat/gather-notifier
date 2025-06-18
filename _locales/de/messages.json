@@ -70,5 +70,9 @@
   "errorOccurred": {
     "message": "Ein Fehler ist aufgetreten",
     "description": "Allgemeine Fehlermeldung"
+  },
+  "languageAuto": {
+    "message": "Automatisch",
+    "description": "Sprachauswahl-Option für automatische Erkennung"
   }
 }
