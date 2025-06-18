@@ -4,6 +4,8 @@
 
 A Chrome extension that displays desktop notifications when you receive wave, chat, or call notifications in gather.town.
 
+[Chrome Web Store](https://chromewebstore.google.com/detail/gathertown-wavechat-notif/ipilclmmmipimknhiklcnpidkcdjooad?authuser=0)
+
 ## Features
 
 - **Advanced Notification Detection**: Reliable log monitoring using both MAIN world and ISOLATED world

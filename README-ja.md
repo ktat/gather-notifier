@@ -4,6 +4,8 @@
 
 gather.townでwave、chat、callの通知を受信したときにデスクトップ通知を表示するChrome拡張機能です。
 
+[Chrome Web Store](https://chromewebstore.google.com/detail/gathertown-wavechat-notif/ipilclmmmipimknhiklcnpidkcdjooad?authuser=0)
+
 ## 特徴
 
 - **高度な通知検出**: MAIN worldとISOLATED worldの両方を使用した確実なログ監視
