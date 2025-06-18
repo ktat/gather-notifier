@@ -71,17 +71,17 @@ function handleWaveDetection(message, notificationType = 'wave') {
     let title, notificationMessage;
     switch(notificationType) {
       case 'chat':
-        title = 'Gather.town Chat!';
-        notificationMessage = 'Someone sent you a chat message in gather.town!';
+        title = chrome.i18n.getMessage('chatNotificationTitle');
+        notificationMessage = chrome.i18n.getMessage('chatNotificationMessage');
         break;
       case 'call':
-        title = 'Gather.town Call!';
-        notificationMessage = 'Someone is calling you in gather.town!';
+        title = chrome.i18n.getMessage('callNotificationTitle');
+        notificationMessage = chrome.i18n.getMessage('callNotificationMessage');
         break;
       case 'wave':
       default:
-        title = 'Gather.town Wave!';
-        notificationMessage = 'Someone waved at you in gather.town!';
+        title = chrome.i18n.getMessage('waveNotificationTitle');
+        notificationMessage = chrome.i18n.getMessage('waveNotificationMessage');
         break;
     }
     

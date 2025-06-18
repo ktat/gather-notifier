@@ -1,0 +1,74 @@
+{
+  "appName": {
+    "message": "Gather.town Winken/Chat Benachrichtigung",
+    "description": "Anwendungsname"
+  },
+  "appDescription": {
+    "message": "Benachrichtigt, wenn jemand in gather.town winkt oder chattet",
+    "description": "Anwendungsbeschreibung"
+  },
+  "waveNotificationTitle": {
+    "message": "Gather.town Winken!",
+    "description": "Desktop-Benachrichtigungstitel für Winken"
+  },
+  "waveNotificationMessage": {
+    "message": "Jemand hat dir in gather.town zugewinkt!",
+    "description": "Desktop-Benachrichtigungsnachricht für Winken"
+  },
+  "chatNotificationTitle": {
+    "message": "Gather.town Chat!",
+    "description": "Desktop-Benachrichtigungstitel für Chat"
+  },
+  "chatNotificationMessage": {
+    "message": "Jemand hat dir eine Chat-Nachricht in gather.town gesendet!",
+    "description": "Desktop-Benachrichtigungsnachricht für Chat"
+  },
+  "callNotificationTitle": {
+    "message": "Gather.town Anruf!",
+    "description": "Desktop-Benachrichtigungstitel für Anruf"
+  },
+  "callNotificationMessage": {
+    "message": "Jemand ruft dich in gather.town an!",
+    "description": "Desktop-Benachrichtigungsnachricht für Anruf"
+  },
+  "concentrationModeActive": {
+    "message": "Konzentrationsmodus ist aktiv",
+    "description": "Statusnachricht wenn Konzentrationsmodus aktiv ist"
+  },
+  "newNotificationAvailable": {
+    "message": "Neue Benachrichtigung verfügbar!",
+    "description": "Statusnachricht wenn neue Benachrichtigung verfügbar ist"
+  },
+  "goToGather": {
+    "message": "Zu Gather.town gehen",
+    "description": "Schaltflächentext um zu Gather.town zu gehen"
+  },
+  "notificationSettings": {
+    "message": "Benachrichtigungseinstellungen",
+    "description": "Sektionstitels für Benachrichtigungseinstellungen"
+  },
+  "enableWaveNotifications": {
+    "message": "Winken-Benachrichtigungen aktivieren",
+    "description": "Kontrollkästchen-Label für Winken-Benachrichtigungen"
+  },
+  "enableChatNotifications": {
+    "message": "Chat-Benachrichtigungen aktivieren",
+    "description": "Kontrollkästchen-Label für Chat-Benachrichtigungen"
+  },
+  "enableCallNotifications": {
+    "message": "Anruf-Benachrichtigungen aktivieren",
+    "description": "Kontrollkästchen-Label für Anruf-Benachrichtigungen"
+  },
+  "endConcentrationMode": {
+    "message": "Konzentrationsmodus beenden",
+    "description": "Schaltflächentext um Konzentrationsmodus zu beenden"
+  },
+  "gatherTabNotFound": {
+    "message": "Gather.town Tab nicht gefunden",
+    "description": "Warnmeldung wenn gather.town Tab nicht gefunden wird"
+  },
+  "errorOccurred": {
+    "message": "Ein Fehler ist aufgetreten",
+    "description": "Allgemeine Fehlermeldung"
+  }
+}

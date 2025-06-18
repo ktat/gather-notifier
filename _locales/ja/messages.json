@@ -1,0 +1,74 @@
+{
+  "appName": {
+    "message": "Gather.town Wave/Chat通知",
+    "description": "アプリケーション名"
+  },
+  "appDescription": {
+    "message": "gather.townで誰かがwaveやchatをした時に通知します",
+    "description": "アプリケーションの説明"
+  },
+  "waveNotificationTitle": {
+    "message": "Gather.town Wave!",
+    "description": "wave通知のデスクトップ通知タイトル"
+  },
+  "waveNotificationMessage": {
+    "message": "誰かがgather.townであなたにwaveしました！",
+    "description": "wave通知のデスクトップ通知メッセージ"
+  },
+  "chatNotificationTitle": {
+    "message": "Gather.town Chat!",
+    "description": "chat通知のデスクトップ通知タイトル"
+  },
+  "chatNotificationMessage": {
+    "message": "誰かがgather.townでチャットメッセージを送信しました！",
+    "description": "chat通知のデスクトップ通知メッセージ"
+  },
+  "callNotificationTitle": {
+    "message": "Gather.town Call!",
+    "description": "call通知のデスクトップ通知タイトル"
+  },
+  "callNotificationMessage": {
+    "message": "誰かがgather.townであなたを呼び出しています！",
+    "description": "call通知のデスクトップ通知メッセージ"
+  },
+  "concentrationModeActive": {
+    "message": "応答不可モード中です",
+    "description": "応答不可モードがアクティブな時のステータスメッセージ"
+  },
+  "newNotificationAvailable": {
+    "message": "新しい通知があります！",
+    "description": "新しい通知が利用可能な時のステータスメッセージ"
+  },
+  "goToGather": {
+    "message": "Gather.townに移動",
+    "description": "Gather.townに移動するボタンのテキスト"
+  },
+  "notificationSettings": {
+    "message": "通知設定",
+    "description": "通知設定のセクションタイトル"
+  },
+  "enableWaveNotifications": {
+    "message": "Wave通知を有効にする",
+    "description": "wave通知のチェックボックスラベル"
+  },
+  "enableChatNotifications": {
+    "message": "Chat通知を有効にする",
+    "description": "chat通知のチェックボックスラベル"
+  },
+  "enableCallNotifications": {
+    "message": "Call通知を有効にする",
+    "description": "call通知のチェックボックスラベル"
+  },
+  "endConcentrationMode": {
+    "message": "応答不可モード終了",
+    "description": "応答不可モード終了ボタンのテキスト"
+  },
+  "gatherTabNotFound": {
+    "message": "Gather.townのタブが見つかりません",
+    "description": "gather.townタブが見つからない時のアラートメッセージ"
+  },
+  "errorOccurred": {
+    "message": "エラーが発生しました",
+    "description": "一般的なエラーメッセージ"
+  }
+}

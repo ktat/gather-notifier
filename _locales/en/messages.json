@@ -1,0 +1,74 @@
+{
+  "appName": {
+    "message": "Gather.town Wave/Chat Notifier",
+    "description": "Application name"
+  },
+  "appDescription": {
+    "message": "Notifies when someone waves/chat at you in gather.town",
+    "description": "Application description"
+  },
+  "waveNotificationTitle": {
+    "message": "Gather.town Wave!",
+    "description": "Desktop notification title for wave"
+  },
+  "waveNotificationMessage": {
+    "message": "Someone waved at you in gather.town!",
+    "description": "Desktop notification message for wave"
+  },
+  "chatNotificationTitle": {
+    "message": "Gather.town Chat!",
+    "description": "Desktop notification title for chat"
+  },
+  "chatNotificationMessage": {
+    "message": "Someone sent you a chat message in gather.town!",
+    "description": "Desktop notification message for chat"
+  },
+  "callNotificationTitle": {
+    "message": "Gather.town Call!",
+    "description": "Desktop notification title for call"
+  },
+  "callNotificationMessage": {
+    "message": "Someone is calling you in gather.town!",
+    "description": "Desktop notification message for call"
+  },
+  "concentrationModeActive": {
+    "message": "Concentration mode is active",
+    "description": "Status message when concentration mode is active"
+  },
+  "newNotificationAvailable": {
+    "message": "New notification available!",
+    "description": "Status message when new notification is available"
+  },
+  "goToGather": {
+    "message": "Go to Gather.town",
+    "description": "Button text to go to Gather.town"
+  },
+  "notificationSettings": {
+    "message": "Notification Settings",
+    "description": "Section title for notification settings"
+  },
+  "enableWaveNotifications": {
+    "message": "Enable wave notifications",
+    "description": "Checkbox label for wave notifications"
+  },
+  "enableChatNotifications": {
+    "message": "Enable chat notifications",
+    "description": "Checkbox label for chat notifications"
+  },
+  "enableCallNotifications": {
+    "message": "Enable call notifications",
+    "description": "Checkbox label for call notifications"
+  },
+  "endConcentrationMode": {
+    "message": "End concentration mode",
+    "description": "Button text to end concentration mode"
+  },
+  "gatherTabNotFound": {
+    "message": "Gather.town tab not found",
+    "description": "Alert message when gather.town tab is not found"
+  },
+  "errorOccurred": {
+    "message": "An error occurred",
+    "description": "Generic error message"
+  }
+}

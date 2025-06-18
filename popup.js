@@ -1,4 +1,18 @@
+// Initialize i18n
+function initializeI18n() {
+  const elements = document.querySelectorAll('[data-i18n]');
+  elements.forEach(element => {
+    const messageKey = element.getAttribute('data-i18n');
+    const message = chrome.i18n.getMessage(messageKey);
+    if (message) {
+      element.textContent = message;
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+  // Initialize i18n first
+  initializeI18n();
   const statusDiv = document.getElementById('status');
   const goToGatherBtn = document.getElementById('goToGatherBtn');
   const concentrationBtn = document.getElementById('concentrationBtn');
@@ -39,11 +53,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (isConcentrationMode) {
         statusDiv.style.display = 'block';
         statusDiv.className = 'status concentration-mode';
-        statusDiv.textContent = '応答不可モード中です';
+        statusDiv.textContent = chrome.i18n.getMessage('concentrationModeActive');
       } else if (hasNotification) {
         statusDiv.style.display = 'block';
         statusDiv.className = 'status has-notification';
-        statusDiv.textContent = '新しい通知があります！';
+        statusDiv.textContent = chrome.i18n.getMessage('newNotificationAvailable');
       } else {
         statusDiv.style.display = 'none';
       }
@@ -59,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       const isConcentrationMode = result.isConcentrationMode || false;
       if (isConcentrationMode) {
-        concentrationBtn.textContent = '応答不可モード終了';
+        concentrationBtn.textContent = chrome.i18n.getMessage('endConcentrationMode');
         concentrationBtn.classList.add('active');
         concentrationBtn.style.display = 'block';
       } else {
@@ -84,11 +98,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         // ポップアップを閉じる
         window.close();
       } else {
-        alert('Gather.townのタブが見つかりません');
+        alert(chrome.i18n.getMessage('gatherTabNotFound'));
       }
     } catch (error) {
       console.error('Error focusing gather.town tab:', error);
-      alert('エラーが発生しました');
+      alert(chrome.i18n.getMessage('errorOccurred'));
     }
   });
   
@@ -130,11 +144,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           // Note: Ctrl+U cannot be programmatically triggered due to browser security restrictions
           // The concentration mode will only show the badge indicator and disable notifications
         } else {
-          alert('Gather.townのタブが見つかりません');
+          alert(chrome.i18n.getMessage('gatherTabNotFound'));
           return;
         }
         
-        concentrationBtn.textContent = '応答不可モード終了';
+        concentrationBtn.textContent = chrome.i18n.getMessage('endConcentrationMode');
         concentrationBtn.classList.add('active');
       } else {
         // 応答不可モード終了: gather.townタブをアクティブにする
@@ -160,7 +174,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }, 100);
     } catch (error) {
       console.error('Error toggling concentration mode:', error);
-      alert('エラーが発生しました');
+      alert(chrome.i18n.getMessage('errorOccurred'));
     }
   });
   

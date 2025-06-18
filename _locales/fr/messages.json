@@ -1,0 +1,74 @@
+{
+  "appName": {
+    "message": "Notificateur Gather.town Salut/Chat",
+    "description": "Nom de l'application"
+  },
+  "appDescription": {
+    "message": "Notifie quand quelqu'un vous fait signe ou vous envoie un message dans gather.town",
+    "description": "Description de l'application"
+  },
+  "waveNotificationTitle": {
+    "message": "Gather.town Salut!",
+    "description": "Titre de notification de bureau pour salut"
+  },
+  "waveNotificationMessage": {
+    "message": "Quelqu'un vous a fait signe dans gather.town!",
+    "description": "Message de notification de bureau pour salut"
+  },
+  "chatNotificationTitle": {
+    "message": "Gather.town Chat!",
+    "description": "Titre de notification de bureau pour chat"
+  },
+  "chatNotificationMessage": {
+    "message": "Quelqu'un vous a envoyé un message de chat dans gather.town!",
+    "description": "Message de notification de bureau pour chat"
+  },
+  "callNotificationTitle": {
+    "message": "Gather.town Appel!",
+    "description": "Titre de notification de bureau pour appel"
+  },
+  "callNotificationMessage": {
+    "message": "Quelqu'un vous appelle dans gather.town!",
+    "description": "Message de notification de bureau pour appel"
+  },
+  "concentrationModeActive": {
+    "message": "Mode concentration actif",
+    "description": "Message de statut quand le mode concentration est actif"
+  },
+  "newNotificationAvailable": {
+    "message": "Nouvelle notification disponible!",
+    "description": "Message de statut quand une nouvelle notification est disponible"
+  },
+  "goToGather": {
+    "message": "Aller à Gather.town",
+    "description": "Texte du bouton pour aller à Gather.town"
+  },
+  "notificationSettings": {
+    "message": "Paramètres de notification",
+    "description": "Titre de section pour les paramètres de notification"
+  },
+  "enableWaveNotifications": {
+    "message": "Activer les notifications de salut",
+    "description": "Étiquette de case à cocher pour les notifications de salut"
+  },
+  "enableChatNotifications": {
+    "message": "Activer les notifications de chat",
+    "description": "Étiquette de case à cocher pour les notifications de chat"
+  },
+  "enableCallNotifications": {
+    "message": "Activer les notifications d'appel",
+    "description": "Étiquette de case à cocher pour les notifications d'appel"
+  },
+  "endConcentrationMode": {
+    "message": "Terminer le mode concentration",
+    "description": "Texte du bouton pour terminer le mode concentration"
+  },
+  "gatherTabNotFound": {
+    "message": "Onglet Gather.town non trouvé",
+    "description": "Message d'alerte quand l'onglet gather.town n'est pas trouvé"
+  },
+  "errorOccurred": {
+    "message": "Une erreur s'est produite",
+    "description": "Message d'erreur générique"
+  }
+}
