@@ -85,6 +85,13 @@
       bottom: 10px;
       right: 10px;
       font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .language-label {
+      font-size: 14px;
+      line-height: 1;
     }
     .language-selector select {
       border: 1px solid #ccc;
@@ -132,6 +139,7 @@
   <button id="concentrationBtn" class="concentration-btn" style="display: none;"></button>
   
   <div class="language-selector">
+    <span class="language-label">🌐</span>
     <select id="languageSelect">
       <option value="auto" data-i18n="languageAuto">Auto</option>
       <option value="en">English</option>
