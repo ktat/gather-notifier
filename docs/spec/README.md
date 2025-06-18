@@ -36,9 +36,8 @@ Offscreen Document方式の音声システム、Web Audio API使用法
 
 ## 変更履歴
 
-### v1.5 - Gather.town自動タブ作成機能（現在のバージョン）
-- **タブ自動作成**: 「Gather.townに移動」ボタンクリック時にGather.townタブが見つからない場合、新しいタブでhttps://app.gather.townを自動的に開く
-- **応答不可モード改善**: 応答不可モード開始/終了時にもGather.townタブが見つからない場合は自動的に新しいタブを作成
+### v1.5 - Gather.town自動タブ作成機能（実装完了）
+- **タブ自動作成実装**: 「Gather.townに移動」ボタンクリック時にGather.townタブが見つからない場合、新しいタブでhttps://app.gather.townを自動的に開くように実装
 - **エラー削減**: 「Gather.townのタブが見つかりません」アラートを削除し、より直感的な動作に変更
 - **MAIN/ISOLATED World統合**: content_main.jsでより確実なコンソール監視を実装
 

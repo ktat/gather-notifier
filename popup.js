@@ -98,7 +98,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         // ポップアップを閉じる
         window.close();
       } else {
-        alert(chrome.i18n.getMessage('gatherTabNotFound'));
+        // gather.townタブが見つからない場合、新しいタブで開く
+        const newTab = await chrome.tabs.create({
+          url: 'https://app.gather.town/',
+          active: true
+        });
+        
+        // ポップアップを閉じる
+        window.close();
       }
     } catch (error) {
       console.error('Error focusing gather.town tab:', error);
