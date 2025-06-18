@@ -17,4 +17,4 @@ If I say "update docs", do the following.
 
 Read "docs/.current-docs-sha" and get commit sha hash.
 Check difference from it to latest, update document under docs and README\*.md.
-After finishing document update, commit your changes and update "docs/.current-docs-sha" with latest commit sha hash.
+After finishing document update, commit your changes and update "docs/.current-docs-sha" with latest commit sha hash and then commit "docs/.current-docs-sha" at last.
