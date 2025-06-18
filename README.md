@@ -1,72 +1,84 @@
 # Gather.town Notification Notifier
 
-※ このコードは、Claude Code によって書かれました。
+*This code was written by Claude Code.*
 
-gather.townでwave、chat、callの通知を受信したときにデスクトップ通知を表示するChrome拡張機能です。
+A Chrome extension that displays desktop notifications when you receive wave, chat, or call notifications in gather.town.
 
-## 特徴
+## Features
 
-- **高度な通知検出**: MAIN worldとISOLATED worldの両方を使用した確実なログ監視
-- **音声通知**: 通知タイプに応じた音響フィードバック
-- **応答不可モード**: 集中したい時の通知一時停止機能
-- **自動タブ管理**: Gather.townタブの自動作成と管理
-- **設定可能**: 通知タイプ別の有効/無効設定
-- **多言語対応**: 日本語、英語、ドイツ語、フランス語に対応（ブラウザ言語設定に基づく自動選択）
+- **Advanced Notification Detection**: Reliable log monitoring using both MAIN world and ISOLATED world
+- **Audio Notifications**: Acoustic feedback based on notification type
+- **Do Not Disturb Mode**: Temporary notification pause functionality for focused work
+- **Automatic Tab Management**: Automatic creation and management of Gather.town tabs
+- **Configurable**: Enable/disable settings for each notification type
+- **Multi-language Support**: Supports Japanese, English, German, and French (automatically selected based on browser language settings)
 
-## 機能
+## Functionality
 
-1. **通知検出**: gather.townのコンソールログを監視してwave、chat、call通知を検出
-2. **デスクトップ通知**: 通知が検出されたときにデスクトップ通知を表示
-3. **バッジ表示**: 拡張機能アイコンにバッジで通知状態を表示
-4. **タブ管理**: アイコンクリックで通知をクリアしてgather.townタブをアクティブ化
-5. **自動クリア**: gather.townタブがアクティブになると自動的に通知をクリア
-6. **音声通知**: 通知中に音楽をループ再生（通知クリア時に停止）
-7. **集中モード**: 一定時間通知を無効化する応答不可モード機能
-8. **設定管理**: 通知種別の個別有効/無効切り替え
-9. **自動タブ作成**: Gather.townタブが見つからない場合の自動タブ作成
-10. **国際化対応**: ブラウザの言語設定に基づいて自動的に適切な言語でメッセージを表示
+1. **Notification Detection**: Monitors gather.town console logs to detect wave, chat, and call notifications
+2. **Desktop Notifications**: Displays desktop notifications when notifications are detected
+3. **Badge Display**: Shows notification status with badges on the extension icon
+4. **Tab Management**: Clear notifications and activate gather.town tab by clicking the icon
+5. **Auto Clear**: Automatically clear notifications when gather.town tab becomes active
+6. **Audio Notifications**: Loop audio playback during notifications (stops when notifications are cleared)
+7. **Focus Mode**: Do not disturb mode functionality that disables notifications for a certain period
+8. **Settings Management**: Individual enable/disable toggle for each notification type
+9. **Auto Tab Creation**: Automatic tab creation when gather.town tab is not found
+10. **Internationalization**: Automatically displays messages in appropriate language based on browser language settings
 
-## インストール方法
+## Installation
 
-1. Chromeで `chrome://extensions/` を開く
-2. 「デベロッパーモード」を有効にする
-3. 「パッケージ化されていない拡張機能を読み込む」をクリック
-4. このフォルダを選択
+1. Open `chrome://extensions/` in Chrome
+2. Enable "Developer mode"
+3. Click "Load unpacked extension"
+4. Select this folder
 
-## 使用方法
+## Usage
 
-1. 拡張機能をインストールしてGather.townページを開く
-2. Wave、Chat、Call通知が自動的に検出されてデスクトップ通知が表示される
-3. 拡張機能アイコンをクリックしてポップアップから設定を変更
-4. 応答不可モードで一時的に通知を無効化
-5. 「Gather.townに移動」ボタンでタブを自動作成・切り替え
+1. Install the extension and open a Gather.town page
+2. Wave, Chat, and Call notifications are automatically detected and desktop notifications are displayed
+3. Click the extension icon to change settings from the popup
+4. Use do not disturb mode to temporarily disable notifications
+5. Use the "Go to Gather.town" button to automatically create/switch tabs
 
-## アイコンの作成
+## Creating Icons
 
-`create-icons.html` をブラウザで開いて各サイズのアイコンをダウンロードしてください。
+Open `create-icons.html` in your browser to download icons of each size.
 
-## ファイル構成
+## File Structure
 
-### 主要ファイル
-- `manifest.json` - 拡張機能の設定とパーミッション定義
-- `background.js` - バックグラウンドスクリプト（通知処理・状態管理）
-- `content.js` - ISOLATED worldコンテンツスクリプト（イベント受信）
-- `content_main.js` - MAIN worldコンテンツスクリプト（コンソールログ監視）
-- `popup.html` - ポップアップUI
-- `popup.js` - ポップアップの動作とイベント処理
-- `offscreen.html` - オフスクリーンドキュメント（音声再生用）
-- `offscreen.js` - Web Audio APIによる音声再生処理
+### Main Files
+- `manifest.json` - Extension configuration and permission definitions
+- `background.js` - Background script (notification processing and state management)
+- `content.js` - ISOLATED world content script (event reception)
+- `content_main.js` - MAIN world content script (console log monitoring)
+- `popup.html` - Popup UI
+- `popup.js` - Popup behavior and event processing
+- `offscreen.html` - Offscreen document (for audio playback)
+- `offscreen.js` - Audio playback processing using Web Audio API
 
-### アセットファイル
-- `icon*.png` - 拡張機能のアイコン（16px, 32px, 48px, 128px）
-- `create-icons.html` - アイコン作成用HTMLファイル
+### Asset Files
+- `icon*.png` - Extension icons (16px, 32px, 48px, 128px)
+- `create-icons.html` - HTML file for icon creation
 
-### 国際化ファイル
-- `_locales/en/messages.json` - 英語リソース
-- `_locales/ja/messages.json` - 日本語リソース
-- `_locales/de/messages.json` - ドイツ語リソース
-- `_locales/fr/messages.json` - フランス語リソース
+### Internationalization Files
+- `_locales/en/messages.json` - English resources
+- `_locales/ja/messages.json` - Japanese resources
+- `_locales/de/messages.json` - German resources
+- `_locales/fr/messages.json` - French resources
 
-### ドキュメント
-- `docs/spec/` - 技術仕様書とアーキテクチャドキュメント
-- `CLAUDE.md` - 開発ワークフロー指示書
+### Documentation
+- `docs/spec/` - Technical specifications and architecture documents
+- `CLAUDE.md` - Development workflow instructions
+- `README-ja.md` - Japanese version of this README
+
+## Supported Languages
+
+The extension automatically detects your browser's language setting and displays messages in the appropriate language:
+
+- **English (en)** - Default language
+- **Japanese (ja)** - 日本語
+- **German (de)** - Deutsch
+- **French (fr)** - Français
+
+If your browser language is not supported, the extension will fall back to English.
