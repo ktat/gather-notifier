@@ -21,13 +21,14 @@ A Chrome extension that displays desktop notifications when you receive wave, ch
 2. **Desktop Notifications**: Displays desktop notifications when notifications are detected
 3. **Badge Display**: Shows notification status with badges on the extension icon
 4. **Tab Management**: Clear notifications and activate gather.town tab by clicking the icon
-5. **Auto Clear**: Automatically clear notifications when gather.town tab becomes active
-6. **Audio Notifications**: Loop audio playback during notifications (stops when notifications are cleared)
-7. **Focus Mode**: Do not disturb mode functionality that disables notifications for a certain period
-8. **Settings Management**: Individual enable/disable toggle for each notification type
-9. **Auto Tab Creation**: Automatic tab creation when gather.town tab is not found
-10. **Language Selection**: Manual language selection dropdown in popup (Auto/English/Japanese/German/French)
-11. **Internationalization**: Automatically displays messages in appropriate language based on browser language settings or manual selection
+5. **Notification Click**: Click desktop notifications to automatically activate gather.town tab
+6. **Auto Clear**: Automatically clear notifications when gather.town tab becomes active
+7. **Audio Notifications**: Loop audio playback during notifications (stops when notifications are cleared)
+8. **Focus Mode**: Do not disturb mode functionality that disables notifications for a certain period
+9. **Settings Management**: Individual enable/disable toggle for each notification type
+10. **Auto Tab Creation**: Automatic tab creation when gather.town tab is not found
+11. **Language Selection**: Manual language selection dropdown in popup (Auto/English/Japanese/German/French)
+12. **Internationalization**: Automatically displays messages in appropriate language based on browser language settings or manual selection
 
 ## Installation
 
@@ -86,3 +87,7 @@ The extension automatically detects your browser's language setting and displays
 - **French (fr)** - Français
 
 If your browser language is not supported, the extension will fall back to English.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
