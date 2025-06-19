@@ -80,6 +80,12 @@ Open `create-icons.html` in your browser to download icons of each size.
 - `CLAUDE.md` - Development workflow instructions
 - `README-ja.md` - Japanese version of this README
 
+## Recent Updates
+
+### Version 1.4 - Debug Mode Enhancement
+- **Optimized monitoring logs**: The `[WAVE-NOTIFIER-CONTENT] Monitoring active at` message now only appears when debug mode is enabled
+- **Improved log quality**: Reduced unnecessary log output during normal usage, showing detailed logs only during debugging
+
 ## Supported Languages
 
 The extension automatically detects your browser's language setting and displays messages in the appropriate language:
