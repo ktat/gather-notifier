@@ -179,9 +179,13 @@ function checkResponseButton() {
 // 5秒ごとに応答可能にするボタンの状態をチェック
 setInterval(checkResponseButton, 5000);
 
-// デバッグ用: テストログを定期的に出力
+// デバッグ用: テストログを定期的に出力（デバッグモード時のみ）
 setInterval(() => {
-  console.log('[WAVE-NOTIFIER-CONTENT] Monitoring active at', new Date().toLocaleTimeString());
+  chrome.storage.local.get(['debugMode'], (result) => {
+    if (result.debugMode) {
+      console.log('[WAVE-NOTIFIER-CONTENT] Monitoring active at', new Date().toLocaleTimeString());
+    }
+  });
 }, 30000); // 30秒ごと
 
 // デバッグ用: 手動テスト関数をウィンドウに追加
