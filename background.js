@@ -35,7 +35,12 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 
 // wave検出時の処理
 function handleWaveDetection(message, notificationType = 'wave') {
-  console.log('Notification detected from console:', message, 'Type:', notificationType);
+  // デバッグモード時のみログ出力
+  chrome.storage.local.get(['debugMode'], (result) => {
+    if (result.debugMode) {
+      console.log('[DEBUG] Notification detected from console:', message, 'Type:', notificationType);
+    }
+  });
   
   // 設定を確認して通知が有効かチェック
   chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'isConcentrationMode', 'debugMode'], (result) => {
@@ -58,7 +63,6 @@ function handleWaveDetection(message, notificationType = 'wave') {
       if (debugMode) {
         console.log('[DEBUG] Concentration mode active, skipping notification');
       }
-      console.log('Concentration mode active, skipping notification');
       return;
     }
     
@@ -80,7 +84,6 @@ function handleWaveDetection(message, notificationType = 'wave') {
       if (debugMode) {
         console.log(`[DEBUG] ${notificationType} notifications are disabled`);
       }
-      console.log(`${notificationType} notifications are disabled`);
       return;
     }
     
@@ -252,7 +255,12 @@ function checkConcentrationModeStatus() {
     
     // 応答不可モードが終了した場合（true -> false）
     if (previousConcentrationMode && !currentConcentrationMode) {
-      console.log('[BACKGROUND] Concentration mode ended, sending message to gather tabs');
+      // デバッグモード時のみログ出力
+      chrome.storage.local.get(['debugMode'], (result) => {
+        if (result.debugMode) {
+          console.log('[DEBUG] [BACKGROUND] Concentration mode ended, sending message to gather tabs');
+        }
+      });
       
       // 全てのgather.townタブに「応答可能にする」ボタンクリック指示を送信
       chrome.tabs.query({}, (tabs) => {
@@ -261,7 +269,12 @@ function checkConcentrationModeStatus() {
             chrome.tabs.sendMessage(tab.id, {
               action: 'clickResponseButton'
             }).catch(error => {
-              console.log('[BACKGROUND] Failed to send message to tab', tab.id, ':', error.message);
+              // デバッグモード時のみログ出力
+              chrome.storage.local.get(['debugMode'], (result) => {
+                if (result.debugMode) {
+                  console.log('[DEBUG] [BACKGROUND] Failed to send message to tab', tab.id, ':', error.message);
+                }
+              });
             });
           }
         });

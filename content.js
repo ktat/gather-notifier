@@ -106,7 +106,13 @@ window.addEventListener('waveDetectedMain', function(event) {
       console.log('[WAVE-NOTIFIER-ISOLATED] [DEBUG] Wave event received from main world:', event.detail);
     }
   });
-  console.log('[WAVE-NOTIFIER-ISOLATED] Wave event received from main world:', event.detail);
+  
+  // デバッグモード時のみログ出力
+  chrome.storage.local.get(['debugMode'], (result) => {
+    if (result.debugMode) {
+      console.log('[DEBUG] [WAVE-NOTIFIER-ISOLATED] Wave event received from main world:', event.detail);
+    }
+  });
   
   // バックグラウンドスクリプトに通知を送信
   chrome.runtime.sendMessage({
@@ -126,7 +132,13 @@ window.addEventListener('waveDetected', function(event) {
       console.log('[WAVE-NOTIFIER-ISOLATED] [DEBUG] Wave event received (legacy):', event.detail);
     }
   });
-  console.log('[WAVE-NOTIFIER-ISOLATED] Wave event received (legacy):', event.detail);
+  
+  // デバッグモード時のみログ出力
+  chrome.storage.local.get(['debugMode'], (result) => {
+    if (result.debugMode) {
+      console.log('[DEBUG] [WAVE-NOTIFIER-ISOLATED] Wave event received (legacy):', event.detail);
+    }
+  });
   
   // バックグラウンドスクリプトに通知を送信
   chrome.runtime.sendMessage({
@@ -141,7 +153,12 @@ window.addEventListener('waveDetected', function(event) {
 // 注入後にスクリプト要素を削除
 script.remove();
 
-console.log('Gather.town Wave Notifier: Content script initialized');
+// デバッグモード時のみログ出力
+chrome.storage.local.get(['debugMode'], (result) => {
+  if (result.debugMode) {
+    console.log('[DEBUG] Gather.town Wave Notifier: Content script initialized');
+  }
+});
 
 // デバッグモードの状態変更を監視
 chrome.storage.onChanged.addListener((changes, namespace) => {
@@ -164,7 +181,12 @@ function checkResponseButton() {
     
     // 状態が変わった場合のみ更新
     if (currentConcentrationMode !== shouldBeInConcentrationMode) {
-      console.log('[WAVE-NOTIFIER] Auto-toggling concentration mode:', shouldBeInConcentrationMode);
+      // デバッグモード時のみログ出力
+      chrome.storage.local.get(['debugMode'], (result) => {
+        if (result.debugMode) {
+          console.log('[DEBUG] [WAVE-NOTIFIER] Auto-toggling concentration mode:', shouldBeInConcentrationMode);
+        }
+      });
       chrome.storage.local.set({ isConcentrationMode: shouldBeInConcentrationMode });
       chrome.runtime.sendMessage({ 
         action: 'toggleConcentrationMode', 
@@ -237,7 +259,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       buttons.forEach((button) => {
         if (button.innerHTML.trim() === "応答可能にする" || button.textContent.trim() === "応答可能にする") {
           button.click();
-          console.log('[WAVE-NOTIFIER] Successfully clicked 応答可能にする button');
+          // デバッグモード時のみログ出力
+          chrome.storage.local.get(['debugMode'], (result) => {
+            if (result.debugMode) {
+              console.log('[DEBUG] [WAVE-NOTIFIER] Successfully clicked 応答可能にする button');
+            }
+          });
           buttonFound = true;
         }
       });
