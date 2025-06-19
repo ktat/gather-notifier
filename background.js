@@ -176,6 +176,38 @@ async function stopNotificationSound() {
   }
 }
 
+// 通知クリック時の処理
+chrome.notifications.onClicked.addListener(async (notificationId) => {
+  try {
+    // gather.townタブを探して活性化
+    const tabs = await chrome.tabs.query({});
+    const gatherTab = tabs.find(tab => 
+      tab.url && (tab.url.includes('gather.town') || tab.url.includes('app.gather.town'))
+    );
+    
+    if (gatherTab) {
+      // 既存のgather.townタブをアクティブにする
+      await chrome.tabs.update(gatherTab.id, { active: true });
+      await chrome.windows.update(gatherTab.windowId, { focused: true });
+    } else {
+      // gather.townタブが見つからない場合、新しいタブで開く
+      await chrome.tabs.create({
+        url: 'https://app.gather.town/',
+        active: true
+      });
+    }
+    
+    // 通知をクリア
+    chrome.notifications.clear(notificationId);
+    hasNotification = false;
+    updateBadge();
+    stopNotificationSound();
+    chrome.storage.local.set({ hasNotification: false });
+  } catch (error) {
+    console.error('Error handling notification click:', error);
+  }
+});
+
 // ポップアップとcontent scriptからのメッセージを処理
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'stopSound') {

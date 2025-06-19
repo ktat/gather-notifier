@@ -30,6 +30,7 @@ gather.townでのwave、chat、call通知を検出してデスクトップ通知
 
 ### 通知クリアフロー
 - 拡張機能ボタンクリック → 設定メニュー表示・通知クリア・gather.townタブ移動/作成
+- **デスクトップ通知クリック → background.js検出 → gather.townタブ活性化・通知クリア・音声停止**
 - gather.townページ内クリック → content.js検出 → background.js通知クリア
 - gather.townタブアクティブ化 → background.js検出 → 通知クリア・音声停止
 
