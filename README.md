@@ -84,7 +84,9 @@ Open `create-icons.html` in your browser to download icons of each size.
 
 ### Version 1.4 - Debug Mode Enhancement
 - **Optimized monitoring logs**: The `[WAVE-NOTIFIER-CONTENT] Monitoring active at` message now only appears when debug mode is enabled
-- **Improved log quality**: Reduced unnecessary log output during normal usage, showing detailed logs only during debugging
+- **Comprehensive log optimization**: All `console.log` statements are now wrapped with debug mode checks
+- **Improved log quality**: Significantly reduced unnecessary log output during normal usage, showing detailed logs only during debugging
+- **Error log preservation**: `console.error` statements remain always visible to ensure important error information is preserved
 
 ## Supported Languages
 
