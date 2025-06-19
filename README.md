@@ -13,6 +13,7 @@ A Chrome extension that displays desktop notifications when you receive wave, ch
 - **Do Not Disturb Mode**: Temporary notification pause functionality for focused work
 - **Automatic Tab Management**: Automatic creation and management of Gather.town tabs
 - **Configurable**: Enable/disable settings for each notification type
+- **Debug Mode**: Optional debug logging for troubleshooting and development
 - **Multi-language Support**: Supports Japanese, English, German, and French (automatically selected based on browser language settings)
 
 ## Functionality
@@ -28,7 +29,8 @@ A Chrome extension that displays desktop notifications when you receive wave, ch
 9. **Settings Management**: Individual enable/disable toggle for each notification type
 10. **Auto Tab Creation**: Automatic tab creation when gather.town tab is not found
 11. **Language Selection**: Manual language selection dropdown in popup (Auto/English/Japanese/German/French)
-12. **Internationalization**: Automatically displays messages in appropriate language based on browser language settings or manual selection
+12. **Debug Mode**: Debug logging toggle for troubleshooting (enabled via checkbox in bottom left of popup)
+13. **Internationalization**: Automatically displays messages in appropriate language based on browser language settings or manual selection
 
 ## Installation
 
@@ -45,6 +47,7 @@ A Chrome extension that displays desktop notifications when you receive wave, ch
 4. Use do not disturb mode to temporarily disable notifications
 5. Use the "Go to Gather.town" button to automatically create/switch tabs
 6. Select your preferred language from the dropdown (marked with 🌐) at the bottom right of the popup
+7. Enable debug mode using the checkbox in the bottom left of the popup for detailed logging
 
 ## Creating Icons
 
