@@ -104,6 +104,25 @@
     .language-selector select:hover {
       border-color: #007cba;
     }
+    .debug-mode {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .debug-mode input[type="checkbox"] {
+      margin: 0;
+    }
+    .debug-mode label {
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
   </style>
 </head>
 <body>
@@ -137,6 +156,13 @@
   </div>
   
   <button id="concentrationBtn" class="concentration-btn" style="display: none;"></button>
+  
+  <div class="debug-mode">
+    <label>
+      <input type="checkbox" id="debugMode">
+      <span>Debug</span>
+    </label>
+  </div>
   
   <div class="language-selector">
     <span class="language-label">🌐</span>

@@ -43,8 +43,10 @@ script.textContent = `
         return;
       }
       
-      // デバッグ: すべてのログメッセージを表示
-      originalMethods.log(PREFIX + ' Intercepted ' + type + ':', message.substring(0, 200));
+      // デバッグ: すべてのログメッセージを表示（デバッグモード制御は外側で行う）
+      if (window.debugModeEnabled) {
+        originalMethods.log(PREFIX + ' [DEBUG] Intercepted ' + type + ':', message.substring(0, 200));
+      }
       
       // wave関連のメッセージを検出
       if (message.includes('Alerting Wave event') || message.includes('Skipping ChatV2 notification')) {
@@ -89,11 +91,21 @@ script.textContent = `
 })();
 `;
 
+// デバッグモードの状態を設定
+chrome.storage.local.get(['debugMode'], (result) => {
+  window.debugModeEnabled = result.debugMode || false;
+});
+
 // スクリプトをページのheadに注入
 (document.head || document.documentElement).appendChild(script);
 
 // カスタムイベントをリッスン（MAIN worldからのイベント）
 window.addEventListener('waveDetectedMain', function(event) {
+  chrome.storage.local.get(['debugMode'], (result) => {
+    if (result.debugMode) {
+      console.log('[WAVE-NOTIFIER-ISOLATED] [DEBUG] Wave event received from main world:', event.detail);
+    }
+  });
   console.log('[WAVE-NOTIFIER-ISOLATED] Wave event received from main world:', event.detail);
   
   // バックグラウンドスクリプトに通知を送信
@@ -109,6 +121,11 @@ window.addEventListener('waveDetectedMain', function(event) {
 
 // 従来のカスタムイベントもリッスン
 window.addEventListener('waveDetected', function(event) {
+  chrome.storage.local.get(['debugMode'], (result) => {
+    if (result.debugMode) {
+      console.log('[WAVE-NOTIFIER-ISOLATED] [DEBUG] Wave event received (legacy):', event.detail);
+    }
+  });
   console.log('[WAVE-NOTIFIER-ISOLATED] Wave event received (legacy):', event.detail);
   
   // バックグラウンドスクリプトに通知を送信
@@ -125,6 +142,14 @@ window.addEventListener('waveDetected', function(event) {
 script.remove();
 
 console.log('Gather.town Wave Notifier: Content script initialized');
+
+// デバッグモードの状態変更を監視
+chrome.storage.onChanged.addListener((changes, namespace) => {
+  if (namespace === 'local' && changes.debugMode) {
+    window.debugModeEnabled = changes.debugMode.newValue || false;
+    console.log('[WAVE-NOTIFIER-CONTENT] Debug mode changed to:', window.debugModeEnabled);
+  }
+});
 
 // 応答可能にするボタンの状態を監視して自動的に応答不可モードを制御
 function checkResponseButton() {

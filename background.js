@@ -38,12 +38,26 @@ function handleWaveDetection(message, notificationType = 'wave') {
   console.log('Notification detected from console:', message, 'Type:', notificationType);
   
   // 設定を確認して通知が有効かチェック
-  chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'isConcentrationMode'], (result) => {
+  chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'isConcentrationMode', 'debugMode'], (result) => {
+    const debugMode = result.debugMode || false;
+    
+    if (debugMode) {
+      console.log('[DEBUG] handleWaveDetection called with:', {
+        message: message,
+        notificationType: notificationType,
+        settings: result,
+        hasNotification: hasNotification,
+        gatherTabs: Array.from(gatherTabs)
+      });
+    }
     const isConcentrationMode = result.isConcentrationMode || false;
     let isNotificationEnabled = false;
     
     // 応答不可モード中は通知しない
     if (isConcentrationMode) {
+      if (debugMode) {
+        console.log('[DEBUG] Concentration mode active, skipping notification');
+      }
       console.log('Concentration mode active, skipping notification');
       return;
     }
@@ -63,8 +77,15 @@ function handleWaveDetection(message, notificationType = 'wave') {
     }
     
     if (!isNotificationEnabled) {
+      if (debugMode) {
+        console.log(`[DEBUG] ${notificationType} notifications are disabled`);
+      }
       console.log(`${notificationType} notifications are disabled`);
       return;
+    }
+    
+    if (debugMode) {
+      console.log(`[DEBUG] Creating notification for ${notificationType}`);
     }
     
     // 通知タイプに応じたタイトルとメッセージ
@@ -263,7 +284,8 @@ chrome.runtime.onInstalled.addListener(() => {
     enableWave: true,
     enableChat: true,
     enableCall: true,
-    isConcentrationMode: false
+    isConcentrationMode: false,
+    debugMode: false
   });
   
   // 初期状態を設定

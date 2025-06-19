@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const enableChatCheckbox = document.getElementById('enableChat');
   const enableCallCheckbox = document.getElementById('enableCall');
   const languageSelect = document.getElementById('languageSelect');
+  const debugModeCheckbox = document.getElementById('debugMode');
   
   // ポップアップが開かれた時に自動的に通知をクリア
   // (improvement/done/1.md の要求に従い、ただしimprovement/5.mdで自動移動は削除)
@@ -98,11 +99,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // 設定を読み込み
   async function loadSettings() {
-    const result = await chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'isConcentrationMode', 'language']);
+    const result = await chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'isConcentrationMode', 'language', 'debugMode']);
     
     enableWaveCheckbox.checked = result.enableWave !== false; // デフォルトtrue
     enableChatCheckbox.checked = result.enableChat !== false; // デフォルトtrue
     enableCallCheckbox.checked = result.enableCall !== false; // デフォルトtrue
+    debugModeCheckbox.checked = result.debugMode || false; // デフォルトfalse
     
     // 言語設定を読み込み
     languageSelect.value = result.language || 'auto'; // デフォルトは自動
@@ -167,6 +169,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   enableCallCheckbox.addEventListener('change', () => {
     chrome.storage.local.set({ enableCall: enableCallCheckbox.checked });
+  });
+  
+  debugModeCheckbox.addEventListener('change', () => {
+    chrome.storage.local.set({ debugMode: debugModeCheckbox.checked });
   });
   
   languageSelect.addEventListener('change', async () => {
