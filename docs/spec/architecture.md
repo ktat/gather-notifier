@@ -45,8 +45,114 @@ gather.townでのwave、chat、call通知を検出してデスクトップ通知
 3. 設定保存 → chrome.storage.local → 次回起動時に復元
 
 ## 通信フロー
+
+```mermaid
+flowchart LR
+    A[Page Console] --> B[content_main.js]
+    B --> C[CustomEvent]
+    C --> D[content.js]
+    D --> E[chrome.runtime.sendMessage]
+    E --> F[background.js]
+    F --> G[offscreen.js<br/>音声]
 ```
-Page Console → content_main.js → CustomEvent → content.js → chrome.runtime.sendMessage → background.js
-                                                                                       ↓
-                                                                            offscreen.js (音声)
+
+## ポップアップ-バックグラウンド間通信
+
+### メッセージタイプ定義
+
+```javascript
+// ポップアップ → バックグラウンド
+{
+  action: 'toggleConcentrationMode',
+  isConcentrationMode: boolean
+}
+
+{
+  action: 'stopSound'
+}
+
+// コンテンツスクリプト → バックグラウンド  
+{
+  action: 'waveDetected',
+  message: string,
+  notificationType: 'wave'|'chat'|'call'
+}
+
+{
+  action: 'clearNotificationOnClick'
+}
+
+// バックグラウンド → コンテンツスクリプト
+{
+  action: 'clickResponseButton'
+}
+
+{
+  action: 'startConcentrationMode'
+}
+
+// バックグラウンド → オフスクリーン
+{
+  action: 'playSound',
+  notificationType: 'wave'|'chat'|'call'
+}
+
+{
+  action: 'stopSound'
+}
+```
+
+### 通信フロー図
+
+```mermaid
+sequenceDiagram
+    participant popup as Popup UI
+    participant bg as Background Script
+    participant content as Content Script
+    participant storage as Chrome Storage
+    participant offscreen as Offscreen Document
+
+    rect rgb(240, 248, 255)
+        Note over popup,offscreen: 設定変更フロー
+        popup->>popup: ユーザーがチェックボックス変更
+        popup->>storage: chrome.storage.local.set({enableWave: value})
+        popup->>popup: chrome.storage.onChanged リスナーが反応
+        popup->>popup: UI状態更新
+    end
+
+    rect rgb(255, 248, 240)
+        Note over popup,offscreen: 応答不可モード切り替えフロー
+        popup->>popup: concentrationBtn.click()
+        popup->>storage: chrome.storage.local.set({isConcentrationMode: newValue})
+        popup->>bg: chrome.runtime.sendMessage({action: 'toggleConcentrationMode'})
+        bg->>bg: toggleConcentrationMode() 実行
+        bg->>bg: updateBadge() でバッジ更新
+        bg->>storage: hasNotification = false (応答不可開始時)
+        bg->>offscreen: chrome.runtime.sendMessage({action: 'stopSound'})
+    end
+
+    rect rgb(248, 255, 248)
+        Note over popup,offscreen: 自動状態同期フロー
+        bg->>bg: setInterval(checkConcentrationModeStatus, 1000)
+        bg->>storage: chrome.storage.local.get(['isConcentrationMode'])
+        alt 応答不可モード終了検出 (true → false)
+            bg->>content: chrome.tabs.sendMessage({action: 'clickResponseButton'})
+            content->>content: findAndClickButton() 実行
+            content->>content: "応答可能にする"ボタンクリック
+        end
+    end
+
+    rect rgb(255, 240, 248)
+        Note over popup,offscreen: 通知検出から表示まで
+        content->>bg: chrome.runtime.sendMessage({action: 'waveDetected'})
+        bg->>storage: chrome.storage.local.get(['enableWave', 'isConcentrationMode'])
+        alt 通知が有効 && 応答不可モードでない
+            bg->>bg: chrome.notifications.create()
+            bg->>storage: hasNotification = true
+            bg->>bg: updateBadge()
+            bg->>offscreen: chrome.runtime.sendMessage({action: 'playSound'})
+        else
+            bg->>bg: 通知スキップ
+        end
+    end
 ```
