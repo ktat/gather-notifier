@@ -18,7 +18,7 @@ A Chrome extension that displays desktop notifications when you receive wave, ch
 
 ## Functionality
 
-1. **Notification Detection**: Monitors gather.town console logs to detect wave, chat, and call notifications
+1. **Notification Detection**: Monitors gather.town console logs to detect wave, chat, call, and calendar notifications
 2. **Desktop Notifications**: Displays desktop notifications when notifications are detected
 3. **Badge Display**: Shows notification status with badges on the extension icon
 4. **Tab Management**: Clear notifications and activate gather.town tab by clicking the icon
@@ -26,11 +26,12 @@ A Chrome extension that displays desktop notifications when you receive wave, ch
 6. **Auto Clear**: Automatically clear notifications when gather.town tab becomes active
 7. **Audio Notifications**: Loop audio playback during notifications (stops when notifications are cleared)
 8. **Focus Mode**: Do not disturb mode functionality that disables notifications for a certain period
-9. **Settings Management**: Individual enable/disable toggle for each notification type
-10. **Auto Tab Creation**: Automatic tab creation when gather.town tab is not found
-11. **Language Selection**: Manual language selection dropdown in popup (Auto/English/Japanese/German/French)
-12. **Debug Mode**: Debug logging toggle for troubleshooting (enabled via checkbox in bottom left of popup)
-13. **Internationalization**: Automatically displays messages in appropriate language based on browser language settings or manual selection
+9. **Settings Management**: Individual enable/disable toggle for each notification type (Wave, Chat, Call, Calendar)
+10. **Version Selection**: Choose between Gather V1 or V2 for tab creation
+11. **Auto Tab Creation**: Automatic tab creation when gather.town tab is not found (uses selected version)
+12. **Language Selection**: Manual language selection dropdown in popup (Auto/English/Japanese/German/French)
+13. **Debug Mode**: Debug logging toggle for troubleshooting (enabled via checkbox in bottom left of popup)
+14. **Internationalization**: Automatically displays messages in appropriate language based on browser language settings or manual selection
 
 ## Installation
 
@@ -89,6 +90,7 @@ Open `create-icons.html` in your browser to download icons of each size.
   - Wave notifications: `[Violation] Forced reflow while executing JavaScript took`
   - Chat/Wave notifications (ambiguous): `Tried to flush send metric for message ... but no pending metric found`
 - **Calendar notification type**: New notification type with dedicated settings toggle
+- **Version selector**: Users can now choose between V1 or V2 when creating new Gather.town tabs
 - **Improved notification accuracy**: Fixed ambiguous V2 message patterns that could be both chat and wave
 - **Backward compatibility**: Both V1 and V2 notification patterns are supported simultaneously
 
