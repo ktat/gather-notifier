@@ -55,13 +55,11 @@ script.textContent = `
         shouldNotify = true;
       }
       // V2のメッセージパターン
-      // Note: V2 wave detection uses DOM-based detection only (see MutationObserver below)
-      else if (message.includes('User calendar events updated') ||
-               (message.includes('Tried to flush send metric for message') && message.includes('but no pending metric found'))) {
-        shouldNotify = true;
-      }
+      // Note: V2 wave and calendar detection use DOM-based detection only (see MutationObserver below)
       // V2 Wave detection disabled - using DOM detection instead
       // message.includes('[Violation] Forced reflow while executing JavaScript took')
+      // V2 Calendar detection disabled - using DOM detection instead
+      // message.includes('User calendar events updated')
 
       if (shouldNotify) {
         originalMethods.log(PREFIX + ' 🌊 Wave event detected:', message);
@@ -236,15 +234,17 @@ window.testChatV2Notifier = function() {
   console.log('This should trigger a ChatV2 notification');
 };
 
-// DOM-based wave detection using MutationObserver
-// This provides more accurate wave detection by watching for DOM changes
-const wavedToYouObserver = new MutationObserver((mutations) => {
+// DOM-based wave and calendar detection using MutationObserver
+// This provides more accurate detection by watching for DOM changes
+const notificationObserver = new MutationObserver((mutations) => {
   for (const mutation of mutations) {
     if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
       mutation.addedNodes.forEach((node) => {
-        // Check if the node or its children contain "waved to you" text
+        // Check if the node or its children contain notification text
         if (node.nodeType === Node.ELEMENT_NODE) {
           const textContent = node.textContent || '';
+
+          // Wave detection
           if (textContent.includes(' waved to you')) {
             chrome.storage.local.get(['debugMode'], (result) => {
               if (result.debugMode) {
@@ -262,6 +262,25 @@ const wavedToYouObserver = new MutationObserver((mutations) => {
               console.error('Error sending DOM-based wave detection message:', error);
             });
           }
+
+          // Calendar detection - check for "in 5 minutes" text
+          if (textContent.includes('in 5 minutes')) {
+            chrome.storage.local.get(['debugMode'], (result) => {
+              if (result.debugMode) {
+                console.log('[WAVE-NOTIFIER-CONTENT] [DEBUG] DOM-based calendar detection:', textContent);
+              }
+            });
+
+            // Send calendar notification to background
+            chrome.runtime.sendMessage({
+              action: 'waveDetected',
+              message: textContent,
+              type: 'dom',
+              notificationType: 'calendar'
+            }).catch(error => {
+              console.error('Error sending DOM-based calendar detection message:', error);
+            });
+          }
         }
       });
     }
@@ -269,14 +288,14 @@ const wavedToYouObserver = new MutationObserver((mutations) => {
 });
 
 // Start observing the document body for DOM changes
-wavedToYouObserver.observe(document.body, {
+notificationObserver.observe(document.body, {
   childList: true,
   subtree: true
 });
 
 chrome.storage.local.get(['debugMode'], (result) => {
   if (result.debugMode) {
-    console.log('[WAVE-NOTIFIER-CONTENT] [DEBUG] DOM-based wave observer initialized');
+    console.log('[WAVE-NOTIFIER-CONTENT] [DEBUG] DOM-based notification observer initialized');
   }
 });
 

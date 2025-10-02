@@ -47,9 +47,6 @@
         notificationType = 'chat';
       } else if (message.includes('Alerting Ring event')) {
         notificationType = 'call';
-      } else if (message.includes('User calendar events updated')) {
-        // Gather V2: Calendar notification
-        notificationType = 'calendar';
       } else if (message.includes('[Violation] Forced reflow while executing JavaScript took')) {
         // Gather V2: Wave notification - DISABLED (use DOM detection instead)
         // notificationType = 'wave';
