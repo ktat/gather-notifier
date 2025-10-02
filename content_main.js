@@ -54,8 +54,8 @@
         // Gather V2: Wave notification
         notificationType = 'wave';
       } else if (message.includes('Tried to flush send metric for message') && message.includes('but no pending metric found')) {
-        // Gather V2: Chat notification
-        notificationType = 'chat';
+        // Gather V2: Chat or Wave notification (ambiguous - can be either)
+        notificationType = 'chat-or-wave';
       }
       
       if (notificationType) {

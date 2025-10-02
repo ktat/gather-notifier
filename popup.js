@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const enableWaveCheckbox = document.getElementById('enableWave');
   const enableChatCheckbox = document.getElementById('enableChat');
   const enableCallCheckbox = document.getElementById('enableCall');
+  const enableCalendarCheckbox = document.getElementById('enableCalendar');
   const languageSelect = document.getElementById('languageSelect');
   const debugModeCheckbox = document.getElementById('debugMode');
   
@@ -99,11 +100,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // 設定を読み込み
   async function loadSettings() {
-    const result = await chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'isConcentrationMode', 'language', 'debugMode']);
-    
+    const result = await chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'enableCalendar', 'isConcentrationMode', 'language', 'debugMode']);
+
     enableWaveCheckbox.checked = result.enableWave !== false; // デフォルトtrue
     enableChatCheckbox.checked = result.enableChat !== false; // デフォルトtrue
     enableCallCheckbox.checked = result.enableCall !== false; // デフォルトtrue
+    enableCalendarCheckbox.checked = result.enableCalendar !== false; // デフォルトtrue
     debugModeCheckbox.checked = result.debugMode || false; // デフォルトfalse
     
     // 言語設定を読み込み
@@ -162,13 +164,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   enableWaveCheckbox.addEventListener('change', () => {
     chrome.storage.local.set({ enableWave: enableWaveCheckbox.checked });
   });
-  
+
   enableChatCheckbox.addEventListener('change', () => {
     chrome.storage.local.set({ enableChat: enableChatCheckbox.checked });
   });
-  
+
   enableCallCheckbox.addEventListener('change', () => {
     chrome.storage.local.set({ enableCall: enableCallCheckbox.checked });
+  });
+
+  enableCalendarCheckbox.addEventListener('change', () => {
+    chrome.storage.local.set({ enableCalendar: enableCalendarCheckbox.checked });
   });
   
   debugModeCheckbox.addEventListener('change', () => {

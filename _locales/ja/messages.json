@@ -31,6 +31,22 @@
     "message": "誰かがgather.townであなたを呼び出しています！",
     "description": "call通知のデスクトップ通知メッセージ"
   },
+  "calendarNotificationTitle": {
+    "message": "Gather.town カレンダー!",
+    "description": "カレンダー通知のデスクトップ通知タイトル"
+  },
+  "calendarNotificationMessage": {
+    "message": "gather.townでカレンダーイベントがあります！",
+    "description": "カレンダー通知のデスクトップ通知メッセージ"
+  },
+  "chatOrWaveNotificationTitle": {
+    "message": "Gather.town ChatまたはWave!",
+    "description": "ChatまたはWave通知のデスクトップ通知タイトル（曖昧）"
+  },
+  "chatOrWaveNotificationMessage": {
+    "message": "誰かがgather.townでチャットメッセージを送信したかwaveしました！",
+    "description": "ChatまたはWave通知のデスクトップ通知メッセージ（曖昧）"
+  },
   "concentrationModeActive": {
     "message": "応答不可モード中です",
     "description": "応答不可モードがアクティブな時のステータスメッセージ"
@@ -58,6 +74,10 @@
   "enableCallNotifications": {
     "message": "Call通知を有効にする",
     "description": "call通知のチェックボックスラベル"
+  },
+  "enableCalendarNotifications": {
+    "message": "カレンダー通知を有効にする",
+    "description": "カレンダー通知のチェックボックスラベル"
   },
   "endConcentrationMode": {
     "message": "応答不可モード終了",

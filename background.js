@@ -43,9 +43,9 @@ function handleWaveDetection(message, notificationType = 'wave') {
   });
   
   // 設定を確認して通知が有効かチェック
-  chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'isConcentrationMode', 'debugMode'], (result) => {
+  chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'enableCalendar', 'isConcentrationMode', 'debugMode'], (result) => {
     const debugMode = result.debugMode || false;
-    
+
     if (debugMode) {
       console.log('[DEBUG] handleWaveDetection called with:', {
         message: message,
@@ -57,7 +57,7 @@ function handleWaveDetection(message, notificationType = 'wave') {
     }
     const isConcentrationMode = result.isConcentrationMode || false;
     let isNotificationEnabled = false;
-    
+
     // 応答不可モード中は通知しない
     if (isConcentrationMode) {
       if (debugMode) {
@@ -65,7 +65,7 @@ function handleWaveDetection(message, notificationType = 'wave') {
       }
       return;
     }
-    
+
     // 通知タイプごとの有効性をチェック
     switch(notificationType) {
       case 'chat':
@@ -73,6 +73,13 @@ function handleWaveDetection(message, notificationType = 'wave') {
         break;
       case 'call':
         isNotificationEnabled = result.enableCall !== false; // デフォルトtrue
+        break;
+      case 'calendar':
+        isNotificationEnabled = result.enableCalendar !== false; // デフォルトtrue
+        break;
+      case 'chat-or-wave':
+        // Ambiguous notification - enabled if either chat or wave is enabled
+        isNotificationEnabled = (result.enableChat !== false) || (result.enableWave !== false);
         break;
       case 'wave':
       default:
@@ -101,6 +108,14 @@ function handleWaveDetection(message, notificationType = 'wave') {
       case 'call':
         title = chrome.i18n.getMessage('callNotificationTitle');
         notificationMessage = chrome.i18n.getMessage('callNotificationMessage');
+        break;
+      case 'calendar':
+        title = chrome.i18n.getMessage('calendarNotificationTitle');
+        notificationMessage = chrome.i18n.getMessage('calendarNotificationMessage');
+        break;
+      case 'chat-or-wave':
+        title = chrome.i18n.getMessage('chatOrWaveNotificationTitle');
+        notificationMessage = chrome.i18n.getMessage('chatOrWaveNotificationMessage');
         break;
       case 'wave':
       default:
@@ -292,15 +307,16 @@ setInterval(checkConcentrationModeStatus, 1000);
 chrome.runtime.onInstalled.addListener(() => {
   hasNotification = false;
   updateBadge();
-  chrome.storage.local.set({ 
+  chrome.storage.local.set({
     hasNotification: false,
     enableWave: true,
     enableChat: true,
     enableCall: true,
+    enableCalendar: true,
     isConcentrationMode: false,
     debugMode: false
   });
-  
+
   // 初期状態を設定
   chrome.storage.local.get(['isConcentrationMode'], (result) => {
     previousConcentrationMode = result.isConcentrationMode || false;

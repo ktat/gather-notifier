@@ -31,6 +31,22 @@
     "message": "Jemand ruft dich in gather.town an!",
     "description": "Desktop-Benachrichtigungsnachricht für Anruf"
   },
+  "calendarNotificationTitle": {
+    "message": "Gather.town Kalender!",
+    "description": "Desktop-Benachrichtigungstitel für Kalender"
+  },
+  "calendarNotificationMessage": {
+    "message": "Du hast einen Kalendereintrag in gather.town!",
+    "description": "Desktop-Benachrichtigungsnachricht für Kalender"
+  },
+  "chatOrWaveNotificationTitle": {
+    "message": "Gather.town Chat oder Winken!",
+    "description": "Desktop-Benachrichtigungstitel für Chat oder Winken (mehrdeutig)"
+  },
+  "chatOrWaveNotificationMessage": {
+    "message": "Jemand hat dir eine Chat-Nachricht gesendet oder dir zugewinkt in gather.town!",
+    "description": "Desktop-Benachrichtigungsnachricht für Chat oder Winken (mehrdeutig)"
+  },
   "concentrationModeActive": {
     "message": "Konzentrationsmodus ist aktiv",
     "description": "Statusnachricht wenn Konzentrationsmodus aktiv ist"
@@ -58,6 +74,10 @@
   "enableCallNotifications": {
     "message": "Anruf-Benachrichtigungen aktivieren",
     "description": "Kontrollkästchen-Label für Anruf-Benachrichtigungen"
+  },
+  "enableCalendarNotifications": {
+    "message": "Kalender-Benachrichtigungen aktivieren",
+    "description": "Kontrollkästchen-Label für Kalender-Benachrichtigungen"
   },
   "endConcentrationMode": {
     "message": "Konzentrationsmodus beenden",

@@ -31,6 +31,22 @@
     "message": "Quelqu'un vous appelle dans gather.town!",
     "description": "Message de notification de bureau pour appel"
   },
+  "calendarNotificationTitle": {
+    "message": "Gather.town Calendrier!",
+    "description": "Titre de notification de bureau pour calendrier"
+  },
+  "calendarNotificationMessage": {
+    "message": "Vous avez un événement de calendrier dans gather.town!",
+    "description": "Message de notification de bureau pour calendrier"
+  },
+  "chatOrWaveNotificationTitle": {
+    "message": "Gather.town Chat ou Salut!",
+    "description": "Titre de notification de bureau pour chat ou salut (ambigu)"
+  },
+  "chatOrWaveNotificationMessage": {
+    "message": "Quelqu'un vous a envoyé un message de chat ou vous a fait signe dans gather.town!",
+    "description": "Message de notification de bureau pour chat ou salut (ambigu)"
+  },
   "concentrationModeActive": {
     "message": "Mode concentration actif",
     "description": "Message de statut quand le mode concentration est actif"
@@ -58,6 +74,10 @@
   "enableCallNotifications": {
     "message": "Activer les notifications d'appel",
     "description": "Étiquette de case à cocher pour les notifications d'appel"
+  },
+  "enableCalendarNotifications": {
+    "message": "Activer les notifications de calendrier",
+    "description": "Étiquette de case à cocher pour les notifications de calendrier"
   },
   "endConcentrationMode": {
     "message": "Terminer le mode concentration",
