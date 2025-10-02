@@ -313,6 +313,7 @@ chrome.runtime.onInstalled.addListener(() => {
     enableChat: true,
     enableCall: true,
     enableCalendar: true,
+    gatherVersion: 'v1',
     isConcentrationMode: false,
     debugMode: false
   });

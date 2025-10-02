@@ -4,11 +4,11 @@ let languageCache = {};
 // Initialize i18n
 async function initializeI18n(selectedLanguage = null) {
   const elements = document.querySelectorAll('[data-i18n]');
-  
+
   for (let element of elements) {
     const messageKey = element.getAttribute('data-i18n');
     let message;
-    
+
     if (selectedLanguage && selectedLanguage !== 'auto') {
       // カスタム言語が選択されている場合、該当する言語リソースを使用
       message = await getCustomMessage(messageKey, selectedLanguage);
@@ -16,7 +16,24 @@ async function initializeI18n(selectedLanguage = null) {
       // 自動またはデフォルトの場合はChrome標準のi18nを使用
       message = chrome.i18n.getMessage(messageKey);
     }
-    
+
+    if (message) {
+      element.textContent = message;
+    }
+  }
+
+  // Initialize i18n for option elements
+  const optionElements = document.querySelectorAll('[data-i18n-option]');
+  for (let element of optionElements) {
+    const messageKey = element.getAttribute('data-i18n-option');
+    let message;
+
+    if (selectedLanguage && selectedLanguage !== 'auto') {
+      message = await getCustomMessage(messageKey, selectedLanguage);
+    } else {
+      message = chrome.i18n.getMessage(messageKey);
+    }
+
     if (message) {
       element.textContent = message;
     }
@@ -51,6 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const enableChatCheckbox = document.getElementById('enableChat');
   const enableCallCheckbox = document.getElementById('enableCall');
   const enableCalendarCheckbox = document.getElementById('enableCalendar');
+  const gatherVersionSelect = document.getElementById('gatherVersionSelect');
   const languageSelect = document.getElementById('languageSelect');
   const debugModeCheckbox = document.getElementById('debugMode');
   
@@ -100,14 +118,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // 設定を読み込み
   async function loadSettings() {
-    const result = await chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'enableCalendar', 'isConcentrationMode', 'language', 'debugMode']);
+    const result = await chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'enableCalendar', 'gatherVersion', 'isConcentrationMode', 'language', 'debugMode']);
 
     enableWaveCheckbox.checked = result.enableWave !== false; // デフォルトtrue
     enableChatCheckbox.checked = result.enableChat !== false; // デフォルトtrue
     enableCallCheckbox.checked = result.enableCall !== false; // デフォルトtrue
     enableCalendarCheckbox.checked = result.enableCalendar !== false; // デフォルトtrue
     debugModeCheckbox.checked = result.debugMode || false; // デフォルトfalse
-    
+
+    // Gather version設定を読み込み
+    gatherVersionSelect.value = result.gatherVersion || 'v1'; // デフォルトはv1
+
     // 言語設定を読み込み
     languageSelect.value = result.language || 'auto'; // デフォルトは自動
     
@@ -134,23 +155,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   goToGatherBtn.addEventListener('click', async () => {
     try {
       const tabs = await chrome.tabs.query({});
-      const gatherTab = tabs.find(tab => 
+      const gatherTab = tabs.find(tab =>
         tab.url && (tab.url.includes('gather.town') || tab.url.includes('app.gather.town'))
       );
-      
+
       if (gatherTab) {
         await chrome.tabs.update(gatherTab.id, { active: true });
         await chrome.windows.update(gatherTab.windowId, { focused: true });
-        
+
         // ポップアップを閉じる
         window.close();
       } else {
         // gather.townタブが見つからない場合、新しいタブで開く
+        // バージョン設定に基づいてURLを決定
+        const result = await chrome.storage.local.get(['gatherVersion']);
+        const gatherVersion = result.gatherVersion || 'v1';
+        const gatherUrl = gatherVersion === 'v2' ? 'https://app.v2.gather.town/app/' : 'https://app.gather.town/';
+
         const newTab = await chrome.tabs.create({
-          url: 'https://app.gather.town/',
+          url: gatherUrl,
           active: true
         });
-        
+
         // ポップアップを閉じる
         window.close();
       }
@@ -176,7 +202,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   enableCalendarCheckbox.addEventListener('change', () => {
     chrome.storage.local.set({ enableCalendar: enableCalendarCheckbox.checked });
   });
-  
+
+  gatherVersionSelect.addEventListener('change', () => {
+    chrome.storage.local.set({ gatherVersion: gatherVersionSelect.value });
+  });
+
   debugModeCheckbox.addEventListener('change', () => {
     chrome.storage.local.set({ debugMode: debugModeCheckbox.checked });
   });

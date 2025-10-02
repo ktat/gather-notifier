@@ -59,6 +59,18 @@
     "message": "Aller à Gather.town",
     "description": "Texte du bouton pour aller à Gather.town"
   },
+  "gatherVersion": {
+    "message": "Version Gather",
+    "description": "Titre de section pour la sélection de version Gather"
+  },
+  "gatherV1": {
+    "message": "V1 (app.gather.town)",
+    "description": "Option pour Gather V1"
+  },
+  "gatherV2": {
+    "message": "V2 (app.v2.gather.town)",
+    "description": "Option pour Gather V2"
+  },
   "notificationSettings": {
     "message": "Paramètres de notification",
     "description": "Titre de section pour les paramètres de notification"

@@ -59,6 +59,18 @@
     "message": "Gather.townに移動",
     "description": "Gather.townに移動するボタンのテキスト"
   },
+  "gatherVersion": {
+    "message": "Gatherバージョン",
+    "description": "Gatherバージョン選択のセクションタイトル"
+  },
+  "gatherV1": {
+    "message": "V1 (app.gather.town)",
+    "description": "Gather V1のオプション"
+  },
+  "gatherV2": {
+    "message": "V2 (app.v2.gather.town)",
+    "description": "Gather V2のオプション"
+  },
   "notificationSettings": {
     "message": "通知設定",
     "description": "通知設定のセクションタイトル"
