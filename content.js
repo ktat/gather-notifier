@@ -234,6 +234,50 @@ window.testChatV2Notifier = function() {
   console.log('This should trigger a ChatV2 notification');
 };
 
+// DOM-based wave detection using MutationObserver
+// This provides more accurate wave detection by watching for DOM changes
+const wavedToYouObserver = new MutationObserver((mutations) => {
+  for (const mutation of mutations) {
+    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+      mutation.addedNodes.forEach((node) => {
+        // Check if the node or its children contain "waved to you" text
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const textContent = node.textContent || '';
+          if (textContent.includes(' waved to you')) {
+            chrome.storage.local.get(['debugMode'], (result) => {
+              if (result.debugMode) {
+                console.log('[WAVE-NOTIFIER-CONTENT] [DEBUG] DOM-based wave detection:', textContent);
+              }
+            });
+
+            // Send wave notification to background
+            chrome.runtime.sendMessage({
+              action: 'waveDetected',
+              message: textContent,
+              type: 'dom',
+              notificationType: 'wave'
+            }).catch(error => {
+              console.error('Error sending DOM-based wave detection message:', error);
+            });
+          }
+        }
+      });
+    }
+  }
+});
+
+// Start observing the document body for DOM changes
+wavedToYouObserver.observe(document.body, {
+  childList: true,
+  subtree: true
+});
+
+chrome.storage.local.get(['debugMode'], (result) => {
+  if (result.debugMode) {
+    console.log('[WAVE-NOTIFIER-CONTENT] [DEBUG] DOM-based wave observer initialized');
+  }
+});
+
 // gather.townページでのクリック検出
 document.addEventListener('click', function() {
   // gather.townのページでクリックされた場合、通知をクリア
