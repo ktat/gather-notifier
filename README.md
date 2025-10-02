@@ -87,7 +87,9 @@ Open `create-icons.html` in your browser to download icons of each size.
 - **V2 notification detection**: New console message pattern detection for Gather V2:
   - Calendar notifications: `User calendar events updated`
   - Wave notifications: `[Violation] Forced reflow while executing JavaScript took`
-  - Chat notifications: `Tried to flush send metric for message ... but no pending metric found`
+  - Chat/Wave notifications (ambiguous): `Tried to flush send metric for message ... but no pending metric found`
+- **Calendar notification type**: New notification type with dedicated settings toggle
+- **Improved notification accuracy**: Fixed ambiguous V2 message patterns that could be both chat and wave
 - **Backward compatibility**: Both V1 and V2 notification patterns are supported simultaneously
 
 ### Version 1.4 - Debug Mode Enhancement

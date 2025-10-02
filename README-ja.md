@@ -97,7 +97,9 @@ gather.townでwave、chat、callの通知を受信したときにデスクトッ
 - **V2通知検出**: Gather V2用の新しいコンソールメッセージパターン検出:
   - カレンダー通知: `User calendar events updated`
   - Wave通知: `[Violation] Forced reflow while executing JavaScript took`
-  - Chat通知: `Tried to flush send metric for message ... but no pending metric found`
+  - Chat/Wave通知（曖昧）: `Tried to flush send metric for message ... but no pending metric found`
+- **カレンダー通知タイプ**: 専用の設定トグル付きの新しい通知タイプ
+- **通知精度の向上**: ChatとWaveの両方になりうる曖昧なV2メッセージパターンを修正
 - **下位互換性**: V1とV2の両方の通知パターンを同時にサポート
 
 ### バージョン 1.4 - デバッグモード強化

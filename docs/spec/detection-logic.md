@@ -12,9 +12,11 @@ gather.townページのコンソールログで以下の文字列を検出：
 app.v2.gather.townページのコンソールログで以下の文字列を検出：
 - `User calendar events updated` - カレンダー通知
 - `[Violation] Forced reflow while executing JavaScript took` - Wave通知
-- `Tried to flush send metric for message ... but no pending metric found` - Chat通知
+- `Tried to flush send metric for message ... but no pending metric found` - Chat/Wave通知（曖昧）
 
-**注意**: V1とV2の両方のパターンを同時にサポートしているため、V1ユーザーもV2ユーザーも問題なく使用できます。
+**注意事項**:
+- V1とV2の両方のパターンを同時にサポートしているため、V1ユーザーもV2ユーザーも問題なく使用できます
+- `Tried to flush send metric` メッセージは1つのイベントで2回出力され、1回目はチャット、2回目はウェーブを示します。このため、このパターンは「Chat or Wave」として扱われます
 
 ## システム構成図
 
