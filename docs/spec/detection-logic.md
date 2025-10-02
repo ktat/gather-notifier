@@ -9,13 +9,14 @@ gather.townページのコンソールログで以下の文字列を検出：
 - `Alerting Ring event` - Call通知
 
 ### Gather V2のメッセージパターン
-app.v2.gather.townページのコンソールログで以下の文字列を検出：
-- `User calendar events updated` - カレンダー通知
-- `[Violation] Forced reflow while executing JavaScript took` - Wave通知
-- `Tried to flush send metric for message ... but no pending metric found` - Chat/Wave通知（曖昧）
+app.v2.gather.townページで以下の方法で検出：
+- `User calendar events updated` - カレンダー通知（コンソールログ）
+- ` waved to you` - Wave通知（DOM検出、MutationObserver使用）
+- `Tried to flush send metric for message ... but no pending metric found` - Chat/Wave通知（曖昧、コンソールログ）
 
 **注意事項**:
 - V1とV2の両方のパターンを同時にサポートしているため、V1ユーザーもV2ユーザーも問題なく使用できます
+- V2のWave検出はDOM-based detection（MutationObserver）を使用し、コンソールログ方式は無効化されています
 - `Tried to flush send metric` メッセージは1つのイベントで2回出力され、1回目はチャット、2回目はウェーブを示します。このため、このパターンは「Chat or Wave」として扱われます
 
 ## システム構成図
@@ -190,6 +191,31 @@ console.log = function(...args) {
 - `testMainConsole()` - 手動テスト関数
 - `[WAVE-NOTIFIER-MAIN] Intercepted` - 全ログ監視状況表示
 - 30秒ごとの生存確認ログ
+
+### DOM-based Wave Detection
+V2のWave通知はMutationObserverを使用してDOMの変更を監視：
+```javascript
+const wavedToYouObserver = new MutationObserver((mutations) => {
+  for (const mutation of mutations) {
+    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+      mutation.addedNodes.forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const textContent = node.textContent || '';
+          if (textContent.includes(' waved to you')) {
+            // Send notification
+          }
+        }
+      });
+    }
+  }
+});
+wavedToYouObserver.observe(document.body, { childList: true, subtree: true });
+```
+
+**特徴**:
+- コンソールログより信頼性が高い
+- リアルタイムなDOM変更検出
+- V1では従来のコンソール検出を継続使用
 
 ## 状態ストレージ管理
 
