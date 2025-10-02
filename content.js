@@ -60,6 +60,8 @@ script.textContent = `
       // message.includes('[Violation] Forced reflow while executing JavaScript took')
       // V2 Calendar detection disabled - using DOM detection instead
       // message.includes('User calendar events updated')
+      // V2 Chat/Wave detection temporarily disabled
+      // (message.includes('Tried to flush send metric for message') && message.includes('but no pending metric found'))
 
       if (shouldNotify) {
         originalMethods.log(PREFIX + ' 🌊 Wave event detected:', message);
