@@ -181,8 +181,15 @@ chrome.runtime.onStartup.addListener(() => {
 
 // offscreenドキュメントを作成
 async function createOffscreen() {
-  if (offscreenCreated) return;
-  
+  if (offscreenCreated) {
+    chrome.storage.local.get(['debugMode'], (result) => {
+      if (result.debugMode) {
+        console.log('[DEBUG] [BACKGROUND] Offscreen document already created');
+      }
+    });
+    return;
+  }
+
   try {
     await chrome.offscreen.createDocument({
       url: 'offscreen.html',
@@ -190,28 +197,63 @@ async function createOffscreen() {
       justification: 'Play notification sound when wave is detected'
     });
     offscreenCreated = true;
+    chrome.storage.local.get(['debugMode'], (result) => {
+      if (result.debugMode) {
+        console.log('[DEBUG] [BACKGROUND] Offscreen document created successfully');
+      }
+    });
   } catch (error) {
-    console.error('Error creating offscreen document:', error);
+    console.error('[BACKGROUND] Error creating offscreen document:', error);
   }
 }
 
 // 音声再生関数
 async function playNotificationSound(notificationType = 'wave') {
   try {
+    chrome.storage.local.get(['debugMode'], (result) => {
+      if (result.debugMode) {
+        console.log('[DEBUG] [BACKGROUND] playNotificationSound called, type:', notificationType);
+      }
+    });
+
     await createOffscreen();
-    chrome.runtime.sendMessage({ action: 'playSound', notificationType: notificationType });
+
+    chrome.storage.local.get(['debugMode'], (result) => {
+      if (result.debugMode) {
+        console.log('[DEBUG] [BACKGROUND] Sending playSound message to offscreen');
+      }
+    });
+
+    chrome.runtime.sendMessage({ action: 'playSound', notificationType: notificationType }, (response) => {
+      chrome.storage.local.get(['debugMode'], (result) => {
+        if (result.debugMode) {
+          console.log('[DEBUG] [BACKGROUND] playSound response:', response);
+        }
+      });
+    });
   } catch (error) {
-    console.error('Error playing notification sound:', error);
+    console.error('[BACKGROUND] Error playing notification sound:', error);
   }
 }
 
 async function stopNotificationSound() {
   try {
     if (offscreenCreated) {
+      chrome.storage.local.get(['debugMode'], (result) => {
+        if (result.debugMode) {
+          console.log('[DEBUG] [BACKGROUND] Stopping notification sound');
+        }
+      });
       chrome.runtime.sendMessage({ action: 'stopSound' });
+    } else {
+      chrome.storage.local.get(['debugMode'], (result) => {
+        if (result.debugMode) {
+          console.log('[DEBUG] [BACKGROUND] Cannot stop sound - offscreen not created');
+        }
+      });
     }
   } catch (error) {
-    console.error('Error stopping notification sound:', error);
+    console.error('[BACKGROUND] Error stopping notification sound:', error);
   }
 }
 
