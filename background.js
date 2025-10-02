@@ -34,11 +34,11 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 });
 
 // wave検出時の処理
-function handleWaveDetection(message, notificationType = 'wave') {
+function handleWaveDetection(messageData, notificationType = 'wave') {
   // デバッグモード時のみログ出力
   chrome.storage.local.get(['debugMode'], (result) => {
     if (result.debugMode) {
-      console.log('[DEBUG] Notification detected from console:', message, 'Type:', notificationType);
+      console.log('[DEBUG] Notification detected from console:', messageData, 'Type:', notificationType);
     }
   });
   
@@ -48,7 +48,7 @@ function handleWaveDetection(message, notificationType = 'wave') {
 
     if (debugMode) {
       console.log('[DEBUG] handleWaveDetection called with:', {
-        message: message,
+        messageData: messageData,
         notificationType: notificationType,
         settings: result,
         hasNotification: hasNotification,
@@ -121,9 +121,13 @@ function handleWaveDetection(message, notificationType = 'wave') {
       default:
         title = chrome.i18n.getMessage('waveNotificationTitle');
         notificationMessage = chrome.i18n.getMessage('waveNotificationMessage');
+        // If userName is provided, include it in the message
+        if (messageData && messageData.userName) {
+          notificationMessage = messageData.userName + ' ' + notificationMessage;
+        }
         break;
     }
-    
+
     // デスクトップ通知を表示
     chrome.notifications.create({
       type: 'basic',
@@ -295,7 +299,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     stopNotificationSound();
   } else if (message.action === 'waveDetected') {
     // content scriptからのwave検出メッセージ
-    handleWaveDetection(message.message, message.notificationType);
+    handleWaveDetection(message, message.notificationType);
   } else if (message.action === 'toggleConcentrationMode') {
     // 応答不可モード切り替え
     toggleConcentrationMode(message.isConcentrationMode);

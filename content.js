@@ -266,16 +266,25 @@ function setupDOMObserver() {
               }
             });
 
-            // Wave detection
+            // Wave detection - extract name from "$name waved to you" pattern
             if (textContent.includes(' waved to you')) {
               console.log('[WAVE-NOTIFIER-CONTENT] DOM-based wave detection:', textContent.substring(0, 100));
+
+              // Extract the name before " waved to you"
+              let userName = null;
+              const match = textContent.match(/(.+?)\s+waved to you/);
+              if (match && match[1]) {
+                userName = match[1].trim();
+                console.log('[WAVE-NOTIFIER-CONTENT] Extracted user name:', userName);
+              }
 
               // Send wave notification to background
               chrome.runtime.sendMessage({
                 action: 'waveDetected',
                 message: textContent,
                 type: 'dom',
-                notificationType: 'wave'
+                notificationType: 'wave',
+                userName: userName
               }).catch(error => {
                 console.error('[WAVE-NOTIFIER-CONTENT] Error sending DOM-based wave detection message:', error);
               });
