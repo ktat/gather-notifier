@@ -290,8 +290,9 @@ function setupDOMObserver() {
               });
             }
 
-            // Calendar detection - check for "in 5 minutes" text
-            if (textContent.includes('in 5 minutes')) {
+            // Calendar detection - check for "in $n minutes" pattern
+            const calendarMatch = textContent.match(/in (\d+) minutes?/);
+            if (calendarMatch) {
               console.log('[WAVE-NOTIFIER-CONTENT] DOM-based calendar detection:', textContent.substring(0, 100));
 
               // Send calendar notification to background
