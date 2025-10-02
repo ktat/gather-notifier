@@ -1,10 +1,20 @@
 # 検出ロジック
 
 ## 検出対象
+
+### Gather V1のメッセージパターン
 gather.townページのコンソールログで以下の文字列を検出：
 - `Alerting Wave event` - Wave通知
-- `Skipping ChatV2 notification` - Chat通知  
+- `Skipping ChatV2 notification` - Chat通知
 - `Alerting Ring event` - Call通知
+
+### Gather V2のメッセージパターン
+app.v2.gather.townページのコンソールログで以下の文字列を検出：
+- `User calendar events updated` - カレンダー通知
+- `[Violation] Forced reflow while executing JavaScript took` - Wave通知
+- `Tried to flush send metric for message ... but no pending metric found` - Chat通知
+
+**注意**: V1とV2の両方のパターンを同時にサポートしているため、V1ユーザーもV2ユーザーも問題なく使用できます。
 
 ## システム構成図
 

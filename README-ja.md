@@ -92,6 +92,14 @@ gather.townでwave、chat、callの通知を受信したときにデスクトッ
 
 ## 最新のアップデート
 
+### バージョン 1.5 - Gather V2 対応
+- **Gather V2 ドメイン対応**: 新しいGather V2ドメイン（`app.v2.gather.town`）のサポートを追加
+- **V2通知検出**: Gather V2用の新しいコンソールメッセージパターン検出:
+  - カレンダー通知: `User calendar events updated`
+  - Wave通知: `[Violation] Forced reflow while executing JavaScript took`
+  - Chat通知: `Tried to flush send metric for message ... but no pending metric found`
+- **下位互換性**: V1とV2の両方の通知パターンを同時にサポート
+
 ### バージョン 1.4 - デバッグモード強化
 - **監視ログ最適化**: `[WAVE-NOTIFIER-CONTENT] Monitoring active at` メッセージがデバッグモード有効時のみ表示されるよう改善
 - **全体ログ最適化**: すべての`console.log`文をデバッグモードチェックでラップ

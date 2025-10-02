@@ -82,6 +82,14 @@ Open `create-icons.html` in your browser to download icons of each size.
 
 ## Recent Updates
 
+### Version 1.5 - Gather V2 Support
+- **Gather V2 domain support**: Added support for the new Gather V2 domain (`app.v2.gather.town`)
+- **V2 notification detection**: New console message pattern detection for Gather V2:
+  - Calendar notifications: `User calendar events updated`
+  - Wave notifications: `[Violation] Forced reflow while executing JavaScript took`
+  - Chat notifications: `Tried to flush send metric for message ... but no pending metric found`
+- **Backward compatibility**: Both V1 and V2 notification patterns are supported simultaneously
+
 ### Version 1.4 - Debug Mode Enhancement
 - **Optimized monitoring logs**: The `[WAVE-NOTIFIER-CONTENT] Monitoring active at` message now only appears when debug mode is enabled
 - **Comprehensive log optimization**: All `console.log` statements are now wrapped with debug mode checks
