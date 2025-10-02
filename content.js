@@ -55,8 +55,9 @@ script.textContent = `
         shouldNotify = true;
       }
       // V2のメッセージパターン
+      // Note: V2 wave detection uses DOM-based detection only (see MutationObserver below)
       else if (message.includes('User calendar events updated') ||
-               message.includes('[Violation] Forced reflow while executing JavaScript took') ||
+               // message.includes('[Violation] Forced reflow while executing JavaScript took') || // DISABLED: Use DOM detection
                (message.includes('Tried to flush send metric for message') && message.includes('but no pending metric found'))) {
         shouldNotify = true;
       }

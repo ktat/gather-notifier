@@ -51,8 +51,8 @@
         // Gather V2: Calendar notification
         notificationType = 'calendar';
       } else if (message.includes('[Violation] Forced reflow while executing JavaScript took')) {
-        // Gather V2: Wave notification
-        notificationType = 'wave';
+        // Gather V2: Wave notification - DISABLED (use DOM detection instead)
+        // notificationType = 'wave';
       } else if (message.includes('Tried to flush send metric for message') && message.includes('but no pending metric found')) {
         // Gather V2: Chat or Wave notification (ambiguous - can be either)
         notificationType = 'chat-or-wave';
