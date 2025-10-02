@@ -48,10 +48,22 @@ script.textContent = `
         originalMethods.log(PREFIX + ' [DEBUG] Intercepted ' + type + ':', message.substring(0, 200));
       }
       
-      // wave関連のメッセージを検出
+      // wave関連のメッセージを検出（V1とV2の両方に対応）
+      let shouldNotify = false;
+      // V1のメッセージパターン
       if (message.includes('Alerting Wave event') || message.includes('Skipping ChatV2 notification')) {
+        shouldNotify = true;
+      }
+      // V2のメッセージパターン
+      else if (message.includes('User calendar events updated') ||
+               message.includes('[Violation] Forced reflow while executing JavaScript took') ||
+               (message.includes('Tried to flush send metric for message') && message.includes('but no pending metric found'))) {
+        shouldNotify = true;
+      }
+
+      if (shouldNotify) {
         originalMethods.log(PREFIX + ' 🌊 Wave event detected:', message);
-        
+
         // カスタムイベントを発火してcontent scriptに通知
         window.dispatchEvent(new CustomEvent('waveDetected', {
           detail: { message: message, type: type }

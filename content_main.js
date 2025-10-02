@@ -47,6 +47,15 @@
         notificationType = 'chat';
       } else if (message.includes('Alerting Ring event')) {
         notificationType = 'call';
+      } else if (message.includes('User calendar events updated')) {
+        // Gather V2: Calendar notification
+        notificationType = 'calendar';
+      } else if (message.includes('[Violation] Forced reflow while executing JavaScript took')) {
+        // Gather V2: Wave notification
+        notificationType = 'wave';
+      } else if (message.includes('Tried to flush send metric for message') && message.includes('but no pending metric found')) {
+        // Gather V2: Chat notification
+        notificationType = 'chat';
       }
       
       if (notificationType) {
