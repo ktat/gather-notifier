@@ -305,6 +305,30 @@ function setupDOMObserver() {
                 console.error('[WAVE-NOTIFIER-CONTENT] Error sending DOM-based calendar detection message:', error);
               });
             }
+
+            // Chat detection - check for "$name sent a message" pattern
+            if (textContent.includes(' sent a message')) {
+              console.log('[WAVE-NOTIFIER-CONTENT] DOM-based chat detection:', textContent.substring(0, 100));
+
+              // Extract the name before " sent a message"
+              let userName = null;
+              const chatMatch = textContent.match(/(.+?)\s+sent a message/);
+              if (chatMatch && chatMatch[1]) {
+                userName = chatMatch[1].trim();
+                console.log('[WAVE-NOTIFIER-CONTENT] Extracted user name from chat:', userName);
+              }
+
+              // Send chat notification to background
+              chrome.runtime.sendMessage({
+                action: 'waveDetected',
+                message: textContent,
+                type: 'dom',
+                notificationType: 'chat',
+                userName: userName
+              }).catch(error => {
+                console.error('[WAVE-NOTIFIER-CONTENT] Error sending DOM-based chat detection message:', error);
+              });
+            }
           }
         });
       }

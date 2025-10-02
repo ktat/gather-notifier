@@ -104,6 +104,10 @@ function handleWaveDetection(messageData, notificationType = 'wave') {
       case 'chat':
         title = chrome.i18n.getMessage('chatNotificationTitle');
         notificationMessage = chrome.i18n.getMessage('chatNotificationMessage');
+        // If userName is provided, include it in the message
+        if (messageData && messageData.userName) {
+          notificationMessage = messageData.userName + ' ' + notificationMessage;
+        }
         break;
       case 'call':
         title = chrome.i18n.getMessage('callNotificationTitle');
