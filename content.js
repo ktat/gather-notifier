@@ -238,68 +238,94 @@ window.testChatV2Notifier = function() {
 
 // DOM-based wave and calendar detection using MutationObserver
 // This provides more accurate detection by watching for DOM changes
-const notificationObserver = new MutationObserver((mutations) => {
-  for (const mutation of mutations) {
-    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-      mutation.addedNodes.forEach((node) => {
-        // Check if the node or its children contain notification text
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          const textContent = node.textContent || '';
-
-          // Wave detection
-          if (textContent.includes(' waved to you')) {
-            chrome.storage.local.get(['debugMode'], (result) => {
-              if (result.debugMode) {
-                console.log('[WAVE-NOTIFIER-CONTENT] [DEBUG] DOM-based wave detection:', textContent);
-              }
-            });
-
-            // Send wave notification to background
-            chrome.runtime.sendMessage({
-              action: 'waveDetected',
-              message: textContent,
-              type: 'dom',
-              notificationType: 'wave'
-            }).catch(error => {
-              console.error('Error sending DOM-based wave detection message:', error);
-            });
-          }
-
-          // Calendar detection - check for "in 5 minutes" text
-          if (textContent.includes('in 5 minutes')) {
-            chrome.storage.local.get(['debugMode'], (result) => {
-              if (result.debugMode) {
-                console.log('[WAVE-NOTIFIER-CONTENT] [DEBUG] DOM-based calendar detection:', textContent);
-              }
-            });
-
-            // Send calendar notification to background
-            chrome.runtime.sendMessage({
-              action: 'waveDetected',
-              message: textContent,
-              type: 'dom',
-              notificationType: 'calendar'
-            }).catch(error => {
-              console.error('Error sending DOM-based calendar detection message:', error);
-            });
-          }
-        }
-      });
+function setupDOMObserver() {
+  chrome.storage.local.get(['debugMode'], (result) => {
+    if (result.debugMode) {
+      console.log('[WAVE-NOTIFIER-CONTENT] [DEBUG] Setting up DOM observer');
     }
-  }
-});
+  });
 
-// Start observing the document body for DOM changes
-notificationObserver.observe(document.body, {
-  childList: true,
-  subtree: true
-});
+  const notificationObserver = new MutationObserver((mutations) => {
+    chrome.storage.local.get(['debugMode'], (result) => {
+      if (result.debugMode) {
+        console.log('[WAVE-NOTIFIER-CONTENT] [DEBUG] DOM mutations detected:', mutations.length);
+      }
+    });
 
-chrome.storage.local.get(['debugMode'], (result) => {
-  if (result.debugMode) {
-    console.log('[WAVE-NOTIFIER-CONTENT] [DEBUG] DOM-based notification observer initialized');
+    for (const mutation of mutations) {
+      if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+        mutation.addedNodes.forEach((node) => {
+          // Check if the node or its children contain notification text
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            const textContent = node.textContent || '';
+
+            // Debug: log all text content changes (only in debug mode)
+            chrome.storage.local.get(['debugMode'], (result) => {
+              if (result.debugMode && textContent.trim().length > 0 && textContent.trim().length < 200) {
+                console.log('[WAVE-NOTIFIER-CONTENT] [DEBUG] DOM text added:', textContent.substring(0, 100));
+              }
+            });
+
+            // Wave detection
+            if (textContent.includes(' waved to you')) {
+              console.log('[WAVE-NOTIFIER-CONTENT] DOM-based wave detection:', textContent.substring(0, 100));
+
+              // Send wave notification to background
+              chrome.runtime.sendMessage({
+                action: 'waveDetected',
+                message: textContent,
+                type: 'dom',
+                notificationType: 'wave'
+              }).catch(error => {
+                console.error('[WAVE-NOTIFIER-CONTENT] Error sending DOM-based wave detection message:', error);
+              });
+            }
+
+            // Calendar detection - check for "in 5 minutes" text
+            if (textContent.includes('in 5 minutes')) {
+              console.log('[WAVE-NOTIFIER-CONTENT] DOM-based calendar detection:', textContent.substring(0, 100));
+
+              // Send calendar notification to background
+              chrome.runtime.sendMessage({
+                action: 'waveDetected',
+                message: textContent,
+                type: 'dom',
+                notificationType: 'calendar'
+              }).catch(error => {
+                console.error('[WAVE-NOTIFIER-CONTENT] Error sending DOM-based calendar detection message:', error);
+              });
+            }
+          }
+        });
+      }
+    }
+  });
+
+  // Wait for body to be available
+  if (document.body) {
+    notificationObserver.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+    console.log('[WAVE-NOTIFIER-CONTENT] DOM-based notification observer initialized and observing');
+  } else {
+    console.log('[WAVE-NOTIFIER-CONTENT] document.body not ready, waiting...');
+    // Wait for DOM to be ready
+    const checkBody = setInterval(() => {
+      if (document.body) {
+        clearInterval(checkBody);
+        notificationObserver.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+        console.log('[WAVE-NOTIFIER-CONTENT] DOM-based notification observer initialized and observing (delayed)');
+      }
+    }, 100);
   }
-});
+}
+
+// Initialize DOM observer
+setupDOMObserver();
 
 // gather.townページでのクリック検出
 document.addEventListener('click', function() {
