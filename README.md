@@ -8,7 +8,7 @@ A Chrome extension that displays desktop notifications when you receive wave, ch
 
 ## Features
 
-- **Advanced Notification Detection**: Reliable log monitoring using both MAIN world and ISOLATED world
+- **Advanced Notification Detection**: Multi-method detection using console log monitoring and DOM-based observation
 - **Audio Notifications**: Acoustic feedback based on notification type
 - **Do Not Disturb Mode**: Temporary notification pause functionality for focused work
 - **Automatic Tab Management**: Automatic creation and management of Gather.town tabs
@@ -82,6 +82,11 @@ Open `create-icons.html` in your browser to download icons of each size.
 - `README-ja.md` - Japanese version of this README
 
 ## Recent Updates
+
+### Version 1.6 - DOM-Based Detection
+- **DOM-based wave detection**: Added MutationObserver to detect wave notifications by DOM content ("waved to you")
+- **Dual-method detection**: Combines console log monitoring and DOM observation for improved reliability
+- **Better notification distinction**: More accurate wave detection using actual notification elements
 
 ### Version 1.5 - Gather V2 Support
 - **Gather V2 domain support**: Added support for the new Gather V2 domain (`app.v2.gather.town`)
