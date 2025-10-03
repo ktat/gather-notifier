@@ -285,6 +285,44 @@ function setupDOMObserver() {
 setupDOMObserver();
 ```
 
+## V2 Concentration Mode Detection
+
+V2の応答不可モード（集中モード）検出:
+
+```javascript
+// V1: "応答可能にする" button
+const responseButton = Array.from(document.querySelectorAll('button')).find(button =>
+  button.innerHTML.trim() === "応答可能にする" || button.textContent.trim() === "応答可能にする"
+);
+
+// V2: "Enter office" div
+const enterOfficeDiv = Array.from(document.querySelectorAll('div')).find(div =>
+  div.textContent.trim() === "Enter office"
+);
+
+// 集中モード判定（V1またはV2のいずれかが存在する場合）
+const shouldBeInConcentrationMode = !!(responseButton || enterOfficeDiv);
+```
+
+**集中モード終了時のボタンクリック**:
+```javascript
+// V1: "応答可能にする" ボタンをクリック
+if (button.textContent.trim() === "応答可能にする") {
+  button.click();
+}
+
+// V2: "Enter office" divをクリック
+if (div.textContent.trim() === "Enter office") {
+  div.click();
+}
+```
+
+**特徴**:
+- V1とV2の両方に対応した自動検出
+- 5秒ごとにDOM監視して状態を同期
+- 集中モード終了時に適切なボタン/divを自動クリック
+- リトライロジック（最大3回、1秒間隔）
+
 ## 状態ストレージ管理
 
 状態管理の詳細は [state-management.md](state-management.md) を参照してください。

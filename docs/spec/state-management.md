@@ -35,8 +35,12 @@
 
 ### 応答不可モード
 - **開始時**: `isConcentrationMode = true`、バッジに「C」表示、gather.townタブ移動
-- **終了時**: `isConcentrationMode = false`、応答不可モードバッジ削除
+- **終了時**: `isConcentrationMode = false`、応答不可モードバッジ削除、ボタンクリック（V1/V2対応）
 - **効果**: 全通知を無効化、音声再生なし
+- **自動検出**:
+  - V1: 「応答可能にする」ボタンの存在で検出
+  - V2: 「Enter office」divの存在で検出
+  - 5秒ごとにDOM監視して自動切り替え
 
 ## タブ管理
 - **gatherTabs** (Set) - gather.townタブのID一覧
