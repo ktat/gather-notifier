@@ -189,10 +189,11 @@ function checkResponseButton() {
     button.innerHTML.trim() === "応答可能にする" || button.textContent.trim() === "応答可能にする"
   );
 
-  // V2: "Enter office" div (multi-language support)
+  // V2: "Enter office" or "External meeting detected" div (multi-language support)
   const enterOfficeDiv = Array.from(document.querySelectorAll('div')).find(div => {
     const text = div.textContent.trim();
-    return text === "Enter office" || text === "オフィスに入る" || text === "Entrar no escritório";
+    return text === "Enter office" || text === "オフィスに入る" || text === "Entrar no escritório" ||
+           text === "External meeting detected" || text === "外部ミーティングが検出されました" || text === "Reunião externa detectada";
   });
 
   // 現在の状態を取得
@@ -454,16 +455,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
       });
 
-      // V2: "Enter office" div (multi-language: click it to exit concentration mode)
+      // V2: "Enter office" or "External meeting detected" div (multi-language: click it to exit concentration mode)
       if (!buttonFound) {
         const divs = document.querySelectorAll("div");
         divs.forEach((div) => {
           const text = div.textContent.trim();
-          if (text === "Enter office" || text === "オフィスに入る" || text === "Entrar no escritório") {
+          if (text === "Enter office" || text === "オフィスに入る" || text === "Entrar no escritório" ||
+              text === "External meeting detected" || text === "外部ミーティングが検出されました" || text === "Reunião externa detectada") {
             div.click();
             chrome.storage.local.get(['debugMode'], (result) => {
               if (result.debugMode) {
-                console.log('[DEBUG] [WAVE-NOTIFIER] Successfully clicked Enter office div (V2):', text);
+                console.log('[DEBUG] [WAVE-NOTIFIER] Successfully clicked concentration mode div (V2):', text);
               }
             });
             buttonFound = true;
