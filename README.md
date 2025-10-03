@@ -83,20 +83,23 @@ Open `create-icons.html` in your browser to download icons of each size.
 
 ## Recent Updates
 
-### Version 1.6 - DOM-Based Detection
-- **DOM-based wave detection**: Added MutationObserver to detect wave notifications by DOM content ("waved to you")
-- **Dual-method detection**: Combines console log monitoring and DOM observation for improved reliability
-- **Better notification distinction**: More accurate wave detection using actual notification elements
+### Version 1.6 - Enhanced DOM-Based Detection
+- **Comprehensive DOM-based detection**: All V2 notifications now use MutationObserver for reliable detection
+- **V2 notification patterns**:
+  - Wave: Detects "$name waved to you" in DOM (V2 only)
+  - Chat: Detects "$name sent a message" in DOM (V2 only)
+  - Calendar: Detects "in $n minutes" in DOM (V2 only)
+  - Call: Console log detection "Alerting Ring event" (V1 only)
+- **User name extraction**: Wave and Chat notifications now include the sender's name (e.g., "John waved to you!")
+- **Flexible calendar detection**: Supports any time interval (1 minute, 5 minutes, 10 minutes, etc.)
+- **Version indicators**: Popup UI now shows "(V1 only)" and "(V2 only)" labels for version-specific features
+- **Improved reliability**: DOM-based detection is more accurate than console log monitoring
+- **Enhanced debugging**: Comprehensive debug logging to diagnose detection and audio issues
 
 ### Version 1.5 - Gather V2 Support
 - **Gather V2 domain support**: Added support for the new Gather V2 domain (`app.v2.gather.town`)
-- **V2 notification detection**: New console message pattern detection for Gather V2:
-  - Calendar notifications: `User calendar events updated`
-  - Wave notifications: `[Violation] Forced reflow while executing JavaScript took`
-  - Chat/Wave notifications (ambiguous): `Tried to flush send metric for message ... but no pending metric found`
-- **Calendar notification type**: New notification type with dedicated settings toggle
+- **Calendar notification type**: New notification type with dedicated settings toggle (V2 only)
 - **Version selector**: Users can now choose between V1 or V2 when creating new Gather.town tabs
-- **Improved notification accuracy**: Fixed ambiguous V2 message patterns that could be both chat and wave
 - **Backward compatibility**: Both V1 and V2 notification patterns are supported simultaneously
 
 ### Version 1.4 - Debug Mode Enhancement

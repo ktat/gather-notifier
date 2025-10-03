@@ -93,20 +93,23 @@ gather.townでwave、chat、callの通知を受信したときにデスクトッ
 
 ## 最新のアップデート
 
-### バージョン 1.6 - DOMベース検出
-- **DOMベースのwave検出**: MutationObserverを使用してDOM内容（「waved to you」）でwave通知を検出
-- **デュアル検出方式**: コンソールログ監視とDOM観測を組み合わせて信頼性を向上
-- **通知識別の改善**: 実際の通知要素を使用したより正確なwave検出
+### バージョン 1.6 - 強化されたDOMベース検出
+- **包括的なDOMベース検出**: すべてのV2通知がMutationObserverを使用した信頼性の高い検出を実現
+- **V2通知パターン**:
+  - Wave: DOMで「$name waved to you」を検出（V2のみ）
+  - Chat: DOMで「$name sent a message」を検出（V2のみ）
+  - カレンダー: DOMで「in $n minutes」を検出（V2のみ）
+  - Call: コンソールログ検出「Alerting Ring event」（V1のみ）
+- **ユーザー名抽出**: WaveとChat通知に送信者の名前が含まれるようになりました（例: 「John waved to you!」）
+- **柔軟なカレンダー検出**: 任意の時間間隔に対応（1分、5分、10分など）
+- **バージョン表示**: ポップアップUIにバージョン固有機能の「(V1のみ)」「(V2のみ)」ラベルを表示
+- **信頼性向上**: DOMベース検出はコンソールログ監視よりも正確
+- **デバッグ強化**: 検出と音声問題を診断するための包括的なデバッグログ
 
 ### バージョン 1.5 - Gather V2 対応
 - **Gather V2 ドメイン対応**: 新しいGather V2ドメイン（`app.v2.gather.town`）のサポートを追加
-- **V2通知検出**: Gather V2用の新しいコンソールメッセージパターン検出:
-  - カレンダー通知: `User calendar events updated`
-  - Wave通知: `[Violation] Forced reflow while executing JavaScript took`
-  - Chat/Wave通知（曖昧）: `Tried to flush send metric for message ... but no pending metric found`
-- **カレンダー通知タイプ**: 専用の設定トグル付きの新しい通知タイプ
+- **カレンダー通知タイプ**: 専用の設定トグル付きの新しい通知タイプ（V2のみ）
 - **バージョンセレクター**: 新しいGather.townタブを作成する際にV1またはV2を選択可能
-- **通知精度の向上**: ChatとWaveの両方になりうる曖昧なV2メッセージパターンを修正
 - **下位互換性**: V1とV2の両方の通知パターンを同時にサポート
 
 ### バージョン 1.4 - デバッグモード強化
