@@ -9,16 +9,29 @@ gather.townページのコンソールログで以下の文字列を検出：
 - `Alerting Ring event` - Call通知
 
 ### Gather V2のメッセージパターン
-app.v2.gather.townページで以下の方法で検出：
-- `$name waved to you` - Wave通知（DOM検出、MutationObserver使用）
-- `$name sent a message` - Chat通知（DOM検出、MutationObserver使用）
-- `in $n minutes` - カレンダー通知（DOM検出、MutationObserver使用）
+app.v2.gather.townページで以下の方法で検出（多言語対応）：
+
+#### Wave通知（DOM検出、MutationObserver使用）
+- 英語: `$name waved to you`
+- ポルトガル語: `$name acenou para você`
+- 日本語: `$nameさんが手を振りました`
+
+#### Chat通知（DOM検出、MutationObserver使用）
+- 英語: `$name sent a message`
+- ポルトガル語: `$name enviou uma mensagem`
+- 日本語: `$nameさんがメッセージを送信しました`
+
+#### カレンダー通知（DOM検出、MutationObserver使用）
+- 英語: `in $n minutes`
+- ポルトガル語: `em $n minutos`
+- 日本語: `$n分後`
 
 **注意事項**:
 - V1とV2の両方のパターンを同時にサポートしているため、V1ユーザーもV2ユーザーも問題なく使用できます
 - V2の検出はすべてDOM-based detection（MutationObserver）を使用し、コンソールログ方式は無効化されています
 - Wave通知とChat通知では、ユーザー名を抽出して通知メッセージに含めます（例: "John waved to you!"）
-- カレンダー通知は任意の分数（1 minute, 5 minutes, 10 minutesなど）に対応しています
+- カレンダー通知は任意の分数（1分、5分、10分など）に対応しています
+- V2は多言語対応（英語・ポルトガル語・日本語）
 
 ## システム構成図
 
@@ -196,18 +209,27 @@ console.log = function(...args) {
 ### DOM-based Detection
 V2の通知はMutationObserverを使用してDOMの変更を監視：
 
-#### Wave検出
+#### Wave検出（多言語対応）
 ```javascript
-// Wave detection - extract name from "$name waved to you" pattern
-if (textContent.includes(' waved to you')) {
-  // Extract the name before " waved to you"
-  let userName = null;
-  const match = textContent.match(/(.+?)\s+waved to you/);
-  if (match && match[1]) {
-    userName = match[1].trim();
-  }
+// Wave detection - multi-language support
+let waveMatch = null;
+let userName = null;
 
-  // Send wave notification with userName
+// English: "$name waved to you"
+if (textContent.includes(' waved to you')) {
+  waveMatch = textContent.match(/(.+?)\s+waved to you/);
+}
+// Portuguese: "$name acenou para você"
+else if (textContent.includes(' acenou para você')) {
+  waveMatch = textContent.match(/(.+?)\s+acenou para você/);
+}
+// Japanese: "$nameさんが手を振りました"
+else if (textContent.includes('さんが手を振りました')) {
+  waveMatch = textContent.match(/(.+?)さんが手を振りました/);
+}
+
+if (waveMatch && waveMatch[1]) {
+  userName = waveMatch[1].trim();
   chrome.runtime.sendMessage({
     action: 'waveDetected',
     notificationType: 'wave',
@@ -216,32 +238,52 @@ if (textContent.includes(' waved to you')) {
 }
 ```
 
-#### Chat検出
+#### Chat検出（多言語対応）
 ```javascript
-// Chat detection - check for "$name sent a message" pattern
-if (textContent.includes(' sent a message')) {
-  // Extract the name before " sent a message"
-  let userName = null;
-  const chatMatch = textContent.match(/(.+?)\s+sent a message/);
-  if (chatMatch && chatMatch[1]) {
-    userName = chatMatch[1].trim();
-  }
+// Chat detection - multi-language support
+let chatMatch = null;
+let chatUserName = null;
 
-  // Send chat notification with userName
+// English: "$name sent a message"
+if (textContent.includes(' sent a message')) {
+  chatMatch = textContent.match(/(.+?)\s+sent a message/);
+}
+// Portuguese: "$name enviou uma mensagem"
+else if (textContent.includes(' enviou uma mensagem')) {
+  chatMatch = textContent.match(/(.+?)\s+enviou uma mensagem/);
+}
+// Japanese: "$nameさんがメッセージを送信しました"
+else if (textContent.includes('さんがメッセージを送信しました')) {
+  chatMatch = textContent.match(/(.+?)さんがメッセージを送信しました/);
+}
+
+if (chatMatch && chatMatch[1]) {
+  chatUserName = chatMatch[1].trim();
   chrome.runtime.sendMessage({
     action: 'waveDetected',
     notificationType: 'chat',
-    userName: userName
+    userName: chatUserName
   });
 }
 ```
 
-#### Calendar検出
+#### Calendar検出（多言語対応）
 ```javascript
-// Calendar detection - check for "in $n minutes" pattern
-const calendarMatch = textContent.match(/in (\d+) minutes?/);
+// Calendar detection - multi-language support
+let calendarMatch = null;
+
+// English: "in $n minutes"
+calendarMatch = textContent.match(/in (\d+) minutes?/);
+// Portuguese: "em $n minutos"
+if (!calendarMatch) {
+  calendarMatch = textContent.match(/em (\d+) minutos?/);
+}
+// Japanese: "$n分後"
+if (!calendarMatch) {
+  calendarMatch = textContent.match(/(\d+)分後/);
+}
+
 if (calendarMatch) {
-  // Send calendar notification
   chrome.runtime.sendMessage({
     action: 'waveDetected',
     notificationType: 'calendar'
@@ -254,6 +296,7 @@ if (calendarMatch) {
 - リアルタイムなDOM変更検出
 - ユーザー名を抽出して通知に含める（WaveとChat）
 - 柔軟なパターンマッチング（カレンダーは任意の分数に対応）
+- 多言語対応（英語・ポルトガル語・日本語）
 - V1では従来のコンソール検出を継続使用
 
 **初期化**:
@@ -295,10 +338,10 @@ const responseButton = Array.from(document.querySelectorAll('button')).find(butt
   button.innerHTML.trim() === "応答可能にする" || button.textContent.trim() === "応答可能にする"
 );
 
-// V2: "Enter office" (English) or "オフィスに入る" (Japanese) div
+// V2: "Enter office" div (multi-language support)
 const enterOfficeDiv = Array.from(document.querySelectorAll('div')).find(div => {
   const text = div.textContent.trim();
-  return text === "Enter office" || text === "オフィスに入る";
+  return text === "Enter office" || text === "オフィスに入る" || text === "Entrar no escritório";
 });
 
 // 集中モード判定（V1またはV2のいずれかが存在する場合）
@@ -312,16 +355,16 @@ if (button.textContent.trim() === "応答可能にする") {
   button.click();
 }
 
-// V2: "Enter office" (English) or "オフィスに入る" (Japanese) divをクリック
+// V2: "Enter office" div (multi-language) をクリック
 const text = div.textContent.trim();
-if (text === "Enter office" || text === "オフィスに入る") {
+if (text === "Enter office" || text === "オフィスに入る" || text === "Entrar no escritório") {
   div.click();
 }
 ```
 
 **特徴**:
 - V1とV2の両方に対応した自動検出
-- V2は多言語対応（英語・日本語）
+- V2は多言語対応（英語・日本語・ポルトガル語）
 - 5秒ごとにDOM監視して状態を同期
 - 集中モード終了時に適切なボタン/divを自動クリック
 - リトライロジック（最大3回、1秒間隔）
