@@ -184,27 +184,34 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 
 // 応答可能にするボタンの状態を監視して自動的に応答不可モードを制御
 function checkResponseButton() {
-  const responseButton = Array.from(document.querySelectorAll('button')).find(button => 
+  // V1: "応答可能にする" button
+  const responseButton = Array.from(document.querySelectorAll('button')).find(button =>
     button.innerHTML.trim() === "応答可能にする" || button.textContent.trim() === "応答可能にする"
   );
-  
+
+  // V2: "Enter office" div
+  const enterOfficeDiv = Array.from(document.querySelectorAll('div')).find(div =>
+    div.textContent.trim() === "Enter office"
+  );
+
   // 現在の状態を取得
   chrome.storage.local.get(['isConcentrationMode'], (result) => {
     const currentConcentrationMode = result.isConcentrationMode || false;
-    const shouldBeInConcentrationMode = !!responseButton;
-    
+    const shouldBeInConcentrationMode = !!(responseButton || enterOfficeDiv);
+
     // 状態が変わった場合のみ更新
     if (currentConcentrationMode !== shouldBeInConcentrationMode) {
       // デバッグモード時のみログ出力
       chrome.storage.local.get(['debugMode'], (result) => {
         if (result.debugMode) {
-          console.log('[DEBUG] [WAVE-NOTIFIER] Auto-toggling concentration mode:', shouldBeInConcentrationMode);
+          console.log('[DEBUG] [WAVE-NOTIFIER] Auto-toggling concentration mode:', shouldBeInConcentrationMode,
+                      'V1 button:', !!responseButton, 'V2 div:', !!enterOfficeDiv);
         }
       });
       chrome.storage.local.set({ isConcentrationMode: shouldBeInConcentrationMode });
-      chrome.runtime.sendMessage({ 
-        action: 'toggleConcentrationMode', 
-        isConcentrationMode: shouldBeInConcentrationMode 
+      chrome.runtime.sendMessage({
+        action: 'toggleConcentrationMode',
+        isConcentrationMode: shouldBeInConcentrationMode
       }).catch(error => {
         console.error('Error sending auto-toggle message:', error);
       });
