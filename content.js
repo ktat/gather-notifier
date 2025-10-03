@@ -455,17 +455,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
       });
 
-      // V2: "Enter office" or "External meeting detected" div (multi-language: click it to exit concentration mode)
+      // V2: "Enter office" div (multi-language: click it to exit concentration mode)
       if (!buttonFound) {
         const divs = document.querySelectorAll("div");
         divs.forEach((div) => {
           const text = div.textContent.trim();
-          if (text === "Enter office" || text === "オフィスに入る" || text === "Entrar no escritório" ||
-              text === "External meeting detected" || text === "外部ミーティングが検出されました" || text === "Reunião externa detectada") {
+          if (text === "Enter office" || text === "オフィスに入る" || text === "Entrar no escritório") {
             div.click();
             chrome.storage.local.get(['debugMode'], (result) => {
               if (result.debugMode) {
-                console.log('[DEBUG] [WAVE-NOTIFIER] Successfully clicked concentration mode div (V2):', text);
+                console.log('[DEBUG] [WAVE-NOTIFIER] Successfully clicked Enter office div (V2):', text);
               }
             });
             buttonFound = true;
