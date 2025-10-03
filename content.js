@@ -189,10 +189,11 @@ function checkResponseButton() {
     button.innerHTML.trim() === "応答可能にする" || button.textContent.trim() === "応答可能にする"
   );
 
-  // V2: "Enter office" div
-  const enterOfficeDiv = Array.from(document.querySelectorAll('div')).find(div =>
-    div.textContent.trim() === "Enter office"
-  );
+  // V2: "Enter office" div (English) or "オフィスに入る" (Japanese)
+  const enterOfficeDiv = Array.from(document.querySelectorAll('div')).find(div => {
+    const text = div.textContent.trim();
+    return text === "Enter office" || text === "オフィスに入る";
+  });
 
   // 現在の状態を取得
   chrome.storage.local.get(['isConcentrationMode'], (result) => {
@@ -415,15 +416,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
       });
 
-      // V2: "Enter office" div (click it to exit concentration mode)
+      // V2: "Enter office" or "オフィスに入る" div (click it to exit concentration mode)
       if (!buttonFound) {
         const divs = document.querySelectorAll("div");
         divs.forEach((div) => {
-          if (div.textContent.trim() === "Enter office") {
+          const text = div.textContent.trim();
+          if (text === "Enter office" || text === "オフィスに入る") {
             div.click();
             chrome.storage.local.get(['debugMode'], (result) => {
               if (result.debugMode) {
-                console.log('[DEBUG] [WAVE-NOTIFIER] Successfully clicked Enter office div (V2)');
+                console.log('[DEBUG] [WAVE-NOTIFIER] Successfully clicked Enter office/オフィスに入る div (V2):', text);
               }
             });
             buttonFound = true;
