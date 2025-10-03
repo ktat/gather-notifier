@@ -83,7 +83,7 @@ Open `create-icons.html` in your browser to download icons of each size.
 
 ## Recent Updates
 
-### Version 1.6 - Enhanced DOM-Based Detection
+### Version 1.7 - Comprehensive V2 Support
 - **V2 notifications (DOM-based detection)**:
   - Wave: Detects "$name waved to you" in DOM
   - Chat: Detects "$name sent a message" in DOM
@@ -94,9 +94,18 @@ Open `create-icons.html` in your browser to download icons of each size.
   - Call: "Alerting Ring event"
 - **User name extraction**: Wave and Chat notifications now include the sender's name (e.g., "John waved to you!")
 - **Flexible calendar detection**: Supports any time interval (1 minute, 5 minutes, 10 minutes, etc.)
+- **V2 concentration mode support**:
+  - Auto-detection of V2 concentration mode via "Enter office" button
+  - Multi-language support (English "Enter office" / Japanese "オフィスに入る")
+  - Automatic clicking to exit concentration mode when toggled off
 - **Version indicators**: Popup UI now shows "(V1 only)" and "(V2 only)" labels for version-specific features
 - **Improved reliability**: DOM-based detection (V2) is more accurate than console log monitoring (V1)
 - **Enhanced debugging**: Comprehensive debug logging to diagnose detection and audio issues
+
+### Version 1.6 - Enhanced DOM-Based Detection
+- **DOM-based wave detection**: Added MutationObserver to detect wave notifications by DOM content ("waved to you")
+- **Dual-method detection**: Combines console log monitoring and DOM observation for improved reliability
+- **Better notification distinction**: More accurate wave detection using actual notification elements
 
 ### Version 1.5 - Gather V2 Support
 - **Gather V2 domain support**: Added support for the new Gather V2 domain (`app.v2.gather.town`)
