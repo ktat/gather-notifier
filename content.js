@@ -274,15 +274,28 @@ function setupDOMObserver() {
               }
             });
 
-            // Wave detection - extract name from "$name waved to you" pattern
+            // Wave detection - multi-language support
+            let waveMatch = null;
+            let userName = null;
+
+            // English: "$name waved to you"
             if (textContent.includes(' waved to you')) {
+              waveMatch = textContent.match(/(.+?)\s+waved to you/);
+            }
+            // Portuguese: "$name acenou para você"
+            else if (textContent.includes(' acenou para você')) {
+              waveMatch = textContent.match(/(.+?)\s+acenou para você/);
+            }
+            // Japanese: "$nameさんが手を振りました。"
+            else if (textContent.includes('さんが手を振りました')) {
+              waveMatch = textContent.match(/(.+?)さんが手を振りました/);
+            }
+
+            if (waveMatch) {
               console.log('[WAVE-NOTIFIER-CONTENT] DOM-based wave detection:', textContent.substring(0, 100));
 
-              // Extract the name before " waved to you"
-              let userName = null;
-              const match = textContent.match(/(.+?)\s+waved to you/);
-              if (match && match[1]) {
-                userName = match[1].trim();
+              if (waveMatch[1]) {
+                userName = waveMatch[1].trim();
                 console.log('[WAVE-NOTIFIER-CONTENT] Extracted user name:', userName);
               }
 
@@ -298,8 +311,20 @@ function setupDOMObserver() {
               });
             }
 
-            // Calendar detection - check for "in $n minutes" pattern
-            const calendarMatch = textContent.match(/in (\d+) minutes?/);
+            // Calendar detection - multi-language support
+            let calendarMatch = null;
+
+            // English: "in $n minutes"
+            calendarMatch = textContent.match(/in (\d+) minutes?/);
+            // Portuguese: "em $n minutos"
+            if (!calendarMatch) {
+              calendarMatch = textContent.match(/em (\d+) minutos?/);
+            }
+            // Japanese: "$n分後"
+            if (!calendarMatch) {
+              calendarMatch = textContent.match(/(\d+)分後/);
+            }
+
             if (calendarMatch) {
               console.log('[WAVE-NOTIFIER-CONTENT] DOM-based calendar detection:', textContent.substring(0, 100));
 
@@ -314,16 +339,29 @@ function setupDOMObserver() {
               });
             }
 
-            // Chat detection - check for "$name sent a message" pattern
+            // Chat detection - multi-language support
+            let chatMatch = null;
+            let chatUserName = null;
+
+            // English: "$name sent a message"
             if (textContent.includes(' sent a message')) {
+              chatMatch = textContent.match(/(.+?)\s+sent a message/);
+            }
+            // Portuguese: "$name enviou uma mensagem"
+            else if (textContent.includes(' enviou uma mensagem')) {
+              chatMatch = textContent.match(/(.+?)\s+enviou uma mensagem/);
+            }
+            // Japanese: "$nameさんがメッセージを送信しました。"
+            else if (textContent.includes('さんがメッセージを送信しました')) {
+              chatMatch = textContent.match(/(.+?)さんがメッセージを送信しました/);
+            }
+
+            if (chatMatch) {
               console.log('[WAVE-NOTIFIER-CONTENT] DOM-based chat detection:', textContent.substring(0, 100));
 
-              // Extract the name before " sent a message"
-              let userName = null;
-              const chatMatch = textContent.match(/(.+?)\s+sent a message/);
-              if (chatMatch && chatMatch[1]) {
-                userName = chatMatch[1].trim();
-                console.log('[WAVE-NOTIFIER-CONTENT] Extracted user name from chat:', userName);
+              if (chatMatch[1]) {
+                chatUserName = chatMatch[1].trim();
+                console.log('[WAVE-NOTIFIER-CONTENT] Extracted user name from chat:', chatUserName);
               }
 
               // Send chat notification to background
@@ -332,7 +370,7 @@ function setupDOMObserver() {
                 message: textContent,
                 type: 'dom',
                 notificationType: 'chat',
-                userName: userName
+                userName: chatUserName
               }).catch(error => {
                 console.error('[WAVE-NOTIFIER-CONTENT] Error sending DOM-based chat detection message:', error);
               });
