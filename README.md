@@ -84,16 +84,18 @@ Open `create-icons.html` in your browser to download icons of each size.
 ## Recent Updates
 
 ### Version 1.6 - Enhanced DOM-Based Detection
-- **Comprehensive DOM-based detection**: All V2 notifications now use MutationObserver for reliable detection
-- **V2 notification patterns**:
-  - Wave: Detects "$name waved to you" in DOM (V2 only)
-  - Chat: Detects "$name sent a message" in DOM (V2 only)
-  - Calendar: Detects "in $n minutes" in DOM (V2 only)
-  - Call: Console log detection "Alerting Ring event" (V1 only)
+- **V2 notifications (DOM-based detection)**:
+  - Wave: Detects "$name waved to you" in DOM
+  - Chat: Detects "$name sent a message" in DOM
+  - Calendar: Detects "in $n minutes" in DOM
+- **V1 notifications (Console log detection)**:
+  - Wave: "Alerting Wave event"
+  - Chat: "Skipping ChatV2 notification"
+  - Call: "Alerting Ring event"
 - **User name extraction**: Wave and Chat notifications now include the sender's name (e.g., "John waved to you!")
 - **Flexible calendar detection**: Supports any time interval (1 minute, 5 minutes, 10 minutes, etc.)
 - **Version indicators**: Popup UI now shows "(V1 only)" and "(V2 only)" labels for version-specific features
-- **Improved reliability**: DOM-based detection is more accurate than console log monitoring
+- **Improved reliability**: DOM-based detection (V2) is more accurate than console log monitoring (V1)
 - **Enhanced debugging**: Comprehensive debug logging to diagnose detection and audio issues
 
 ### Version 1.5 - Gather V2 Support

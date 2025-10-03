@@ -94,16 +94,18 @@ gather.townでwave、chat、callの通知を受信したときにデスクトッ
 ## 最新のアップデート
 
 ### バージョン 1.6 - 強化されたDOMベース検出
-- **包括的なDOMベース検出**: すべてのV2通知がMutationObserverを使用した信頼性の高い検出を実現
-- **V2通知パターン**:
-  - Wave: DOMで「$name waved to you」を検出（V2のみ）
-  - Chat: DOMで「$name sent a message」を検出（V2のみ）
-  - カレンダー: DOMで「in $n minutes」を検出（V2のみ）
-  - Call: コンソールログ検出「Alerting Ring event」（V1のみ）
+- **V2通知（DOMベース検出）**:
+  - Wave: DOMで「$name waved to you」を検出
+  - Chat: DOMで「$name sent a message」を検出
+  - カレンダー: DOMで「in $n minutes」を検出
+- **V1通知（コンソールログ検出）**:
+  - Wave: 「Alerting Wave event」
+  - Chat: 「Skipping ChatV2 notification」
+  - Call: 「Alerting Ring event」
 - **ユーザー名抽出**: WaveとChat通知に送信者の名前が含まれるようになりました（例: 「John waved to you!」）
 - **柔軟なカレンダー検出**: 任意の時間間隔に対応（1分、5分、10分など）
 - **バージョン表示**: ポップアップUIにバージョン固有機能の「(V1のみ)」「(V2のみ)」ラベルを表示
-- **信頼性向上**: DOMベース検出はコンソールログ監視よりも正確
+- **信頼性向上**: DOMベース検出（V2）はコンソールログ監視（V1）よりも正確
 - **デバッグ強化**: 検出と音声問題を診断するための包括的なデバッグログ
 
 ### バージョン 1.5 - Gather V2 対応
