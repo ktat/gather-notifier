@@ -31,6 +31,22 @@
     "message": "Jemand ruft dich in gather.town an!",
     "description": "Desktop-Benachrichtigungsnachricht für Anruf"
   },
+  "calendarNotificationTitle": {
+    "message": "Gather.town Kalender!",
+    "description": "Desktop-Benachrichtigungstitel für Kalender"
+  },
+  "calendarNotificationMessage": {
+    "message": "Du hast einen Kalendereintrag in gather.town!",
+    "description": "Desktop-Benachrichtigungsnachricht für Kalender"
+  },
+  "chatOrWaveNotificationTitle": {
+    "message": "Gather.town Chat oder Winken!",
+    "description": "Desktop-Benachrichtigungstitel für Chat oder Winken (mehrdeutig)"
+  },
+  "chatOrWaveNotificationMessage": {
+    "message": "Jemand hat dir eine Chat-Nachricht gesendet oder dir zugewinkt in gather.town!",
+    "description": "Desktop-Benachrichtigungsnachricht für Chat oder Winken (mehrdeutig)"
+  },
   "concentrationModeActive": {
     "message": "Konzentrationsmodus ist aktiv",
     "description": "Statusnachricht wenn Konzentrationsmodus aktiv ist"
@@ -42,6 +58,18 @@
   "goToGather": {
     "message": "Zu Gather.town gehen",
     "description": "Schaltflächentext um zu Gather.town zu gehen"
+  },
+  "gatherVersion": {
+    "message": "Gather Version",
+    "description": "Sektionstitel für Gather-Versionsauswahl"
+  },
+  "gatherV1": {
+    "message": "V1 (app.gather.town)",
+    "description": "Option für Gather V1"
+  },
+  "gatherV2": {
+    "message": "V2 (app.v2.gather.town)",
+    "description": "Option für Gather V2"
   },
   "notificationSettings": {
     "message": "Benachrichtigungseinstellungen",
@@ -58,6 +86,10 @@
   "enableCallNotifications": {
     "message": "Anruf-Benachrichtigungen aktivieren",
     "description": "Kontrollkästchen-Label für Anruf-Benachrichtigungen"
+  },
+  "enableCalendarNotifications": {
+    "message": "Kalender-Benachrichtigungen aktivieren",
+    "description": "Kontrollkästchen-Label für Kalender-Benachrichtigungen"
   },
   "endConcentrationMode": {
     "message": "Konzentrationsmodus beenden",

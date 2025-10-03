@@ -47,7 +47,15 @@
         notificationType = 'chat';
       } else if (message.includes('Alerting Ring event')) {
         notificationType = 'call';
+      } else if (message.includes('[Violation] Forced reflow while executing JavaScript took')) {
+        // Gather V2: Wave notification - DISABLED (use DOM detection instead)
+        // notificationType = 'wave';
       }
+      // Temporarily disabled
+      // else if (message.includes('Tried to flush send metric for message') && message.includes('but no pending metric found')) {
+      //   // Gather V2: Chat or Wave notification (ambiguous - can be either)
+      //   notificationType = 'chat-or-wave';
+      // }
       
       if (notificationType) {
         originalConsole.log(PREFIX + ' 🌊 NOTIFICATION DETECTED (' + notificationType + '):', message);

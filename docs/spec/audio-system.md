@@ -44,3 +44,36 @@ chrome.runtime.sendMessage({ action: 'stopSound' });
 ## エラーハンドリング
 - AudioContext作成失敗時はコンソールにエラー出力
 - メッセージ送信失敗時はcatch処理
+
+## デバッグログ
+
+### Background Script (debugMode有効時のみ)
+- `[DEBUG] [BACKGROUND] Offscreen document already created` - 既にoffscreenが作成済み
+- `[DEBUG] [BACKGROUND] Offscreen document created successfully` - offscreen作成成功
+- `[DEBUG] [BACKGROUND] playNotificationSound called, type: <type>` - 音声再生呼び出し
+- `[DEBUG] [BACKGROUND] Sending playSound message to offscreen` - offscreenへメッセージ送信
+- `[DEBUG] [BACKGROUND] playSound response: <response>` - offscreenからの応答
+- `[DEBUG] [BACKGROUND] Stopping notification sound` - 音声停止中
+- `[DEBUG] [BACKGROUND] Cannot stop sound - offscreen not created` - offscreen未作成で停止不可
+
+### Offscreen Script (常時出力)
+- `[OFFSCREEN] Offscreen document loaded` - offscreenドキュメント読み込み完了
+- `[OFFSCREEN] Message received: <message>` - メッセージ受信
+- `[OFFSCREEN] Playing sound, type: <type>` - 音声再生開始
+- `[OFFSCREEN] Stopping sound` - 音声停止
+- `[OFFSCREEN] playNotificationSound started, type: <type>` - 再生処理開始
+- `[OFFSCREEN] Sound config: <config>` - 音声設定
+- `[OFFSCREEN] Initial sound played` - 初回音声再生完了
+- `[OFFSCREEN] Playing loop sound` - ループ音声再生
+- `[OFFSCREEN] Audio player interval set: <interval> ms` - インターバル設定完了
+- `[OFFSCREEN] playSingleSound called with config: <config>` - 単一音声再生呼び出し
+- `[OFFSCREEN] Sound oscillator started and scheduled to stop` - オシレーター開始
+- `[OFFSCREEN] Clearing audio player interval` - インターバルクリア
+- `[OFFSCREEN] No audio player to stop` - 停止する音声なし
+
+### トラブルシューティング用途
+これらのログは音声が再生されない問題の診断に使用：
+1. offscreenドキュメントが正常に作成されているか
+2. メッセージがoffscreenに到達しているか
+3. 音声再生処理が開始されているか
+4. オーディオパイプラインにエラーがないか

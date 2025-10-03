@@ -134,6 +134,16 @@
   <button id="goToGatherBtn" data-i18n="goToGather">Go to Gather.town</button>
   
   <div class="config-section">
+    <h4 data-i18n="gatherVersion">Gather Version</h4>
+    <div style="margin: 5px 0;">
+      <select id="gatherVersionSelect" style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 3px; font-size: 12px;">
+        <option value="v1" data-i18n-option="gatherV1">V1 (app.gather.town)</option>
+        <option value="v2" data-i18n-option="gatherV2">V2 (app.v2.gather.town)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="config-section">
     <h4 data-i18n="notificationSettings">Notification Settings</h4>
     <div class="checkbox-group">
       <label>
@@ -149,8 +159,16 @@
     </div>
     <div class="checkbox-group">
       <label>
-        <input type="checkbox" id="enableCall" checked>  
+        <input type="checkbox" id="enableCall" checked>
         <span data-i18n="enableCallNotifications">Enable call notifications</span>
+        <span style="font-size: 10px; color: #666; margin-left: 4px;">(V1 only)</span>
+      </label>
+    </div>
+    <div class="checkbox-group">
+      <label>
+        <input type="checkbox" id="enableCalendar" checked>
+        <span data-i18n="enableCalendarNotifications">Enable calendar notifications</span>
+        <span style="font-size: 10px; color: #666; margin-left: 4px;">(V2 only)</span>
       </label>
     </div>
   </div>

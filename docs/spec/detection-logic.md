@@ -1,10 +1,24 @@
 # 検出ロジック
 
 ## 検出対象
+
+### Gather V1のメッセージパターン
 gather.townページのコンソールログで以下の文字列を検出：
 - `Alerting Wave event` - Wave通知
-- `Skipping ChatV2 notification` - Chat通知  
+- `Skipping ChatV2 notification` - Chat通知
 - `Alerting Ring event` - Call通知
+
+### Gather V2のメッセージパターン
+app.v2.gather.townページで以下の方法で検出：
+- `$name waved to you` - Wave通知（DOM検出、MutationObserver使用）
+- `$name sent a message` - Chat通知（DOM検出、MutationObserver使用）
+- `in $n minutes` - カレンダー通知（DOM検出、MutationObserver使用）
+
+**注意事項**:
+- V1とV2の両方のパターンを同時にサポートしているため、V1ユーザーもV2ユーザーも問題なく使用できます
+- V2の検出はすべてDOM-based detection（MutationObserver）を使用し、コンソールログ方式は無効化されています
+- Wave通知とChat通知では、ユーザー名を抽出して通知メッセージに含めます（例: "John waved to you!"）
+- カレンダー通知は任意の分数（1 minute, 5 minutes, 10 minutesなど）に対応しています
 
 ## システム構成図
 
@@ -178,6 +192,98 @@ console.log = function(...args) {
 - `testMainConsole()` - 手動テスト関数
 - `[WAVE-NOTIFIER-MAIN] Intercepted` - 全ログ監視状況表示
 - 30秒ごとの生存確認ログ
+
+### DOM-based Detection
+V2の通知はMutationObserverを使用してDOMの変更を監視：
+
+#### Wave検出
+```javascript
+// Wave detection - extract name from "$name waved to you" pattern
+if (textContent.includes(' waved to you')) {
+  // Extract the name before " waved to you"
+  let userName = null;
+  const match = textContent.match(/(.+?)\s+waved to you/);
+  if (match && match[1]) {
+    userName = match[1].trim();
+  }
+
+  // Send wave notification with userName
+  chrome.runtime.sendMessage({
+    action: 'waveDetected',
+    notificationType: 'wave',
+    userName: userName
+  });
+}
+```
+
+#### Chat検出
+```javascript
+// Chat detection - check for "$name sent a message" pattern
+if (textContent.includes(' sent a message')) {
+  // Extract the name before " sent a message"
+  let userName = null;
+  const chatMatch = textContent.match(/(.+?)\s+sent a message/);
+  if (chatMatch && chatMatch[1]) {
+    userName = chatMatch[1].trim();
+  }
+
+  // Send chat notification with userName
+  chrome.runtime.sendMessage({
+    action: 'waveDetected',
+    notificationType: 'chat',
+    userName: userName
+  });
+}
+```
+
+#### Calendar検出
+```javascript
+// Calendar detection - check for "in $n minutes" pattern
+const calendarMatch = textContent.match(/in (\d+) minutes?/);
+if (calendarMatch) {
+  // Send calendar notification
+  chrome.runtime.sendMessage({
+    action: 'waveDetected',
+    notificationType: 'calendar'
+  });
+}
+```
+
+**特徴**:
+- コンソールログより信頼性が高い
+- リアルタイムなDOM変更検出
+- ユーザー名を抽出して通知に含める（WaveとChat）
+- 柔軟なパターンマッチング（カレンダーは任意の分数に対応）
+- V1では従来のコンソール検出を継続使用
+
+**初期化**:
+```javascript
+function setupDOMObserver() {
+  const notificationObserver = new MutationObserver((mutations) => {
+    // mutation handling...
+  });
+
+  // Wait for body to be available
+  if (document.body) {
+    notificationObserver.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  } else {
+    // Poll every 100ms until body is ready
+    const checkBody = setInterval(() => {
+      if (document.body) {
+        clearInterval(checkBody);
+        notificationObserver.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+      }
+    }, 100);
+  }
+}
+setupDOMObserver();
+```
 
 ## 状態ストレージ管理
 

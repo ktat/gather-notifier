@@ -6,6 +6,23 @@
 3. **デバッグ**: F12でoffscreen.jsのエラーログ確認
 4. **再作成**: 拡張機能の再読み込み
 
+### デバッグログの確認手順
+1. **debugModeを有効化**: ポップアップでDebug Modeをオンにする
+2. **Background Script確認**:
+   - `chrome://extensions/` → 拡張機能の「service worker」リンクをクリック
+   - `[DEBUG] [BACKGROUND]`で始まるログを確認
+   - offscreen作成、メッセージ送信、応答受信のログを追跡
+3. **Offscreen Script確認**:
+   - 同じDevToolsで`[OFFSCREEN]`で始まるログを確認
+   - メッセージ受信、音声設定、再生開始のログを追跡
+4. **エラー確認**: 赤色のエラーログがないか確認
+
+### 音声が鳴らない場合のチェックポイント
+- `[BACKGROUND] Offscreen document created successfully` が出ているか
+- `[OFFSCREEN] Message received: {action: "playSound", ...}` が出ているか
+- `[OFFSCREEN] Sound oscillator started and scheduled to stop` が出ているか
+- エラーログ（赤色）が出ていないか
+
 ## ログ検出されない
 1. **スクリプト注入確認**: `[WAVE-NOTIFIER-MAIN]`ログの存在
 2. **コンソール上書き確認**: `testMainConsole()`実行

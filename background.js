@@ -34,21 +34,21 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 });
 
 // wave検出時の処理
-function handleWaveDetection(message, notificationType = 'wave') {
+function handleWaveDetection(messageData, notificationType = 'wave') {
   // デバッグモード時のみログ出力
   chrome.storage.local.get(['debugMode'], (result) => {
     if (result.debugMode) {
-      console.log('[DEBUG] Notification detected from console:', message, 'Type:', notificationType);
+      console.log('[DEBUG] Notification detected from console:', messageData, 'Type:', notificationType);
     }
   });
   
   // 設定を確認して通知が有効かチェック
-  chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'isConcentrationMode', 'debugMode'], (result) => {
+  chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'enableCalendar', 'isConcentrationMode', 'debugMode'], (result) => {
     const debugMode = result.debugMode || false;
-    
+
     if (debugMode) {
       console.log('[DEBUG] handleWaveDetection called with:', {
-        message: message,
+        messageData: messageData,
         notificationType: notificationType,
         settings: result,
         hasNotification: hasNotification,
@@ -57,7 +57,7 @@ function handleWaveDetection(message, notificationType = 'wave') {
     }
     const isConcentrationMode = result.isConcentrationMode || false;
     let isNotificationEnabled = false;
-    
+
     // 応答不可モード中は通知しない
     if (isConcentrationMode) {
       if (debugMode) {
@@ -65,7 +65,7 @@ function handleWaveDetection(message, notificationType = 'wave') {
       }
       return;
     }
-    
+
     // 通知タイプごとの有効性をチェック
     switch(notificationType) {
       case 'chat':
@@ -73,6 +73,13 @@ function handleWaveDetection(message, notificationType = 'wave') {
         break;
       case 'call':
         isNotificationEnabled = result.enableCall !== false; // デフォルトtrue
+        break;
+      case 'calendar':
+        isNotificationEnabled = result.enableCalendar !== false; // デフォルトtrue
+        break;
+      case 'chat-or-wave':
+        // Ambiguous notification - enabled if either chat or wave is enabled
+        isNotificationEnabled = (result.enableChat !== false) || (result.enableWave !== false);
         break;
       case 'wave':
       default:
@@ -97,18 +104,34 @@ function handleWaveDetection(message, notificationType = 'wave') {
       case 'chat':
         title = chrome.i18n.getMessage('chatNotificationTitle');
         notificationMessage = chrome.i18n.getMessage('chatNotificationMessage');
+        // If userName is provided, include it in the message
+        if (messageData && messageData.userName) {
+          notificationMessage = messageData.userName + ' ' + notificationMessage;
+        }
         break;
       case 'call':
         title = chrome.i18n.getMessage('callNotificationTitle');
         notificationMessage = chrome.i18n.getMessage('callNotificationMessage');
         break;
+      case 'calendar':
+        title = chrome.i18n.getMessage('calendarNotificationTitle');
+        notificationMessage = chrome.i18n.getMessage('calendarNotificationMessage');
+        break;
+      case 'chat-or-wave':
+        title = chrome.i18n.getMessage('chatOrWaveNotificationTitle');
+        notificationMessage = chrome.i18n.getMessage('chatOrWaveNotificationMessage');
+        break;
       case 'wave':
       default:
         title = chrome.i18n.getMessage('waveNotificationTitle');
         notificationMessage = chrome.i18n.getMessage('waveNotificationMessage');
+        // If userName is provided, include it in the message
+        if (messageData && messageData.userName) {
+          notificationMessage = messageData.userName + ' ' + notificationMessage;
+        }
         break;
     }
-    
+
     // デスクトップ通知を表示
     chrome.notifications.create({
       type: 'basic',
@@ -166,8 +189,15 @@ chrome.runtime.onStartup.addListener(() => {
 
 // offscreenドキュメントを作成
 async function createOffscreen() {
-  if (offscreenCreated) return;
-  
+  if (offscreenCreated) {
+    chrome.storage.local.get(['debugMode'], (result) => {
+      if (result.debugMode) {
+        console.log('[DEBUG] [BACKGROUND] Offscreen document already created');
+      }
+    });
+    return;
+  }
+
   try {
     await chrome.offscreen.createDocument({
       url: 'offscreen.html',
@@ -175,28 +205,63 @@ async function createOffscreen() {
       justification: 'Play notification sound when wave is detected'
     });
     offscreenCreated = true;
+    chrome.storage.local.get(['debugMode'], (result) => {
+      if (result.debugMode) {
+        console.log('[DEBUG] [BACKGROUND] Offscreen document created successfully');
+      }
+    });
   } catch (error) {
-    console.error('Error creating offscreen document:', error);
+    console.error('[BACKGROUND] Error creating offscreen document:', error);
   }
 }
 
 // 音声再生関数
 async function playNotificationSound(notificationType = 'wave') {
   try {
+    chrome.storage.local.get(['debugMode'], (result) => {
+      if (result.debugMode) {
+        console.log('[DEBUG] [BACKGROUND] playNotificationSound called, type:', notificationType);
+      }
+    });
+
     await createOffscreen();
-    chrome.runtime.sendMessage({ action: 'playSound', notificationType: notificationType });
+
+    chrome.storage.local.get(['debugMode'], (result) => {
+      if (result.debugMode) {
+        console.log('[DEBUG] [BACKGROUND] Sending playSound message to offscreen');
+      }
+    });
+
+    chrome.runtime.sendMessage({ action: 'playSound', notificationType: notificationType }, (response) => {
+      chrome.storage.local.get(['debugMode'], (result) => {
+        if (result.debugMode) {
+          console.log('[DEBUG] [BACKGROUND] playSound response:', response);
+        }
+      });
+    });
   } catch (error) {
-    console.error('Error playing notification sound:', error);
+    console.error('[BACKGROUND] Error playing notification sound:', error);
   }
 }
 
 async function stopNotificationSound() {
   try {
     if (offscreenCreated) {
+      chrome.storage.local.get(['debugMode'], (result) => {
+        if (result.debugMode) {
+          console.log('[DEBUG] [BACKGROUND] Stopping notification sound');
+        }
+      });
       chrome.runtime.sendMessage({ action: 'stopSound' });
+    } else {
+      chrome.storage.local.get(['debugMode'], (result) => {
+        if (result.debugMode) {
+          console.log('[DEBUG] [BACKGROUND] Cannot stop sound - offscreen not created');
+        }
+      });
     }
   } catch (error) {
-    console.error('Error stopping notification sound:', error);
+    console.error('[BACKGROUND] Error stopping notification sound:', error);
   }
 }
 
@@ -238,7 +303,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     stopNotificationSound();
   } else if (message.action === 'waveDetected') {
     // content scriptからのwave検出メッセージ
-    handleWaveDetection(message.message, message.notificationType);
+    handleWaveDetection(message, message.notificationType);
   } else if (message.action === 'toggleConcentrationMode') {
     // 応答不可モード切り替え
     toggleConcentrationMode(message.isConcentrationMode);
@@ -292,15 +357,17 @@ setInterval(checkConcentrationModeStatus, 1000);
 chrome.runtime.onInstalled.addListener(() => {
   hasNotification = false;
   updateBadge();
-  chrome.storage.local.set({ 
+  chrome.storage.local.set({
     hasNotification: false,
     enableWave: true,
     enableChat: true,
     enableCall: true,
+    enableCalendar: true,
+    gatherVersion: 'v1',
     isConcentrationMode: false,
     debugMode: false
   });
-  
+
   // 初期状態を設定
   chrome.storage.local.get(['isConcentrationMode'], (result) => {
     previousConcentrationMode = result.isConcentrationMode || false;

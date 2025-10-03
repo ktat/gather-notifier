@@ -48,10 +48,24 @@ script.textContent = `
         originalMethods.log(PREFIX + ' [DEBUG] Intercepted ' + type + ':', message.substring(0, 200));
       }
       
-      // wave関連のメッセージを検出
+      // wave関連のメッセージを検出（V1とV2の両方に対応）
+      let shouldNotify = false;
+      // V1のメッセージパターン
       if (message.includes('Alerting Wave event') || message.includes('Skipping ChatV2 notification')) {
+        shouldNotify = true;
+      }
+      // V2のメッセージパターン
+      // Note: V2 wave and calendar detection use DOM-based detection only (see MutationObserver below)
+      // V2 Wave detection disabled - using DOM detection instead
+      // message.includes('[Violation] Forced reflow while executing JavaScript took')
+      // V2 Calendar detection disabled - using DOM detection instead
+      // message.includes('User calendar events updated')
+      // V2 Chat/Wave detection temporarily disabled
+      // (message.includes('Tried to flush send metric for message') && message.includes('but no pending metric found'))
+
+      if (shouldNotify) {
         originalMethods.log(PREFIX + ' 🌊 Wave event detected:', message);
-        
+
         // カスタムイベントを発火してcontent scriptに通知
         window.dispatchEvent(new CustomEvent('waveDetected', {
           detail: { message: message, type: type }
@@ -221,6 +235,131 @@ window.testChatV2Notifier = function() {
   console.log('Skipping ChatV2 notification - MANUAL TEST');
   console.log('This should trigger a ChatV2 notification');
 };
+
+// DOM-based wave and calendar detection using MutationObserver
+// This provides more accurate detection by watching for DOM changes
+function setupDOMObserver() {
+  chrome.storage.local.get(['debugMode'], (result) => {
+    if (result.debugMode) {
+      console.log('[WAVE-NOTIFIER-CONTENT] [DEBUG] Setting up DOM observer');
+    }
+  });
+
+  const notificationObserver = new MutationObserver((mutations) => {
+    chrome.storage.local.get(['debugMode'], (result) => {
+      if (result.debugMode) {
+        console.log('[WAVE-NOTIFIER-CONTENT] [DEBUG] DOM mutations detected:', mutations.length);
+      }
+    });
+
+    for (const mutation of mutations) {
+      if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+        mutation.addedNodes.forEach((node) => {
+          // Check if the node or its children contain notification text
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            const textContent = node.textContent || '';
+
+            // Debug: log all text content changes (only in debug mode)
+            chrome.storage.local.get(['debugMode'], (result) => {
+              if (result.debugMode && textContent.trim().length > 0 && textContent.trim().length < 200) {
+                console.log('[WAVE-NOTIFIER-CONTENT] [DEBUG] DOM text added:', textContent.substring(0, 100));
+              }
+            });
+
+            // Wave detection - extract name from "$name waved to you" pattern
+            if (textContent.includes(' waved to you')) {
+              console.log('[WAVE-NOTIFIER-CONTENT] DOM-based wave detection:', textContent.substring(0, 100));
+
+              // Extract the name before " waved to you"
+              let userName = null;
+              const match = textContent.match(/(.+?)\s+waved to you/);
+              if (match && match[1]) {
+                userName = match[1].trim();
+                console.log('[WAVE-NOTIFIER-CONTENT] Extracted user name:', userName);
+              }
+
+              // Send wave notification to background
+              chrome.runtime.sendMessage({
+                action: 'waveDetected',
+                message: textContent,
+                type: 'dom',
+                notificationType: 'wave',
+                userName: userName
+              }).catch(error => {
+                console.error('[WAVE-NOTIFIER-CONTENT] Error sending DOM-based wave detection message:', error);
+              });
+            }
+
+            // Calendar detection - check for "in $n minutes" pattern
+            const calendarMatch = textContent.match(/in (\d+) minutes?/);
+            if (calendarMatch) {
+              console.log('[WAVE-NOTIFIER-CONTENT] DOM-based calendar detection:', textContent.substring(0, 100));
+
+              // Send calendar notification to background
+              chrome.runtime.sendMessage({
+                action: 'waveDetected',
+                message: textContent,
+                type: 'dom',
+                notificationType: 'calendar'
+              }).catch(error => {
+                console.error('[WAVE-NOTIFIER-CONTENT] Error sending DOM-based calendar detection message:', error);
+              });
+            }
+
+            // Chat detection - check for "$name sent a message" pattern
+            if (textContent.includes(' sent a message')) {
+              console.log('[WAVE-NOTIFIER-CONTENT] DOM-based chat detection:', textContent.substring(0, 100));
+
+              // Extract the name before " sent a message"
+              let userName = null;
+              const chatMatch = textContent.match(/(.+?)\s+sent a message/);
+              if (chatMatch && chatMatch[1]) {
+                userName = chatMatch[1].trim();
+                console.log('[WAVE-NOTIFIER-CONTENT] Extracted user name from chat:', userName);
+              }
+
+              // Send chat notification to background
+              chrome.runtime.sendMessage({
+                action: 'waveDetected',
+                message: textContent,
+                type: 'dom',
+                notificationType: 'chat',
+                userName: userName
+              }).catch(error => {
+                console.error('[WAVE-NOTIFIER-CONTENT] Error sending DOM-based chat detection message:', error);
+              });
+            }
+          }
+        });
+      }
+    }
+  });
+
+  // Wait for body to be available
+  if (document.body) {
+    notificationObserver.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+    console.log('[WAVE-NOTIFIER-CONTENT] DOM-based notification observer initialized and observing');
+  } else {
+    console.log('[WAVE-NOTIFIER-CONTENT] document.body not ready, waiting...');
+    // Wait for DOM to be ready
+    const checkBody = setInterval(() => {
+      if (document.body) {
+        clearInterval(checkBody);
+        notificationObserver.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+        console.log('[WAVE-NOTIFIER-CONTENT] DOM-based notification observer initialized and observing (delayed)');
+      }
+    }, 100);
+  }
+}
+
+// Initialize DOM observer
+setupDOMObserver();
 
 // gather.townページでのクリック検出
 document.addEventListener('click', function() {

@@ -16,7 +16,8 @@
   "host_permissions": [
     "*://cdn.gather.town/*",
     "*://gather.town/*",
-    "*://app.gather.town/*"
+    "*://app.gather.town/*",
+    "*://app.v2.gather.town/*"
   ],
   
   "background": {
@@ -25,13 +26,13 @@
   
   "content_scripts": [
     {
-      "matches": ["*://gather.town/*", "*://app.gather.town/*"],
+      "matches": ["*://gather.town/*", "*://app.gather.town/*", "*://app.v2.gather.town/*"],
       "js": ["content_main.js"],
       "run_at": "document_start",
       "world": "MAIN"
     },
     {
-      "matches": ["*://gather.town/*", "*://app.gather.town/*"],
+      "matches": ["*://gather.town/*", "*://app.gather.town/*", "*://app.v2.gather.town/*"],
       "js": ["content.js"],
       "run_at": "document_start",
       "world": "ISOLATED"
