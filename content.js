@@ -189,11 +189,19 @@ function checkResponseButton() {
     button.innerHTML.trim() === "応答可能にする" || button.textContent.trim() === "応答可能にする"
   );
 
-  // V2: "Enter office" or "External meeting detected" div (multi-language support)
+  // V2: Concentration mode detection (multi-language support)
   const enterOfficeDiv = Array.from(document.querySelectorAll('div')).find(div => {
     const text = div.textContent.trim();
-    return text === "Enter office" || text === "オフィスに入る" || text === "Entrar no escritório" ||
-           text === "External meeting detected" || text === "外部ミーティングが検出されました" || text === "Reunião externa detectada";
+    // Enter office patterns
+    if (text === "Enter office" || text === "オフィスに入る" || text === "Entrar no escritório") {
+      return true;
+    }
+    // External meeting patterns (Go to lobby / Go to desk)
+    if (text === "Go to lobby" || text === "ロビーに行く" || text === "Ir para o lobby" ||
+        text === "Go to desk" || text === "デスクに行く" || text === "Ir para a mesa") {
+      return true;
+    }
+    return false;
   });
 
   // 現在の状態を取得
