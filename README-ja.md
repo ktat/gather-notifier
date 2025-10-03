@@ -93,6 +93,26 @@ gather.townでwave、chat、callの通知を受信したときにデスクトッ
 
 ## 最新のアップデート
 
+### バージョン 1.8 - 多言語対応
+- **V2多言語検出**: すべてのV2通知が英語、ポルトガル語、日本語に対応
+- **Wave検出パターン**:
+  - 英語: "$name waved to you"
+  - ポルトガル語: "$name acenou para você"
+  - 日本語: "$nameさんが手を振りました"
+- **Chat検出パターン**:
+  - 英語: "$name sent a message"
+  - ポルトガル語: "$name enviou uma mensagem"
+  - 日本語: "$nameさんがメッセージを送信しました"
+- **カレンダー検出パターン**:
+  - 英語: "in $n minutes"
+  - ポルトガル語: "em $n minutos"
+  - 日本語: "$n 分後"
+- **応答不可モード検出**:
+  - 英語: "Enter office"
+  - ポルトガル語: "Entrar no escritório"
+  - 日本語: "オフィスに入る"
+- **自動言語検出**: ユーザーのGather V2言語設定とシームレスに連携
+
 ### バージョン 1.7 - 包括的なV2サポート
 - **V2通知（DOMベース検出）**:
   - Wave: DOMで「$name waved to you」を検出

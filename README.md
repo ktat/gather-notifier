@@ -83,6 +83,26 @@ Open `create-icons.html` in your browser to download icons of each size.
 
 ## Recent Updates
 
+### Version 1.8 - Multi-Language Support
+- **V2 multi-language detection**: All V2 notifications now support English, Portuguese, and Japanese
+- **Wave detection patterns**:
+  - English: "$name waved to you"
+  - Portuguese: "$name acenou para você"
+  - Japanese: "$nameさんが手を振りました"
+- **Chat detection patterns**:
+  - English: "$name sent a message"
+  - Portuguese: "$name enviou uma mensagem"
+  - Japanese: "$nameさんがメッセージを送信しました"
+- **Calendar detection patterns**:
+  - English: "in $n minutes"
+  - Portuguese: "em $n minutos"
+  - Japanese: "$n 分後"
+- **Concentration mode detection**:
+  - English: "Enter office"
+  - Portuguese: "Entrar no escritório"
+  - Japanese: "オフィスに入る"
+- **Automatic language detection**: Works seamlessly with user's Gather V2 language preference
+
 ### Version 1.7 - Comprehensive V2 Support
 - **V2 notifications (DOM-based detection)**:
   - Wave: Detects "$name waved to you" in DOM
