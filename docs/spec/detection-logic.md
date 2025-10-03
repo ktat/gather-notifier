@@ -295,10 +295,11 @@ const responseButton = Array.from(document.querySelectorAll('button')).find(butt
   button.innerHTML.trim() === "応答可能にする" || button.textContent.trim() === "応答可能にする"
 );
 
-// V2: "Enter office" div
-const enterOfficeDiv = Array.from(document.querySelectorAll('div')).find(div =>
-  div.textContent.trim() === "Enter office"
-);
+// V2: "Enter office" (English) or "オフィスに入る" (Japanese) div
+const enterOfficeDiv = Array.from(document.querySelectorAll('div')).find(div => {
+  const text = div.textContent.trim();
+  return text === "Enter office" || text === "オフィスに入る";
+});
 
 // 集中モード判定（V1またはV2のいずれかが存在する場合）
 const shouldBeInConcentrationMode = !!(responseButton || enterOfficeDiv);
@@ -311,14 +312,16 @@ if (button.textContent.trim() === "応答可能にする") {
   button.click();
 }
 
-// V2: "Enter office" divをクリック
-if (div.textContent.trim() === "Enter office") {
+// V2: "Enter office" (English) or "オフィスに入る" (Japanese) divをクリック
+const text = div.textContent.trim();
+if (text === "Enter office" || text === "オフィスに入る") {
   div.click();
 }
 ```
 
 **特徴**:
 - V1とV2の両方に対応した自動検出
+- V2は多言語対応（英語・日本語）
 - 5秒ごとにDOM監視して状態を同期
 - 集中モード終了時に適切なボタン/divを自動クリック
 - リトライロジック（最大3回、1秒間隔）
