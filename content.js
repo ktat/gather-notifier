@@ -184,27 +184,35 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 
 // 応答可能にするボタンの状態を監視して自動的に応答不可モードを制御
 function checkResponseButton() {
-  const responseButton = Array.from(document.querySelectorAll('button')).find(button => 
+  // V1: "応答可能にする" button
+  const responseButton = Array.from(document.querySelectorAll('button')).find(button =>
     button.innerHTML.trim() === "応答可能にする" || button.textContent.trim() === "応答可能にする"
   );
-  
+
+  // V2: "Enter office" div (multi-language support)
+  const enterOfficeDiv = Array.from(document.querySelectorAll('div')).find(div => {
+    const text = div.textContent.trim();
+    return text === "Enter office" || text === "オフィスに入る" || text === "Entrar no escritório";
+  });
+
   // 現在の状態を取得
   chrome.storage.local.get(['isConcentrationMode'], (result) => {
     const currentConcentrationMode = result.isConcentrationMode || false;
-    const shouldBeInConcentrationMode = !!responseButton;
-    
+    const shouldBeInConcentrationMode = !!(responseButton || enterOfficeDiv);
+
     // 状態が変わった場合のみ更新
     if (currentConcentrationMode !== shouldBeInConcentrationMode) {
       // デバッグモード時のみログ出力
       chrome.storage.local.get(['debugMode'], (result) => {
         if (result.debugMode) {
-          console.log('[DEBUG] [WAVE-NOTIFIER] Auto-toggling concentration mode:', shouldBeInConcentrationMode);
+          console.log('[DEBUG] [WAVE-NOTIFIER] Auto-toggling concentration mode:', shouldBeInConcentrationMode,
+                      'V1 button:', !!responseButton, 'V2 div:', !!enterOfficeDiv);
         }
       });
       chrome.storage.local.set({ isConcentrationMode: shouldBeInConcentrationMode });
-      chrome.runtime.sendMessage({ 
-        action: 'toggleConcentrationMode', 
-        isConcentrationMode: shouldBeInConcentrationMode 
+      chrome.runtime.sendMessage({
+        action: 'toggleConcentrationMode',
+        isConcentrationMode: shouldBeInConcentrationMode
       }).catch(error => {
         console.error('Error sending auto-toggle message:', error);
       });
@@ -266,15 +274,28 @@ function setupDOMObserver() {
               }
             });
 
-            // Wave detection - extract name from "$name waved to you" pattern
+            // Wave detection - multi-language support
+            let waveMatch = null;
+            let userName = null;
+
+            // English: "$name waved to you"
             if (textContent.includes(' waved to you')) {
+              waveMatch = textContent.match(/(.+?)\s+waved to you/);
+            }
+            // Portuguese: "$name acenou para você"
+            else if (textContent.includes(' acenou para você')) {
+              waveMatch = textContent.match(/(.+?)\s+acenou para você/);
+            }
+            // Japanese: "$nameさんが手を振りました。"
+            else if (textContent.includes('さんが手を振りました')) {
+              waveMatch = textContent.match(/(.+?)さんが手を振りました/);
+            }
+
+            if (waveMatch) {
               console.log('[WAVE-NOTIFIER-CONTENT] DOM-based wave detection:', textContent.substring(0, 100));
 
-              // Extract the name before " waved to you"
-              let userName = null;
-              const match = textContent.match(/(.+?)\s+waved to you/);
-              if (match && match[1]) {
-                userName = match[1].trim();
+              if (waveMatch[1]) {
+                userName = waveMatch[1].trim();
                 console.log('[WAVE-NOTIFIER-CONTENT] Extracted user name:', userName);
               }
 
@@ -290,8 +311,20 @@ function setupDOMObserver() {
               });
             }
 
-            // Calendar detection - check for "in $n minutes" pattern
-            const calendarMatch = textContent.match(/in (\d+) minutes?/);
+            // Calendar detection - multi-language support
+            let calendarMatch = null;
+
+            // English: "in $n minutes"
+            calendarMatch = textContent.match(/in (\d+) minutes?/);
+            // Portuguese: "em $n minutos"
+            if (!calendarMatch) {
+              calendarMatch = textContent.match(/em (\d+) minutos?/);
+            }
+            // Japanese: "$n 分後" (with space)
+            if (!calendarMatch) {
+              calendarMatch = textContent.match(/(\d+)\s*分後/);
+            }
+
             if (calendarMatch) {
               console.log('[WAVE-NOTIFIER-CONTENT] DOM-based calendar detection:', textContent.substring(0, 100));
 
@@ -306,16 +339,29 @@ function setupDOMObserver() {
               });
             }
 
-            // Chat detection - check for "$name sent a message" pattern
+            // Chat detection - multi-language support
+            let chatMatch = null;
+            let chatUserName = null;
+
+            // English: "$name sent a message"
             if (textContent.includes(' sent a message')) {
+              chatMatch = textContent.match(/(.+?)\s+sent a message/);
+            }
+            // Portuguese: "$name enviou uma mensagem"
+            else if (textContent.includes(' enviou uma mensagem')) {
+              chatMatch = textContent.match(/(.+?)\s+enviou uma mensagem/);
+            }
+            // Japanese: "$nameさんがメッセージを送信しました。"
+            else if (textContent.includes('さんがメッセージを送信しました')) {
+              chatMatch = textContent.match(/(.+?)さんがメッセージを送信しました/);
+            }
+
+            if (chatMatch) {
               console.log('[WAVE-NOTIFIER-CONTENT] DOM-based chat detection:', textContent.substring(0, 100));
 
-              // Extract the name before " sent a message"
-              let userName = null;
-              const chatMatch = textContent.match(/(.+?)\s+sent a message/);
-              if (chatMatch && chatMatch[1]) {
-                userName = chatMatch[1].trim();
-                console.log('[WAVE-NOTIFIER-CONTENT] Extracted user name from chat:', userName);
+              if (chatMatch[1]) {
+                chatUserName = chatMatch[1].trim();
+                console.log('[WAVE-NOTIFIER-CONTENT] Extracted user name from chat:', chatUserName);
               }
 
               // Send chat notification to background
@@ -324,7 +370,7 @@ function setupDOMObserver() {
                 message: textContent,
                 type: 'dom',
                 notificationType: 'chat',
-                userName: userName
+                userName: chatUserName
               }).catch(error => {
                 console.error('[WAVE-NOTIFIER-CONTENT] Error sending DOM-based chat detection message:', error);
               });
@@ -392,27 +438,44 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   else if (message.action === 'clickResponseButton') {
     // ボタンを探してクリックする関数
     function findAndClickButton(retryCount = 0) {
+      // V1: "応答可能にする" button
       const buttons = document.querySelectorAll("button");
-      
       let buttonFound = false;
+
       buttons.forEach((button) => {
         if (button.innerHTML.trim() === "応答可能にする" || button.textContent.trim() === "応答可能にする") {
           button.click();
-          // デバッグモード時のみログ出力
           chrome.storage.local.get(['debugMode'], (result) => {
             if (result.debugMode) {
-              console.log('[DEBUG] [WAVE-NOTIFIER] Successfully clicked 応答可能にする button');
+              console.log('[DEBUG] [WAVE-NOTIFIER] Successfully clicked 応答可能にする button (V1)');
             }
           });
           buttonFound = true;
         }
       });
-      
+
+      // V2: "Enter office" div (multi-language: click it to exit concentration mode)
+      if (!buttonFound) {
+        const divs = document.querySelectorAll("div");
+        divs.forEach((div) => {
+          const text = div.textContent.trim();
+          if (text === "Enter office" || text === "オフィスに入る" || text === "Entrar no escritório") {
+            div.click();
+            chrome.storage.local.get(['debugMode'], (result) => {
+              if (result.debugMode) {
+                console.log('[DEBUG] [WAVE-NOTIFIER] Successfully clicked Enter office div (V2):', text);
+              }
+            });
+            buttonFound = true;
+          }
+        });
+      }
+
       if (!buttonFound && retryCount < 3) {
         setTimeout(() => findAndClickButton(retryCount + 1), 1000);
       }
     }
-    
+
     findAndClickButton();
     sendResponse({ success: true });
   }
