@@ -399,27 +399,43 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   else if (message.action === 'clickResponseButton') {
     // ボタンを探してクリックする関数
     function findAndClickButton(retryCount = 0) {
+      // V1: "応答可能にする" button
       const buttons = document.querySelectorAll("button");
-      
       let buttonFound = false;
+
       buttons.forEach((button) => {
         if (button.innerHTML.trim() === "応答可能にする" || button.textContent.trim() === "応答可能にする") {
           button.click();
-          // デバッグモード時のみログ出力
           chrome.storage.local.get(['debugMode'], (result) => {
             if (result.debugMode) {
-              console.log('[DEBUG] [WAVE-NOTIFIER] Successfully clicked 応答可能にする button');
+              console.log('[DEBUG] [WAVE-NOTIFIER] Successfully clicked 応答可能にする button (V1)');
             }
           });
           buttonFound = true;
         }
       });
-      
+
+      // V2: "Enter office" div (click it to exit concentration mode)
+      if (!buttonFound) {
+        const divs = document.querySelectorAll("div");
+        divs.forEach((div) => {
+          if (div.textContent.trim() === "Enter office") {
+            div.click();
+            chrome.storage.local.get(['debugMode'], (result) => {
+              if (result.debugMode) {
+                console.log('[DEBUG] [WAVE-NOTIFIER] Successfully clicked Enter office div (V2)');
+              }
+            });
+            buttonFound = true;
+          }
+        });
+      }
+
       if (!buttonFound && retryCount < 3) {
         setTimeout(() => findAndClickButton(retryCount + 1), 1000);
       }
     }
-    
+
     findAndClickButton();
     sendResponse({ success: true });
   }
