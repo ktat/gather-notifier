@@ -98,7 +98,6 @@ Open `create-icons.html` in your browser to download icons of each size.
   - Auto-detection of V2 concentration mode via "Enter office" button
   - Multi-language support (English "Enter office" / Japanese "オフィスに入る")
   - Automatic clicking to exit concentration mode when toggled off
-- **Version indicators**: Popup UI now shows "(V1 only)" and "(V2 only)" labels for version-specific features
 - **Improved reliability**: DOM-based detection (V2) is more accurate than console log monitoring (V1)
 - **Enhanced debugging**: Comprehensive debug logging to diagnose detection and audio issues
 
@@ -106,6 +105,7 @@ Open `create-icons.html` in your browser to download icons of each size.
 - **DOM-based wave detection**: Added MutationObserver to detect wave notifications by DOM content ("waved to you")
 - **Dual-method detection**: Combines console log monitoring and DOM observation for improved reliability
 - **Better notification distinction**: More accurate wave detection using actual notification elements
+- **Version indicators**: Popup UI now shows "(V1 only)" and "(V2 only)" labels for version-specific features
 
 ### Version 1.5 - Gather V2 Support
 - **Gather V2 domain support**: Added support for the new Gather V2 domain (`app.v2.gather.town`)
