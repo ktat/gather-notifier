@@ -24,7 +24,7 @@ app.v2.gather.townページで以下の方法で検出（多言語対応）：
 #### カレンダー通知（DOM検出、MutationObserver使用）
 - 英語: `in $n minutes`
 - ポルトガル語: `em $n minutos`
-- 日本語: `$n分後`
+- 日本語: `$n 分後`
 
 **注意事項**:
 - V1とV2の両方のパターンを同時にサポートしているため、V1ユーザーもV2ユーザーも問題なく使用できます
@@ -278,9 +278,9 @@ calendarMatch = textContent.match(/in (\d+) minutes?/);
 if (!calendarMatch) {
   calendarMatch = textContent.match(/em (\d+) minutos?/);
 }
-// Japanese: "$n分後"
+// Japanese: "$n 分後"
 if (!calendarMatch) {
-  calendarMatch = textContent.match(/(\d+)分後/);
+  calendarMatch = textContent.match(/(\d+)\s*分後/);
 }
 
 if (calendarMatch) {

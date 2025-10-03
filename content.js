@@ -320,9 +320,9 @@ function setupDOMObserver() {
             if (!calendarMatch) {
               calendarMatch = textContent.match(/em (\d+) minutos?/);
             }
-            // Japanese: "$n分後"
+            // Japanese: "$n 分後" (with space)
             if (!calendarMatch) {
-              calendarMatch = textContent.match(/(\d+)分後/);
+              calendarMatch = textContent.match(/(\d+)\s*分後/);
             }
 
             if (calendarMatch) {
