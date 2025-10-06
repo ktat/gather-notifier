@@ -21,17 +21,18 @@ A Chrome extension that displays desktop notifications when you receive wave, ch
 1. **Notification Detection**: Monitors gather.town console logs to detect wave, chat, call, and calendar notifications
 2. **Desktop Notifications**: Displays desktop notifications when notifications are detected
 3. **Badge Display**: Shows notification status with badges on the extension icon
-4. **Tab Management**: Clear notifications and activate gather.town tab by clicking the icon
-5. **Notification Click**: Click desktop notifications to automatically activate gather.town tab
-6. **Auto Clear**: Automatically clear notifications when gather.town tab becomes active
-7. **Audio Notifications**: Loop audio playback during notifications (stops when notifications are cleared)
-8. **Focus Mode**: Do not disturb mode functionality that disables notifications for a certain period
-9. **Settings Management**: Individual enable/disable toggle for each notification type (Wave, Chat, Call, Calendar)
-10. **Version Selection**: Choose between Gather V1 or V2 for tab creation
-11. **Auto Tab Creation**: Automatic tab creation when gather.town tab is not found (uses selected version)
-12. **Language Selection**: Manual language selection dropdown in popup (Auto/English/Japanese/German/French)
-13. **Debug Mode**: Debug logging toggle for troubleshooting (enabled via checkbox in bottom left of popup)
-14. **Internationalization**: Automatically displays messages in appropriate language based on browser language settings or manual selection
+4. **Calendar Timing Settings**: Customize when to receive calendar notifications (0-5 minutes before)
+5. **Tab Management**: Clear notifications and activate gather.town tab by clicking the icon
+6. **Notification Click**: Click desktop notifications to automatically activate gather.town tab
+7. **Auto Clear**: Automatically clear notifications when gather.town tab becomes active
+8. **Audio Notifications**: Loop audio playback during notifications (stops when notifications are cleared)
+9. **Focus Mode**: Do not disturb mode functionality that disables notifications for a certain period
+10. **Settings Management**: Individual enable/disable toggle for each notification type (Wave, Chat, Call, Calendar)
+11. **Version Selection**: Choose between Gather V1 or V2 for tab creation
+12. **Auto Tab Creation**: Automatic tab creation when gather.town tab is not found (uses selected version)
+13. **Language Selection**: Manual language selection dropdown in popup (Auto/English/Japanese/German/French)
+14. **Debug Mode**: Debug logging toggle for troubleshooting (enabled via checkbox in bottom left of popup)
+15. **Internationalization**: Automatically displays messages in appropriate language based on browser language settings or manual selection
 
 ## Installation
 
@@ -82,6 +83,19 @@ Open `create-icons.html` in your browser to download icons of each size.
 - `README-ja.md` - Japanese version of this README
 
 ## Recent Updates
+
+### Version 1.9 - Enhanced Notifications & Reliability
+- **Calendar notification timing**: Configurable notification timing (0-5 minutes before events)
+- **Improved notification messages**:
+  - Dynamic username insertion in wave and chat notifications
+  - Localized fallback to "Someone" when username is unavailable
+  - All notification messages now consistently show sender information
+- **Enhanced audio reliability**:
+  - Improved offscreen document initialization with ready state verification
+  - Reduced audio playback failures through better lifecycle management
+- **Extended external meeting detection**:
+  - Added "Go to lobby" and "Go to desk" patterns for V2
+  - Better coverage of concentration mode edge cases
 
 ### Version 1.8 - Multi-Language Support
 - **V2 multi-language detection**: All V2 notifications now support English, Portuguese, and Japanese

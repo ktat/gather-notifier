@@ -7,8 +7,10 @@
 - **language** (string) - UI言語設定 ('auto', 'en', 'ja', 'de', 'fr')
 - **notificationSettings** (object) - 通知種別設定
   - **wave** (boolean) - Wave通知の有効/無効
-  - **chat** (boolean) - Chat通知の有効/無効  
+  - **chat** (boolean) - Chat通知の有効/無効
   - **call** (boolean) - Call通知の有効/無効
+  - **calendar** (boolean) - カレンダー通知の有効/無効
+- **calendarNotificationTiming** (number) - カレンダー通知タイミング（0-5分前、デフォルト: 5）
 
 ## 状態保存
 - `chrome.storage.local` - ブラウザ再起動後も状態保持
@@ -60,14 +62,18 @@
   // 通知関連状態
   hasNotification: boolean,        // 未読通知の有無
   enableWave: boolean,            // Wave通知の有効性 (デフォルト: true)
-  enableChat: boolean,            // Chat通知の有効性 (デフォルト: true)  
+  enableChat: boolean,            // Chat通知の有効性 (デフォルト: true)
   enableCall: boolean,            // Call通知の有効性 (デフォルト: true)
-  
+  enableCalendar: boolean,        // カレンダー通知の有効性 (デフォルト: true)
+  calendarNotificationTiming: number, // カレンダー通知タイミング（何分前に通知するか: 0-5、デフォルト: 5）
+
   // 応答不可モード
   isConcentrationMode: boolean,   // 応答不可モードの状態 (デフォルト: false)
-  
+
   // UI設定
-  language: string               // UI言語設定 (デフォルト: 'auto')
+  language: string,              // UI言語設定 (デフォルト: 'auto')
+  gatherVersion: string,         // Gatherバージョン ('v1' または 'v2', デフォルト: 'v1')
+  debugMode: boolean             // デバッグモード (デフォルト: false)
 }
 ```
 

@@ -284,9 +284,25 @@ if (!calendarMatch) {
 }
 
 if (calendarMatch) {
-  chrome.runtime.sendMessage({
-    action: 'waveDetected',
-    notificationType: 'calendar'
+  const minutesUntilEvent = parseInt(calendarMatch[1]);
+
+  // Get calendar notification timing setting
+  chrome.storage.local.get(['calendarNotificationTiming'], (result) => {
+    const notificationTiming = result.calendarNotificationTiming !== undefined ? result.calendarNotificationTiming : 5;
+
+    // Only notify if the detected minutes match the configured timing
+    if (minutesUntilEvent === notificationTiming) {
+      // Create unique event ID to prevent duplicate notifications
+      const eventId = `${textContent.substring(0, 50)}_${minutesUntilEvent}`;
+
+      if (!notifiedCalendarEvents.has(eventId)) {
+        chrome.runtime.sendMessage({
+          action: 'waveDetected',
+          notificationType: 'calendar'
+        });
+        notifiedCalendarEvents.add(eventId);
+      }
+    }
   });
 }
 ```
@@ -341,7 +357,16 @@ const responseButton = Array.from(document.querySelectorAll('button')).find(butt
 // V2: "Enter office" div (multi-language support)
 const enterOfficeDiv = Array.from(document.querySelectorAll('div')).find(div => {
   const text = div.textContent.trim();
-  return text === "Enter office" || text === "オフィスに入る" || text === "Entrar no escritório";
+  // Enter office patterns
+  if (text === "Enter office" || text === "オフィスに入る" || text === "Entrar no escritório") {
+    return true;
+  }
+  // External meeting patterns (Go to lobby / Go to desk)
+  if (text === "Go to lobby" || text === "ロビーに行く" || text === "Ir para o lobby" ||
+      text === "Go to desk" || text === "デスクに行く" || text === "Ir para a mesa") {
+    return true;
+  }
+  return false;
 });
 
 // 集中モード判定（V1またはV2のいずれかが存在する場合）
@@ -362,9 +387,15 @@ if (text === "Enter office" || text === "オフィスに入る" || text === "Ent
 }
 ```
 
+**外部ミーティング検出**:
+- **"Go to lobby" / "ロビーに行く" / "Ir para o lobby"**: ロビーに移動する外部ミーティング
+- **"Go to desk" / "デスクに行く" / "Ir para a mesa"**: デスクに移動する外部ミーティング
+- これらのパターンも集中モードとして検出し、通知を無効化
+
 **特徴**:
 - V1とV2の両方に対応した自動検出
 - V2は多言語対応（英語・日本語・ポルトガル語）
+- 外部ミーティングパターンにも対応
 - 5秒ごとにDOM監視して状態を同期
 - 集中モード終了時に適切なボタン/divを自動クリック
 - リトライロジック（最大3回、1秒間隔）

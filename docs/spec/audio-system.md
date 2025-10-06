@@ -40,6 +40,10 @@ chrome.runtime.sendMessage({ action: 'stopSound' });
 - **作成**: 初回音声再生時に自動作成
 - **削除**: 拡張機能無効化時に自動削除
 - **状態**: `offscreenCreated`フラグで管理
+- **準備完了シグナル**: offscreenドキュメントは初期化完了時に`offscreenReady`メッセージを送信
+  - backgroundは`offscreenReadyPromise`で準備完了を待機（1秒タイムアウト）
+  - 実際の存在確認: `chrome.offscreen.hasDocument()`で検証（利用可能な場合）
+  - より確実な音声再生のためのライフサイクル管理
 
 ## エラーハンドリング
 - AudioContext作成失敗時はコンソールにエラー出力
@@ -48,8 +52,11 @@ chrome.runtime.sendMessage({ action: 'stopSound' });
 ## デバッグログ
 
 ### Background Script (debugMode有効時のみ)
-- `[DEBUG] [BACKGROUND] Offscreen document already created` - 既にoffscreenが作成済み
-- `[DEBUG] [BACKGROUND] Offscreen document created successfully` - offscreen作成成功
+- `[DEBUG] [BACKGROUND] Offscreen document already exists` - 既にoffscreenが存在
+- `[DEBUG] [BACKGROUND] Creating new offscreen document` - 新しいoffscreenドキュメント作成中
+- `[DEBUG] [BACKGROUND] Offscreen document created, waiting for ready signal` - 作成完了、準備完了シグナル待機中
+- `[DEBUG] [BACKGROUND] Offscreen ready signal received` - 準備完了シグナル受信
+- `[DEBUG] [BACKGROUND] Offscreen document ready` - offscreenドキュメント準備完了
 - `[DEBUG] [BACKGROUND] playNotificationSound called, type: <type>` - 音声再生呼び出し
 - `[DEBUG] [BACKGROUND] Sending playSound message to offscreen` - offscreenへメッセージ送信
 - `[DEBUG] [BACKGROUND] playSound response: <response>` - offscreenからの応答
@@ -58,6 +65,7 @@ chrome.runtime.sendMessage({ action: 'stopSound' });
 
 ### Offscreen Script (常時出力)
 - `[OFFSCREEN] Offscreen document loaded` - offscreenドキュメント読み込み完了
+- `[OFFSCREEN] Sending ready signal to background` - background scriptへ準備完了シグナル送信
 - `[OFFSCREEN] Message received: <message>` - メッセージ受信
 - `[OFFSCREEN] Playing sound, type: <type>` - 音声再生開始
 - `[OFFSCREEN] Stopping sound` - 音声停止
