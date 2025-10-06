@@ -12,7 +12,7 @@
     "description": "wave通知のデスクトップ通知タイトル"
   },
   "waveNotificationMessage": {
-    "message": "誰かがgather.townであなたにwaveしました！",
+    "message": "がgather.townであなたにwaveしました！",
     "description": "wave通知のデスクトップ通知メッセージ"
   },
   "chatNotificationTitle": {
@@ -20,7 +20,7 @@
     "description": "chat通知のデスクトップ通知タイトル"
   },
   "chatNotificationMessage": {
-    "message": "誰かがgather.townでチャットメッセージを送信しました！",
+    "message": "がgather.townでチャットメッセージを送信しました！",
     "description": "chat通知のデスクトップ通知メッセージ"
   },
   "callNotificationTitle": {
@@ -106,6 +106,10 @@
   "languageAuto": {
     "message": "自動",
     "description": "言語選択での自動検出オプション"
+  },
+  "someone": {
+    "message": "誰か",
+    "description": "不明なユーザー名のプレースホルダー"
   },
   "calendarNotificationTiming": {
     "message": "通知タイミング",

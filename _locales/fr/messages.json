@@ -12,7 +12,7 @@
     "description": "Titre de notification de bureau pour salut"
   },
   "waveNotificationMessage": {
-    "message": "Quelqu'un vous a fait signe dans gather.town!",
+    "message": "vous a fait signe dans gather.town!",
     "description": "Message de notification de bureau pour salut"
   },
   "chatNotificationTitle": {
@@ -20,7 +20,7 @@
     "description": "Titre de notification de bureau pour chat"
   },
   "chatNotificationMessage": {
-    "message": "Quelqu'un vous a envoyé un message de chat dans gather.town!",
+    "message": "vous a envoyé un message de chat dans gather.town!",
     "description": "Message de notification de bureau pour chat"
   },
   "callNotificationTitle": {
@@ -106,6 +106,10 @@
   "languageAuto": {
     "message": "Automatique",
     "description": "Option de sélecteur de langue pour la détection automatique"
+  },
+  "someone": {
+    "message": "Quelqu'un",
+    "description": "Espace réservé pour un nom d'utilisateur inconnu"
   },
   "calendarNotificationTiming": {
     "message": "Notifier",

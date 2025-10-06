@@ -12,7 +12,7 @@
     "description": "Desktop notification title for wave"
   },
   "waveNotificationMessage": {
-    "message": "Someone waved at you in gather.town!",
+    "message": "waved at you in gather.town!",
     "description": "Desktop notification message for wave"
   },
   "chatNotificationTitle": {
@@ -20,7 +20,7 @@
     "description": "Desktop notification title for chat"
   },
   "chatNotificationMessage": {
-    "message": "Someone sent you a chat message in gather.town!",
+    "message": "sent you a chat message in gather.town!",
     "description": "Desktop notification message for chat"
   },
   "callNotificationTitle": {
@@ -106,6 +106,10 @@
   "languageAuto": {
     "message": "Auto",
     "description": "Language selector option for automatic detection"
+  },
+  "someone": {
+    "message": "Someone",
+    "description": "Unknown user name placeholder"
   },
   "calendarNotificationTiming": {
     "message": "Notify",

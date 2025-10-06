@@ -12,7 +12,7 @@
     "description": "Desktop-Benachrichtigungstitel für Winken"
   },
   "waveNotificationMessage": {
-    "message": "Jemand hat dir in gather.town zugewinkt!",
+    "message": "hat dir in gather.town zugewinkt!",
     "description": "Desktop-Benachrichtigungsnachricht für Winken"
   },
   "chatNotificationTitle": {
@@ -20,7 +20,7 @@
     "description": "Desktop-Benachrichtigungstitel für Chat"
   },
   "chatNotificationMessage": {
-    "message": "Jemand hat dir eine Chat-Nachricht in gather.town gesendet!",
+    "message": "hat dir eine Chat-Nachricht in gather.town gesendet!",
     "description": "Desktop-Benachrichtigungsnachricht für Chat"
   },
   "callNotificationTitle": {
@@ -106,6 +106,10 @@
   "languageAuto": {
     "message": "Automatisch",
     "description": "Sprachauswahl-Option für automatische Erkennung"
+  },
+  "someone": {
+    "message": "Jemand",
+    "description": "Platzhalter für unbekannten Benutzernamen"
   },
   "calendarNotificationTiming": {
     "message": "Benachrichtigen",

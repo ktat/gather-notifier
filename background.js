@@ -106,10 +106,9 @@ function handleWaveDetection(messageData, notificationType = 'wave') {
       case 'chat':
         title = chrome.i18n.getMessage('chatNotificationTitle');
         notificationMessage = chrome.i18n.getMessage('chatNotificationMessage');
-        // If userName is provided, include it in the message
-        if (messageData && messageData.userName) {
-          notificationMessage = messageData.userName + ' ' + notificationMessage;
-        }
+        // Prepend userName or localized "Someone" to the message
+        const chatUserName = (messageData && messageData.userName) ? messageData.userName : chrome.i18n.getMessage('someone');
+        notificationMessage = chatUserName + ' ' + notificationMessage;
         break;
       case 'call':
         title = chrome.i18n.getMessage('callNotificationTitle');
@@ -127,10 +126,9 @@ function handleWaveDetection(messageData, notificationType = 'wave') {
       default:
         title = chrome.i18n.getMessage('waveNotificationTitle');
         notificationMessage = chrome.i18n.getMessage('waveNotificationMessage');
-        // If userName is provided, include it in the message
-        if (messageData && messageData.userName) {
-          notificationMessage = messageData.userName + ' ' + notificationMessage;
-        }
+        // Prepend userName or localized "Someone" to the message
+        const waveUserName = (messageData && messageData.userName) ? messageData.userName : chrome.i18n.getMessage('someone');
+        notificationMessage = waveUserName + ' ' + notificationMessage;
         break;
     }
 
