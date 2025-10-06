@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const enableChatCheckbox = document.getElementById('enableChat');
   const enableCallCheckbox = document.getElementById('enableCall');
   const enableCalendarCheckbox = document.getElementById('enableCalendar');
+  const calendarNotificationTimingSelect = document.getElementById('calendarNotificationTiming');
   const gatherVersionSelect = document.getElementById('gatherVersionSelect');
   const languageSelect = document.getElementById('languageSelect');
   const debugModeCheckbox = document.getElementById('debugMode');
@@ -118,12 +119,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // 設定を読み込み
   async function loadSettings() {
-    const result = await chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'enableCalendar', 'gatherVersion', 'isConcentrationMode', 'language', 'debugMode']);
+    const result = await chrome.storage.local.get(['enableWave', 'enableChat', 'enableCall', 'enableCalendar', 'calendarNotificationTiming', 'gatherVersion', 'isConcentrationMode', 'language', 'debugMode']);
 
     enableWaveCheckbox.checked = result.enableWave !== false; // デフォルトtrue
     enableChatCheckbox.checked = result.enableChat !== false; // デフォルトtrue
     enableCallCheckbox.checked = result.enableCall !== false; // デフォルトtrue
     enableCalendarCheckbox.checked = result.enableCalendar !== false; // デフォルトtrue
+    calendarNotificationTimingSelect.value = result.calendarNotificationTiming !== undefined ? result.calendarNotificationTiming : 5; // デフォルト5分前
     debugModeCheckbox.checked = result.debugMode || false; // デフォルトfalse
 
     // Gather version設定を読み込み
@@ -201,6 +203,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   enableCalendarCheckbox.addEventListener('change', () => {
     chrome.storage.local.set({ enableCalendar: enableCalendarCheckbox.checked });
+  });
+
+  calendarNotificationTimingSelect.addEventListener('change', () => {
+    chrome.storage.local.set({ calendarNotificationTiming: parseInt(calendarNotificationTimingSelect.value) });
   });
 
   gatherVersionSelect.addEventListener('change', () => {

@@ -106,5 +106,33 @@
   "languageAuto": {
     "message": "Automatisch",
     "description": "Sprachauswahl-Option für automatische Erkennung"
+  },
+  "calendarNotificationTiming": {
+    "message": "Benachrichtigen",
+    "description": "Label für Kalenderbenachrichtigung Zeiteinstellung"
+  },
+  "calendarTiming0": {
+    "message": "0 Min. vorher",
+    "description": "Option für Kalenderbenachrichtigung 0 Minuten vorher"
+  },
+  "calendarTiming1": {
+    "message": "1 Min. vorher",
+    "description": "Option für Kalenderbenachrichtigung 1 Minute vorher"
+  },
+  "calendarTiming2": {
+    "message": "2 Min. vorher",
+    "description": "Option für Kalenderbenachrichtigung 2 Minuten vorher"
+  },
+  "calendarTiming3": {
+    "message": "3 Min. vorher",
+    "description": "Option für Kalenderbenachrichtigung 3 Minuten vorher"
+  },
+  "calendarTiming4": {
+    "message": "4 Min. vorher",
+    "description": "Option für Kalenderbenachrichtigung 4 Minuten vorher"
+  },
+  "calendarTiming5": {
+    "message": "5 Min. vorher",
+    "description": "Option für Kalenderbenachrichtigung 5 Minuten vorher"
   }
 }

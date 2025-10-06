@@ -2,6 +2,11 @@ let audioPlayer = null;
 
 console.log('[OFFSCREEN] Offscreen document loaded');
 
+// バックグラウンドスクリプトに準備完了を通知
+chrome.runtime.sendMessage({ action: 'offscreenReady' }).catch((error) => {
+  console.log('[OFFSCREEN] Failed to send ready message (background may not be ready yet):', error);
+});
+
 // バックグラウンドスクリプトからのメッセージを受信
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log('[OFFSCREEN] Message received:', message);

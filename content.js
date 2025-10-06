@@ -253,6 +253,153 @@ window.testChatV2Notifier = function() {
   console.log('This should trigger a ChatV2 notification');
 };
 
+// Track notified calendar events to avoid duplicates
+const notifiedCalendarEvents = new Set();
+
+// Check text content for notifications
+function checkTextForNotifications(textContent) {
+  if (!textContent || textContent.trim().length === 0) {
+    return;
+  }
+
+  // Debug: log all text content changes (only in debug mode)
+  chrome.storage.local.get(['debugMode'], (result) => {
+    if (result.debugMode && textContent.trim().length > 0 && textContent.trim().length < 200) {
+      console.log('[WAVE-NOTIFIER-CONTENT] [DEBUG] Checking text:', textContent.substring(0, 100));
+    }
+  });
+
+  // Wave detection - multi-language support
+  let waveMatch = null;
+  let userName = null;
+
+  // English: "$name waved to you"
+  if (textContent.includes(' waved to you')) {
+    waveMatch = textContent.match(/(.+?)\s+waved to you/);
+  }
+  // Portuguese: "$name acenou para você"
+  else if (textContent.includes(' acenou para você')) {
+    waveMatch = textContent.match(/(.+?)\s+acenou para você/);
+  }
+  // Japanese: "$nameさんが手を振りました。"
+  else if (textContent.includes('さんが手を振りました')) {
+    waveMatch = textContent.match(/(.+?)さんが手を振りました/);
+  }
+
+  if (waveMatch) {
+    console.log('[WAVE-NOTIFIER-CONTENT] DOM-based wave detection:', textContent.substring(0, 100));
+
+    if (waveMatch[1]) {
+      userName = waveMatch[1].trim();
+      console.log('[WAVE-NOTIFIER-CONTENT] Extracted user name:', userName);
+    }
+
+    // Send wave notification to background
+    chrome.runtime.sendMessage({
+      action: 'waveDetected',
+      message: textContent,
+      type: 'dom',
+      notificationType: 'wave',
+      userName: userName
+    }).catch(error => {
+      console.error('[WAVE-NOTIFIER-CONTENT] Error sending DOM-based wave detection message:', error);
+    });
+  }
+
+  // Calendar detection - multi-language support
+  let calendarMatch = null;
+
+  // English: "in $n minutes"
+  calendarMatch = textContent.match(/in (\d+) minutes?/);
+  // Portuguese: "em $n minutos"
+  if (!calendarMatch) {
+    calendarMatch = textContent.match(/em (\d+) minutos?/);
+  }
+  // Japanese: "$n 分後" (with space)
+  if (!calendarMatch) {
+    calendarMatch = textContent.match(/(\d+)\s*分後/);
+  }
+
+  if (calendarMatch) {
+    const minutesUntilEvent = parseInt(calendarMatch[1]);
+
+    console.log('[WAVE-NOTIFIER-CONTENT] DOM-based calendar detection:', textContent.substring(0, 100), 'Minutes:', minutesUntilEvent);
+
+    // Get calendar notification timing setting
+    chrome.storage.local.get(['calendarNotificationTiming'], (result) => {
+      const notificationTiming = result.calendarNotificationTiming !== undefined ? result.calendarNotificationTiming : 5;
+
+      // Only notify if the detected minutes match the configured timing
+      if (minutesUntilEvent === notificationTiming) {
+        // Create unique event ID to prevent duplicate notifications
+        const eventId = `${textContent.substring(0, 50)}_${minutesUntilEvent}`;
+
+        if (!notifiedCalendarEvents.has(eventId)) {
+          console.log('[WAVE-NOTIFIER-CONTENT] Sending calendar notification (timing matches):', minutesUntilEvent, 'min');
+
+          notifiedCalendarEvents.add(eventId);
+
+          // Clean up old events after 10 minutes
+          setTimeout(() => {
+            notifiedCalendarEvents.delete(eventId);
+          }, 600000);
+
+          // Send calendar notification to background
+          chrome.runtime.sendMessage({
+            action: 'waveDetected',
+            message: textContent,
+            type: 'dom',
+            notificationType: 'calendar'
+          }).catch(error => {
+            console.error('[WAVE-NOTIFIER-CONTENT] Error sending DOM-based calendar detection message:', error);
+          });
+        } else {
+          console.log('[WAVE-NOTIFIER-CONTENT] Calendar event already notified:', eventId);
+        }
+      } else {
+        console.log('[WAVE-NOTIFIER-CONTENT] Calendar event detected but timing does not match (detected:', minutesUntilEvent, 'min, configured:', notificationTiming, 'min)');
+      }
+    });
+  }
+
+  // Chat detection - multi-language support
+  let chatMatch = null;
+  let chatUserName = null;
+
+  // English: "$name sent a message"
+  if (textContent.includes(' sent a message')) {
+    chatMatch = textContent.match(/(.+?)\s+sent a message/);
+  }
+  // Portuguese: "$name enviou uma mensagem"
+  else if (textContent.includes(' enviou uma mensagem')) {
+    chatMatch = textContent.match(/(.+?)\s+enviou uma mensagem/);
+  }
+  // Japanese: "$nameさんがメッセージを送信しました。"
+  else if (textContent.includes('さんがメッセージを送信しました')) {
+    chatMatch = textContent.match(/(.+?)さんがメッセージを送信しました/);
+  }
+
+  if (chatMatch) {
+    console.log('[WAVE-NOTIFIER-CONTENT] DOM-based chat detection:', textContent.substring(0, 100));
+
+    if (chatMatch[1]) {
+      chatUserName = chatMatch[1].trim();
+      console.log('[WAVE-NOTIFIER-CONTENT] Extracted user name from chat:', chatUserName);
+    }
+
+    // Send chat notification to background
+    chrome.runtime.sendMessage({
+      action: 'waveDetected',
+      message: textContent,
+      type: 'dom',
+      notificationType: 'chat',
+      userName: chatUserName
+    }).catch(error => {
+      console.error('[WAVE-NOTIFIER-CONTENT] Error sending DOM-based chat detection message:', error);
+    });
+  }
+}
+
 // DOM-based wave and calendar detection using MutationObserver
 // This provides more accurate detection by watching for DOM changes
 function setupDOMObserver() {
@@ -270,122 +417,24 @@ function setupDOMObserver() {
     });
 
     for (const mutation of mutations) {
+      // Handle childList mutations (new nodes added)
       if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
         mutation.addedNodes.forEach((node) => {
           // Check if the node or its children contain notification text
           if (node.nodeType === Node.ELEMENT_NODE) {
             const textContent = node.textContent || '';
-
-            // Debug: log all text content changes (only in debug mode)
-            chrome.storage.local.get(['debugMode'], (result) => {
-              if (result.debugMode && textContent.trim().length > 0 && textContent.trim().length < 200) {
-                console.log('[WAVE-NOTIFIER-CONTENT] [DEBUG] DOM text added:', textContent.substring(0, 100));
-              }
-            });
-
-            // Wave detection - multi-language support
-            let waveMatch = null;
-            let userName = null;
-
-            // English: "$name waved to you"
-            if (textContent.includes(' waved to you')) {
-              waveMatch = textContent.match(/(.+?)\s+waved to you/);
-            }
-            // Portuguese: "$name acenou para você"
-            else if (textContent.includes(' acenou para você')) {
-              waveMatch = textContent.match(/(.+?)\s+acenou para você/);
-            }
-            // Japanese: "$nameさんが手を振りました。"
-            else if (textContent.includes('さんが手を振りました')) {
-              waveMatch = textContent.match(/(.+?)さんが手を振りました/);
-            }
-
-            if (waveMatch) {
-              console.log('[WAVE-NOTIFIER-CONTENT] DOM-based wave detection:', textContent.substring(0, 100));
-
-              if (waveMatch[1]) {
-                userName = waveMatch[1].trim();
-                console.log('[WAVE-NOTIFIER-CONTENT] Extracted user name:', userName);
-              }
-
-              // Send wave notification to background
-              chrome.runtime.sendMessage({
-                action: 'waveDetected',
-                message: textContent,
-                type: 'dom',
-                notificationType: 'wave',
-                userName: userName
-              }).catch(error => {
-                console.error('[WAVE-NOTIFIER-CONTENT] Error sending DOM-based wave detection message:', error);
-              });
-            }
-
-            // Calendar detection - multi-language support
-            let calendarMatch = null;
-
-            // English: "in $n minutes"
-            calendarMatch = textContent.match(/in (\d+) minutes?/);
-            // Portuguese: "em $n minutos"
-            if (!calendarMatch) {
-              calendarMatch = textContent.match(/em (\d+) minutos?/);
-            }
-            // Japanese: "$n 分後" (with space)
-            if (!calendarMatch) {
-              calendarMatch = textContent.match(/(\d+)\s*分後/);
-            }
-
-            if (calendarMatch) {
-              console.log('[WAVE-NOTIFIER-CONTENT] DOM-based calendar detection:', textContent.substring(0, 100));
-
-              // Send calendar notification to background
-              chrome.runtime.sendMessage({
-                action: 'waveDetected',
-                message: textContent,
-                type: 'dom',
-                notificationType: 'calendar'
-              }).catch(error => {
-                console.error('[WAVE-NOTIFIER-CONTENT] Error sending DOM-based calendar detection message:', error);
-              });
-            }
-
-            // Chat detection - multi-language support
-            let chatMatch = null;
-            let chatUserName = null;
-
-            // English: "$name sent a message"
-            if (textContent.includes(' sent a message')) {
-              chatMatch = textContent.match(/(.+?)\s+sent a message/);
-            }
-            // Portuguese: "$name enviou uma mensagem"
-            else if (textContent.includes(' enviou uma mensagem')) {
-              chatMatch = textContent.match(/(.+?)\s+enviou uma mensagem/);
-            }
-            // Japanese: "$nameさんがメッセージを送信しました。"
-            else if (textContent.includes('さんがメッセージを送信しました')) {
-              chatMatch = textContent.match(/(.+?)さんがメッセージを送信しました/);
-            }
-
-            if (chatMatch) {
-              console.log('[WAVE-NOTIFIER-CONTENT] DOM-based chat detection:', textContent.substring(0, 100));
-
-              if (chatMatch[1]) {
-                chatUserName = chatMatch[1].trim();
-                console.log('[WAVE-NOTIFIER-CONTENT] Extracted user name from chat:', chatUserName);
-              }
-
-              // Send chat notification to background
-              chrome.runtime.sendMessage({
-                action: 'waveDetected',
-                message: textContent,
-                type: 'dom',
-                notificationType: 'chat',
-                userName: chatUserName
-              }).catch(error => {
-                console.error('[WAVE-NOTIFIER-CONTENT] Error sending DOM-based chat detection message:', error);
-              });
-            }
+            checkTextForNotifications(textContent);
           }
         });
+      }
+      // Handle characterData mutations (text changes)
+      else if (mutation.type === 'characterData') {
+        // Get the parent element's full text content
+        const parentElement = mutation.target.parentElement;
+        if (parentElement) {
+          const textContent = parentElement.textContent || '';
+          checkTextForNotifications(textContent);
+        }
       }
     }
   });
@@ -394,7 +443,9 @@ function setupDOMObserver() {
   if (document.body) {
     notificationObserver.observe(document.body, {
       childList: true,
-      subtree: true
+      subtree: true,
+      characterData: true,
+      characterDataOldValue: true
     });
     console.log('[WAVE-NOTIFIER-CONTENT] DOM-based notification observer initialized and observing');
   } else {
@@ -405,7 +456,9 @@ function setupDOMObserver() {
         clearInterval(checkBody);
         notificationObserver.observe(document.body, {
           childList: true,
-          subtree: true
+          subtree: true,
+          characterData: true,
+          characterDataOldValue: true
         });
         console.log('[WAVE-NOTIFIER-CONTENT] DOM-based notification observer initialized and observing (delayed)');
       }

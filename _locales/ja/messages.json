@@ -106,5 +106,33 @@
   "languageAuto": {
     "message": "自動",
     "description": "言語選択での自動検出オプション"
+  },
+  "calendarNotificationTiming": {
+    "message": "通知タイミング",
+    "description": "カレンダー通知タイミング設定のラベル"
+  },
+  "calendarTiming0": {
+    "message": "0分前",
+    "description": "カレンダー通知0分前のオプション"
+  },
+  "calendarTiming1": {
+    "message": "1分前",
+    "description": "カレンダー通知1分前のオプション"
+  },
+  "calendarTiming2": {
+    "message": "2分前",
+    "description": "カレンダー通知2分前のオプション"
+  },
+  "calendarTiming3": {
+    "message": "3分前",
+    "description": "カレンダー通知3分前のオプション"
+  },
+  "calendarTiming4": {
+    "message": "4分前",
+    "description": "カレンダー通知4分前のオプション"
+  },
+  "calendarTiming5": {
+    "message": "5分前",
+    "description": "カレンダー通知5分前のオプション"
   }
 }

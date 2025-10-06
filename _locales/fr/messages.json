@@ -106,5 +106,33 @@
   "languageAuto": {
     "message": "Automatique",
     "description": "Option de sélecteur de langue pour la détection automatique"
+  },
+  "calendarNotificationTiming": {
+    "message": "Notifier",
+    "description": "Étiquette pour le paramètre de synchronisation des notifications de calendrier"
+  },
+  "calendarTiming0": {
+    "message": "0 min avant",
+    "description": "Option pour notification de calendrier 0 minute avant"
+  },
+  "calendarTiming1": {
+    "message": "1 min avant",
+    "description": "Option pour notification de calendrier 1 minute avant"
+  },
+  "calendarTiming2": {
+    "message": "2 min avant",
+    "description": "Option pour notification de calendrier 2 minutes avant"
+  },
+  "calendarTiming3": {
+    "message": "3 min avant",
+    "description": "Option pour notification de calendrier 3 minutes avant"
+  },
+  "calendarTiming4": {
+    "message": "4 min avant",
+    "description": "Option pour notification de calendrier 4 minutes avant"
+  },
+  "calendarTiming5": {
+    "message": "5 min avant",
+    "description": "Option pour notification de calendrier 5 minutes avant"
   }
 }

@@ -2,6 +2,8 @@ let gatherTabs = new Set();
 let hasNotification = false;
 let offscreenCreated = false;
 let previousConcentrationMode = false;
+let offscreenReadyResolver = null;
+let offscreenReadyPromise = null;
 
 // タブの更新を監視してgather.townのタブを追跡
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -189,29 +191,69 @@ chrome.runtime.onStartup.addListener(() => {
 
 // offscreenドキュメントを作成
 async function createOffscreen() {
-  if (offscreenCreated) {
+  // 実際に offscreen ドキュメントが存在するかチェック
+  let offscreenExists = false;
+  try {
+    // Chrome 109+ では hasDocument() が使える
+    if (chrome.offscreen && chrome.offscreen.hasDocument) {
+      offscreenExists = await chrome.offscreen.hasDocument();
+    }
+  } catch (error) {
+    // hasDocument が使えない場合や、エラーの場合は存在しないとみなす
+    offscreenExists = false;
+  }
+
+  if (offscreenExists) {
     chrome.storage.local.get(['debugMode'], (result) => {
       if (result.debugMode) {
-        console.log('[DEBUG] [BACKGROUND] Offscreen document already created');
+        console.log('[DEBUG] [BACKGROUND] Offscreen document already exists');
       }
     });
     return;
   }
 
+  // 存在しない場合はフラグをリセット
+  offscreenCreated = false;
+
   try {
+    chrome.storage.local.get(['debugMode'], (result) => {
+      if (result.debugMode) {
+        console.log('[DEBUG] [BACKGROUND] Creating new offscreen document');
+      }
+    });
+
+    // 準備完了を待つための Promise を作成
+    offscreenReadyPromise = new Promise((resolve) => {
+      offscreenReadyResolver = resolve;
+    });
+
     await chrome.offscreen.createDocument({
       url: 'offscreen.html',
       reasons: ['AUDIO_PLAYBACK'],
       justification: 'Play notification sound when wave is detected'
     });
+
+    chrome.storage.local.get(['debugMode'], (result) => {
+      if (result.debugMode) {
+        console.log('[DEBUG] [BACKGROUND] Offscreen document created, waiting for ready signal');
+      }
+    });
+
+    // offscreen からの準備完了メッセージを待つ（タイムアウト付き）
+    await Promise.race([
+      offscreenReadyPromise,
+      new Promise((resolve) => setTimeout(resolve, 1000)) // 1秒タイムアウト
+    ]);
+
     offscreenCreated = true;
     chrome.storage.local.get(['debugMode'], (result) => {
       if (result.debugMode) {
-        console.log('[DEBUG] [BACKGROUND] Offscreen document created successfully');
+        console.log('[DEBUG] [BACKGROUND] Offscreen document ready');
       }
     });
   } catch (error) {
     console.error('[BACKGROUND] Error creating offscreen document:', error);
+    offscreenCreated = false;
   }
 }
 
@@ -299,7 +341,18 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
 
 // ポップアップとcontent scriptからのメッセージを処理
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === 'stopSound') {
+  if (message.action === 'offscreenReady') {
+    // offscreen ドキュメントの準備完了
+    chrome.storage.local.get(['debugMode'], (result) => {
+      if (result.debugMode) {
+        console.log('[DEBUG] [BACKGROUND] Offscreen ready signal received');
+      }
+    });
+    if (offscreenReadyResolver) {
+      offscreenReadyResolver();
+      offscreenReadyResolver = null;
+    }
+  } else if (message.action === 'stopSound') {
     stopNotificationSound();
   } else if (message.action === 'waveDetected') {
     // content scriptからのwave検出メッセージ
@@ -363,6 +416,7 @@ chrome.runtime.onInstalled.addListener(() => {
     enableChat: true,
     enableCall: true,
     enableCalendar: true,
+    calendarNotificationTiming: 5,
     gatherVersion: 'v1',
     isConcentrationMode: false,
     debugMode: false
