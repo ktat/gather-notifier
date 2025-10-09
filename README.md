@@ -71,6 +71,10 @@ Open `create-icons.html` in your browser to download icons of each size.
 - `icon*.png` - Extension icons (16px, 32px, 48px, 128px)
 - `create-icons.html` - HTML file for icon creation
 
+### Welcome Page
+- `welcome.html` - Welcome page displayed on install/update
+- `welcome.js` - Welcome page behavior and functionality
+
 ### Internationalization Files
 - `_locales/en/messages.json` - English resources
 - `_locales/ja/messages.json` - Japanese resources
@@ -83,6 +87,22 @@ Open `create-icons.html` in your browser to download icons of each size.
 - `README-ja.md` - Japanese version of this README
 
 ## Recent Updates
+
+### Version 2.0 - Welcome Page & User Onboarding
+- **Welcome page on install/update**: Automatic display of welcome page when extension is installed or updated
+- **Installation instructions**: Clear guidance to reload Gather.town tabs for proper functionality
+- **Feature overview**: Visual introduction to all 6 key features with icons
+  - Wave, Chat, Call, and Calendar notifications
+  - Multiple notification methods (desktop, badge, sound)
+  - Concentration mode with badge indicator
+- **Step-by-step usage guide**: 4-step walkthrough covering:
+  - Tab reloading requirement
+  - Notification configuration
+  - How notifications work (desktop, badge, sound)
+  - Concentration mode usage
+- **Multi-language support**: Welcome page fully localized in 4 languages
+- **Dynamic version display**: Automatically shows current version using i18n placeholders
+- **Quick actions**: Buttons to open Gather.town or close the welcome page
 
 ### Version 1.9 - Enhanced Notifications & Reliability
 - **Calendar notification timing**: Configurable notification timing (0-5 minutes before events)
