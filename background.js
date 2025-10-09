@@ -405,7 +405,7 @@ function checkConcentrationModeStatus() {
 setInterval(checkConcentrationModeStatus, 1000);
 
 // インストール時の初期化
-chrome.runtime.onInstalled.addListener(() => {
+chrome.runtime.onInstalled.addListener((details) => {
   hasNotification = false;
   updateBadge();
   chrome.storage.local.set({
@@ -424,4 +424,12 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.get(['isConcentrationMode'], (result) => {
     previousConcentrationMode = result.isConcentrationMode || false;
   });
+
+  // インストールまたは更新時にウェルカムページを表示
+  if (details.reason === 'install' || details.reason === 'update') {
+    chrome.tabs.create({
+      url: chrome.runtime.getURL('welcome.html'),
+      active: true
+    });
+  }
 });

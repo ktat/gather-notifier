@@ -138,5 +138,135 @@
   "calendarTiming5": {
     "message": "5分前",
     "description": "カレンダー通知5分前のオプション"
+  },
+  "welcomeTitle": {
+    "message": "Gather.town Wave Notifierへようこそ！",
+    "description": "ウェルカムページタイトル"
+  },
+  "welcomeVersion": {
+    "message": "バージョン $VERSION$",
+    "description": "ウェルカムページのバージョンテキスト",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "1.9"
+      }
+    }
+  },
+  "importantNoticeTitle": {
+    "message": "⚠️ 重要なお知らせ",
+    "description": "ウェルカムページの重要なお知らせ見出し"
+  },
+  "reloadRequired": {
+    "message": "拡張機能を正しく動作させるために、すべてのGather.townタブをリロードしてください。各Gather.townタブで Ctrl+R（Macの場合は Cmd+R）を押してください。",
+    "description": "リロード手順メッセージ"
+  },
+  "featuresTitle": {
+    "message": "機能",
+    "description": "機能セクションのタイトル"
+  },
+  "featureWave": {
+    "message": "Wave通知",
+    "description": "Wave機能のタイトル"
+  },
+  "featureWaveDesc": {
+    "message": "誰かがwaveした時に通知を受け取ります",
+    "description": "Wave機能の説明"
+  },
+  "featureChat": {
+    "message": "チャット通知",
+    "description": "チャット機能のタイトル"
+  },
+  "featureChatDesc": {
+    "message": "チャットメッセージを見逃しません",
+    "description": "チャット機能の説明"
+  },
+  "featureCall": {
+    "message": "通話通知",
+    "description": "通話機能のタイトル"
+  },
+  "featureCallDesc": {
+    "message": "誰かが呼び出している時に通知を受け取ります",
+    "description": "通話機能の説明"
+  },
+  "featureCalendar": {
+    "message": "カレンダー通知",
+    "description": "カレンダー機能のタイトル"
+  },
+  "featureCalendarDesc": {
+    "message": "予定されたイベントのリマインダーを受け取ります",
+    "description": "カレンダー機能の説明"
+  },
+  "featureNotificationMethods": {
+    "message": "複数の通知方法",
+    "description": "通知方法機能のタイトル"
+  },
+  "featureNotificationMethodsDesc": {
+    "message": "デスクトップ通知、バッジ表示、音声通知",
+    "description": "通知方法機能の説明"
+  },
+  "featureConcentrationMode": {
+    "message": "応答不可モード",
+    "description": "応答不可モード機能のタイトル"
+  },
+  "featureConcentrationModeDesc": {
+    "message": "ワンクリックで通知をオン/オフ、バッジで状態を表示",
+    "description": "応答不可モード機能の説明"
+  },
+  "howToUseTitle": {
+    "message": "使い方",
+    "description": "使い方セクションのタイトル"
+  },
+  "step1Title": {
+    "message": "Gather.townタブをリロード",
+    "description": "ステップ1のタイトル"
+  },
+  "step1Desc": {
+    "message": "各Gather.townタブを開いて、Ctrl+R（Macの場合はCmd+R）を押してリロードしてください。",
+    "description": "ステップ1の説明"
+  },
+  "step2Title": {
+    "message": "通知を設定",
+    "description": "ステップ2のタイトル"
+  },
+  "step2Desc": {
+    "message": "拡張機能のアイコンをクリックして、受け取りたい通知をカスタマイズしてください。",
+    "description": "ステップ2の説明"
+  },
+  "step3Title": {
+    "message": "通知を受け取る",
+    "description": "ステップ3のタイトル"
+  },
+  "step3Desc": {
+    "message": "他のタブで作業していても、Gather.townで何か起こったら、デスクトップ通知、バッジアラート（!アイコン）、音声通知で知らせます！",
+    "description": "ステップ3の説明"
+  },
+  "step4Title": {
+    "message": "応答不可モードを使う",
+    "description": "ステップ4のタイトル"
+  },
+  "step4Desc": {
+    "message": "拡張機能のアイコンをクリックして応答不可モードを切り替えることで、一時的に通知を無効にできます。有効時はバッジに「C」が表示されます。",
+    "description": "ステップ4の説明"
+  },
+  "openGatherButton": {
+    "message": "Gather.townを開く",
+    "description": "Gather.townを開くボタンのテキスト"
+  },
+  "closeButton": {
+    "message": "閉じる",
+    "description": "ウェルカムページを閉じるボタンのテキスト"
+  },
+  "footerText": {
+    "message": "サポートとアップデートについては、GitHubリポジトリをご覧ください",
+    "description": "ウェルカムページのフッターテキスト"
+  },
+  "v1Only": {
+    "message": "(V1のみ)",
+    "description": "バージョン1のみのラベル"
+  },
+  "v2Only": {
+    "message": "(V2のみ)",
+    "description": "バージョン2のみのラベル"
   }
 }

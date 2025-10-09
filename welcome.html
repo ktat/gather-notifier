@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Gather.town Wave Notifier - Welcome</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      line-height: 1.6;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .header img {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      color: #667eea;
+      margin: 0 0 10px 0;
+      font-size: 32px;
+    }
+    .header .version {
+      color: #999;
+      font-size: 14px;
+    }
+    .alert-box {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 15px 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    .alert-box h3 {
+      margin: 0 0 10px 0;
+      color: #856404;
+      font-size: 18px;
+    }
+    .alert-box p {
+      margin: 0;
+      color: #856404;
+    }
+    .alert-box strong {
+      font-weight: 600;
+    }
+    .section {
+      margin: 30px 0;
+    }
+    .section h2 {
+      color: #667eea;
+      font-size: 24px;
+      margin: 0 0 15px 0;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .feature-card {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .feature-card .icon {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+    .feature-card h3 {
+      margin: 10px 0;
+      font-size: 16px;
+      color: #333;
+    }
+    .feature-card p {
+      margin: 0;
+      font-size: 14px;
+      color: #666;
+    }
+    .steps {
+      counter-reset: step-counter;
+      list-style: none;
+      padding: 0;
+    }
+    .steps li {
+      counter-increment: step-counter;
+      position: relative;
+      padding-left: 50px;
+      margin-bottom: 20px;
+    }
+    .steps li::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 30px;
+      height: 30px;
+      background: #667eea;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    .button-group {
+      display: flex;
+      gap: 15px;
+      margin: 30px 0;
+      justify-content: center;
+    }
+    .btn {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+    }
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background: #5a6268;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+      color: #999;
+      font-size: 14px;
+    }
+    .footer a {
+      color: #667eea;
+      text-decoration: none;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 10px;
+      }
+      .container {
+        padding: 20px;
+      }
+      .button-group {
+        flex-direction: column;
+      }
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="icon128.png" alt="Gather.town Wave Notifier">
+      <h1 data-i18n="welcomeTitle">Welcome to Gather.town Wave Notifier!</h1>
+      <div class="version" data-i18n="welcomeVersion">Version 1.9</div>
+    </div>
+
+    <div class="alert-box">
+      <h3 data-i18n="importantNoticeTitle">⚠️ Important Notice</h3>
+      <p data-i18n="reloadRequired">
+        Please <strong>reload all Gather.town tabs</strong> for the extension to work properly.
+        Press <strong>Ctrl+R</strong> (or <strong>Cmd+R</strong> on Mac) on each Gather.town tab.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2 data-i18n="featuresTitle">Features</h2>
+      <div class="features">
+        <div class="feature-card">
+          <div class="icon">👋</div>
+          <h3 data-i18n="featureWave">Wave Notifications</h3>
+          <p data-i18n="featureWaveDesc">Get notified when someone waves at you</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">💬</div>
+          <h3 data-i18n="featureChat">Chat Notifications</h3>
+          <p data-i18n="featureChatDesc">Never miss a chat message</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">📞</div>
+          <h3 data-i18n="featureCall">Call Notifications</h3>
+          <p data-i18n="featureCallDesc">Know when someone is calling you</p>
+          <p style="font-size: 12px; color: #999; margin-top: 5px;" data-i18n="v1Only">(V1 only)</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">📅</div>
+          <h3 data-i18n="featureCalendar">Calendar Alerts</h3>
+          <p data-i18n="featureCalendarDesc">Get reminders for scheduled events</p>
+          <p style="font-size: 12px; color: #999; margin-top: 5px;" data-i18n="v2Only">(V2 only)</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🔔</div>
+          <h3 data-i18n="featureNotificationMethods">Multiple Notification Methods</h3>
+          <p data-i18n="featureNotificationMethodsDesc">Desktop notifications, badge alerts, and sound notifications</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🎯</div>
+          <h3 data-i18n="featureConcentrationMode">Concentration Mode</h3>
+          <p data-i18n="featureConcentrationModeDesc">One-click to enable/disable notifications with badge indicator</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 data-i18n="howToUseTitle">How to Use</h2>
+      <ol class="steps">
+        <li>
+          <strong data-i18n="step1Title">Reload Gather.town tabs</strong>
+          <p data-i18n="step1Desc">Open each Gather.town tab and press Ctrl+R (Cmd+R on Mac) to reload.</p>
+        </li>
+        <li>
+          <strong data-i18n="step2Title">Configure notifications</strong>
+          <p data-i18n="step2Desc">Click the extension icon to customize which notifications you want to receive.</p>
+        </li>
+        <li>
+          <strong data-i18n="step3Title">Stay notified</strong>
+          <p data-i18n="step3Desc">Work in other tabs - you'll receive desktop notifications, badge alerts (! icon), and sound notifications when something happens in Gather.town!</p>
+        </li>
+        <li>
+          <strong data-i18n="step4Title">Use Concentration Mode</strong>
+          <p data-i18n="step4Desc">Click the extension icon and toggle concentration mode to temporarily disable notifications. The badge shows "C" when active.</p>
+        </li>
+      </ol>
+    </div>
+
+    <div class="button-group">
+      <button id="openGatherBtn" class="btn btn-primary" data-i18n="openGatherButton">Open Gather.town</button>
+      <button id="closeBtn" class="btn btn-secondary" data-i18n="closeButton">Close</button>
+    </div>
+
+    <div class="footer">
+      <p data-i18n="footerText">
+        For support and updates, visit our
+        <a href="https://github.com/ktat/gather-notifier" target="_blank" rel="noopener">GitHub repository</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="welcome.js"></script>
+</body>
+</html>

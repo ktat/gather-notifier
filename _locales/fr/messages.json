@@ -138,5 +138,135 @@
   "calendarTiming5": {
     "message": "5 min avant",
     "description": "Option pour notification de calendrier 5 minutes avant"
+  },
+  "welcomeTitle": {
+    "message": "Bienvenue dans Gather.town Wave Notifier!",
+    "description": "Titre de la page de bienvenue"
+  },
+  "welcomeVersion": {
+    "message": "Version $VERSION$",
+    "description": "Texte de version de la page de bienvenue",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "1.9"
+      }
+    }
+  },
+  "importantNoticeTitle": {
+    "message": "⚠️ Avis important",
+    "description": "Titre de l'avis important sur la page de bienvenue"
+  },
+  "reloadRequired": {
+    "message": "Veuillez recharger tous les onglets Gather.town pour que l'extension fonctionne correctement. Appuyez sur Ctrl+R (ou Cmd+R sur Mac) dans chaque onglet Gather.town.",
+    "description": "Message d'instructions de rechargement"
+  },
+  "featuresTitle": {
+    "message": "Fonctionnalités",
+    "description": "Titre de la section fonctionnalités"
+  },
+  "featureWave": {
+    "message": "Notifications de salut",
+    "description": "Titre de la fonctionnalité salut"
+  },
+  "featureWaveDesc": {
+    "message": "Soyez notifié lorsque quelqu'un vous fait signe",
+    "description": "Description de la fonctionnalité salut"
+  },
+  "featureChat": {
+    "message": "Notifications de chat",
+    "description": "Titre de la fonctionnalité chat"
+  },
+  "featureChatDesc": {
+    "message": "Ne manquez jamais un message de chat",
+    "description": "Description de la fonctionnalité chat"
+  },
+  "featureCall": {
+    "message": "Notifications d'appel",
+    "description": "Titre de la fonctionnalité appel"
+  },
+  "featureCallDesc": {
+    "message": "Sachez quand quelqu'un vous appelle",
+    "description": "Description de la fonctionnalité appel"
+  },
+  "featureCalendar": {
+    "message": "Alertes de calendrier",
+    "description": "Titre de la fonctionnalité calendrier"
+  },
+  "featureCalendarDesc": {
+    "message": "Recevez des rappels pour les événements planifiés",
+    "description": "Description de la fonctionnalité calendrier"
+  },
+  "featureNotificationMethods": {
+    "message": "Méthodes de notification multiples",
+    "description": "Titre de la fonctionnalité méthodes de notification"
+  },
+  "featureNotificationMethodsDesc": {
+    "message": "Notifications de bureau, alertes de badge et notifications sonores",
+    "description": "Description de la fonctionnalité méthodes de notification"
+  },
+  "featureConcentrationMode": {
+    "message": "Mode concentration",
+    "description": "Titre de la fonctionnalité mode concentration"
+  },
+  "featureConcentrationModeDesc": {
+    "message": "Un clic pour activer/désactiver les notifications avec indicateur de badge",
+    "description": "Description de la fonctionnalité mode concentration"
+  },
+  "howToUseTitle": {
+    "message": "Comment utiliser",
+    "description": "Titre de la section comment utiliser"
+  },
+  "step1Title": {
+    "message": "Recharger les onglets Gather.town",
+    "description": "Titre de l'étape 1"
+  },
+  "step1Desc": {
+    "message": "Ouvrez chaque onglet Gather.town et appuyez sur Ctrl+R (Cmd+R sur Mac) pour recharger.",
+    "description": "Description de l'étape 1"
+  },
+  "step2Title": {
+    "message": "Configurer les notifications",
+    "description": "Titre de l'étape 2"
+  },
+  "step2Desc": {
+    "message": "Cliquez sur l'icône de l'extension pour personnaliser les notifications que vous souhaitez recevoir.",
+    "description": "Description de l'étape 2"
+  },
+  "step3Title": {
+    "message": "Restez informé",
+    "description": "Titre de l'étape 3"
+  },
+  "step3Desc": {
+    "message": "Travaillez dans d'autres onglets - vous recevrez des notifications de bureau, des alertes de badge (icône !) et des notifications sonores lorsque quelque chose se passe dans Gather.town!",
+    "description": "Description de l'étape 3"
+  },
+  "step4Title": {
+    "message": "Utiliser le mode concentration",
+    "description": "Titre de l'étape 4"
+  },
+  "step4Desc": {
+    "message": "Cliquez sur l'icône de l'extension et basculez le mode concentration pour désactiver temporairement les notifications. Le badge affiche \"C\" lorsqu'il est actif.",
+    "description": "Description de l'étape 4"
+  },
+  "openGatherButton": {
+    "message": "Ouvrir Gather.town",
+    "description": "Texte du bouton pour ouvrir Gather.town"
+  },
+  "closeButton": {
+    "message": "Fermer",
+    "description": "Texte du bouton pour fermer la page de bienvenue"
+  },
+  "footerText": {
+    "message": "Pour obtenir de l'aide et des mises à jour, visitez notre dépôt GitHub",
+    "description": "Texte de pied de page sur la page de bienvenue"
+  },
+  "v1Only": {
+    "message": "(V1 uniquement)",
+    "description": "Étiquette Version 1 uniquement"
+  },
+  "v2Only": {
+    "message": "(V2 uniquement)",
+    "description": "Étiquette Version 2 uniquement"
   }
 }

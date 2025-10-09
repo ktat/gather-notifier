@@ -138,5 +138,135 @@
   "calendarTiming5": {
     "message": "5 Min. vorher",
     "description": "Option für Kalenderbenachrichtigung 5 Minuten vorher"
+  },
+  "welcomeTitle": {
+    "message": "Willkommen bei Gather.town Wave Notifier!",
+    "description": "Willkommensseite Titel"
+  },
+  "welcomeVersion": {
+    "message": "Version $VERSION$",
+    "description": "Willkommensseite Versionstext",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "1.9"
+      }
+    }
+  },
+  "importantNoticeTitle": {
+    "message": "⚠️ Wichtiger Hinweis",
+    "description": "Wichtige Hinweise Überschrift auf Willkommensseite"
+  },
+  "reloadRequired": {
+    "message": "Bitte laden Sie alle Gather.town-Tabs neu, damit die Erweiterung ordnungsgemäß funktioniert. Drücken Sie Strg+R (oder Cmd+R auf Mac) in jedem Gather.town-Tab.",
+    "description": "Neuladen Anweisungsnachricht"
+  },
+  "featuresTitle": {
+    "message": "Funktionen",
+    "description": "Funktionen Abschnittstitel"
+  },
+  "featureWave": {
+    "message": "Winken-Benachrichtigungen",
+    "description": "Winken-Funktion Titel"
+  },
+  "featureWaveDesc": {
+    "message": "Erhalten Sie Benachrichtigungen, wenn jemand Ihnen zuwinkt",
+    "description": "Winken-Funktion Beschreibung"
+  },
+  "featureChat": {
+    "message": "Chat-Benachrichtigungen",
+    "description": "Chat-Funktion Titel"
+  },
+  "featureChatDesc": {
+    "message": "Verpassen Sie keine Chat-Nachricht",
+    "description": "Chat-Funktion Beschreibung"
+  },
+  "featureCall": {
+    "message": "Anruf-Benachrichtigungen",
+    "description": "Anruf-Funktion Titel"
+  },
+  "featureCallDesc": {
+    "message": "Erfahren Sie, wenn jemand Sie anruft",
+    "description": "Anruf-Funktion Beschreibung"
+  },
+  "featureCalendar": {
+    "message": "Kalender-Benachrichtigungen",
+    "description": "Kalender-Funktion Titel"
+  },
+  "featureCalendarDesc": {
+    "message": "Erhalten Sie Erinnerungen für geplante Ereignisse",
+    "description": "Kalender-Funktion Beschreibung"
+  },
+  "featureNotificationMethods": {
+    "message": "Mehrere Benachrichtigungsmethoden",
+    "description": "Benachrichtigungsmethoden Funktions-Titel"
+  },
+  "featureNotificationMethodsDesc": {
+    "message": "Desktop-Benachrichtigungen, Badge-Warnungen und Tonbenachrichtigungen",
+    "description": "Benachrichtigungsmethoden Funktions-Beschreibung"
+  },
+  "featureConcentrationMode": {
+    "message": "Konzentrationsmodus",
+    "description": "Konzentrationsmodus Funktions-Titel"
+  },
+  "featureConcentrationModeDesc": {
+    "message": "Ein Klick zum Aktivieren/Deaktivieren von Benachrichtigungen mit Badge-Indikator",
+    "description": "Konzentrationsmodus Funktions-Beschreibung"
+  },
+  "howToUseTitle": {
+    "message": "Verwendung",
+    "description": "Verwendungsabschnitt Titel"
+  },
+  "step1Title": {
+    "message": "Gather.town-Tabs neu laden",
+    "description": "Schritt 1 Titel"
+  },
+  "step1Desc": {
+    "message": "Öffnen Sie jeden Gather.town-Tab und drücken Sie Strg+R (Cmd+R auf Mac) zum Neuladen.",
+    "description": "Schritt 1 Beschreibung"
+  },
+  "step2Title": {
+    "message": "Benachrichtigungen konfigurieren",
+    "description": "Schritt 2 Titel"
+  },
+  "step2Desc": {
+    "message": "Klicken Sie auf das Erweiterungssymbol, um anzupassen, welche Benachrichtigungen Sie erhalten möchten.",
+    "description": "Schritt 2 Beschreibung"
+  },
+  "step3Title": {
+    "message": "Benachrichtigt bleiben",
+    "description": "Schritt 3 Titel"
+  },
+  "step3Desc": {
+    "message": "Arbeiten Sie in anderen Tabs - Sie erhalten Desktop-Benachrichtigungen, Badge-Warnungen (! Symbol) und Tonbenachrichtigungen, wenn etwas in Gather.town passiert!",
+    "description": "Schritt 3 Beschreibung"
+  },
+  "step4Title": {
+    "message": "Konzentrationsmodus verwenden",
+    "description": "Schritt 4 Titel"
+  },
+  "step4Desc": {
+    "message": "Klicken Sie auf das Erweiterungssymbol und schalten Sie den Konzentrationsmodus um, um Benachrichtigungen vorübergehend zu deaktivieren. Das Badge zeigt \"C\" wenn aktiv.",
+    "description": "Schritt 4 Beschreibung"
+  },
+  "openGatherButton": {
+    "message": "Gather.town öffnen",
+    "description": "Schaltflächentext um Gather.town zu öffnen"
+  },
+  "closeButton": {
+    "message": "Schließen",
+    "description": "Schaltflächentext um Willkommensseite zu schließen"
+  },
+  "footerText": {
+    "message": "Für Support und Updates besuchen Sie unser GitHub-Repository",
+    "description": "Fußzeilentext auf Willkommensseite"
+  },
+  "v1Only": {
+    "message": "(nur V1)",
+    "description": "Nur Version 1 Label"
+  },
+  "v2Only": {
+    "message": "(nur V2)",
+    "description": "Nur Version 2 Label"
   }
 }

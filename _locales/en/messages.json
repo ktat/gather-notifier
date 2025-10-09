@@ -138,5 +138,135 @@
   "calendarTiming5": {
     "message": "5 min before",
     "description": "Option for calendar notification 5 minutes before"
+  },
+  "welcomeTitle": {
+    "message": "Welcome to Gather.town Wave Notifier!",
+    "description": "Welcome page title"
+  },
+  "welcomeVersion": {
+    "message": "Version $VERSION$",
+    "description": "Welcome page version text",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "1.9"
+      }
+    }
+  },
+  "importantNoticeTitle": {
+    "message": "⚠️ Important Notice",
+    "description": "Important notice heading on welcome page"
+  },
+  "reloadRequired": {
+    "message": "Please reload all Gather.town tabs for the extension to work properly. Press Ctrl+R (or Cmd+R on Mac) on each Gather.town tab.",
+    "description": "Reload instruction message"
+  },
+  "featuresTitle": {
+    "message": "Features",
+    "description": "Features section title"
+  },
+  "featureWave": {
+    "message": "Wave Notifications",
+    "description": "Wave feature title"
+  },
+  "featureWaveDesc": {
+    "message": "Get notified when someone waves at you",
+    "description": "Wave feature description"
+  },
+  "featureChat": {
+    "message": "Chat Notifications",
+    "description": "Chat feature title"
+  },
+  "featureChatDesc": {
+    "message": "Never miss a chat message",
+    "description": "Chat feature description"
+  },
+  "featureCall": {
+    "message": "Call Notifications",
+    "description": "Call feature title"
+  },
+  "featureCallDesc": {
+    "message": "Know when someone is calling you",
+    "description": "Call feature description"
+  },
+  "featureCalendar": {
+    "message": "Calendar Alerts",
+    "description": "Calendar feature title"
+  },
+  "featureCalendarDesc": {
+    "message": "Get reminders for scheduled events",
+    "description": "Calendar feature description"
+  },
+  "featureNotificationMethods": {
+    "message": "Multiple Notification Methods",
+    "description": "Notification methods feature title"
+  },
+  "featureNotificationMethodsDesc": {
+    "message": "Desktop notifications, badge alerts, and sound notifications",
+    "description": "Notification methods feature description"
+  },
+  "featureConcentrationMode": {
+    "message": "Concentration Mode",
+    "description": "Concentration mode feature title"
+  },
+  "featureConcentrationModeDesc": {
+    "message": "One-click to enable/disable notifications with badge indicator",
+    "description": "Concentration mode feature description"
+  },
+  "howToUseTitle": {
+    "message": "How to Use",
+    "description": "How to use section title"
+  },
+  "step1Title": {
+    "message": "Reload Gather.town tabs",
+    "description": "Step 1 title"
+  },
+  "step1Desc": {
+    "message": "Open each Gather.town tab and press Ctrl+R (Cmd+R on Mac) to reload.",
+    "description": "Step 1 description"
+  },
+  "step2Title": {
+    "message": "Configure notifications",
+    "description": "Step 2 title"
+  },
+  "step2Desc": {
+    "message": "Click the extension icon to customize which notifications you want to receive.",
+    "description": "Step 2 description"
+  },
+  "step3Title": {
+    "message": "Stay notified",
+    "description": "Step 3 title"
+  },
+  "step3Desc": {
+    "message": "Work in other tabs - you'll receive desktop notifications, badge alerts (! icon), and sound notifications when something happens in Gather.town!",
+    "description": "Step 3 description"
+  },
+  "step4Title": {
+    "message": "Use Concentration Mode",
+    "description": "Step 4 title"
+  },
+  "step4Desc": {
+    "message": "Click the extension icon and toggle concentration mode to temporarily disable notifications. The badge shows \"C\" when active.",
+    "description": "Step 4 description"
+  },
+  "openGatherButton": {
+    "message": "Open Gather.town",
+    "description": "Button text to open Gather.town"
+  },
+  "closeButton": {
+    "message": "Close",
+    "description": "Button text to close welcome page"
+  },
+  "footerText": {
+    "message": "For support and updates, visit our GitHub repository",
+    "description": "Footer text on welcome page"
+  },
+  "v1Only": {
+    "message": "(V1 only)",
+    "description": "Version 1 only label"
+  },
+  "v2Only": {
+    "message": "(V2 only)",
+    "description": "Version 2 only label"
   }
 }
