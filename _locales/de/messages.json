@@ -123,6 +123,14 @@
     "message": "Lang",
     "description": "Option für langen Benachrichtigungston"
   },
+  "soundTypeShortRapid": {
+    "message": "Kurz (Schnell)",
+    "description": "Option für kurzen Benachrichtigungston mit schnellem Intervall"
+  },
+  "soundTypeLongRapid": {
+    "message": "Lang (Schnell)",
+    "description": "Option für langen Benachrichtigungston mit schnellem Intervall"
+  },
   "calendarNotificationTiming": {
     "message": "Benachrichtigen",
     "description": "Label für Kalenderbenachrichtigung Zeiteinstellung"

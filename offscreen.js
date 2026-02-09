@@ -34,24 +34,24 @@ function playNotificationSound(notificationType = 'wave', soundType = 'short') {
     let soundConfig = getSoundConfig(notificationType);
     console.log('[OFFSCREEN] Sound config:', soundConfig);
 
+    // soundType に応じた再生関数とループ間隔を決定
+    const isLong = soundType === 'long' || soundType === 'long-rapid';
+    const isRapid = soundType === 'short-rapid' || soundType === 'long-rapid';
+    const playFn = isLong ? playLongSound : playSingleSound;
+    const longSoundDuration = 2500; // ロングトーンの再生時間分を加算
+    const loopInterval = isRapid
+      ? (isLong ? 3000 : 1500)
+      : (isLong ? soundConfig.interval + longSoundDuration : soundConfig.interval);
+
     // 初回の音声を再生
-    if (soundType === 'long') {
-      playLongSound(soundConfig);
-    } else {
-      playSingleSound(soundConfig);
-    }
+    playFn(soundConfig);
     console.log('[OFFSCREEN] Initial sound played');
 
     // ループ音声を作成
-    const loopInterval = soundType === 'long' ? soundConfig.interval + 1500 : soundConfig.interval;
     audioPlayer = setInterval(() => {
       try {
         console.log('[OFFSCREEN] Playing loop sound');
-        if (soundType === 'long') {
-          playLongSound(soundConfig);
-        } else {
-          playSingleSound(soundConfig);
-        }
+        playFn(soundConfig);
       } catch (error) {
         console.error('[OFFSCREEN] Error in audio loop:', error);
       }
@@ -129,8 +129,8 @@ function playLongSound(config) {
     console.log('[OFFSCREEN] playLongSound called with config:', config);
 
     const audioContext = new AudioContext();
-    const beepCount = 3;
-    const beepDuration = 0.3;
+    const beepCount = 5;
+    const beepDuration = 0.35;
     const beepGap = 0.15;
 
     for (let i = 0; i < beepCount; i++) {
@@ -152,7 +152,7 @@ function playLongSound(config) {
       oscillator.stop(startTime + beepDuration);
     }
 
-    console.log('[OFFSCREEN] Long sound (3 beeps) scheduled');
+    console.log('[OFFSCREEN] Long sound (5 beeps) scheduled');
   } catch (error) {
     console.error('[OFFSCREEN] Error in playLongSound:', error);
   }

@@ -123,6 +123,14 @@
     "message": "ロング",
     "description": "ロング通知音のオプション"
   },
+  "soundTypeShortRapid": {
+    "message": "ショート（速い）",
+    "description": "間隔の短いショート通知音のオプション"
+  },
+  "soundTypeLongRapid": {
+    "message": "ロング（速い）",
+    "description": "間隔の短いロング通知音のオプション"
+  },
   "calendarNotificationTiming": {
     "message": "通知タイミング",
     "description": "カレンダー通知タイミング設定のラベル"

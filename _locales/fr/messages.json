@@ -123,6 +123,14 @@
     "message": "Long",
     "description": "Option pour un son de notification long"
   },
+  "soundTypeShortRapid": {
+    "message": "Court (Rapide)",
+    "description": "Option pour un son de notification court avec intervalle rapide"
+  },
+  "soundTypeLongRapid": {
+    "message": "Long (Rapide)",
+    "description": "Option pour un son de notification long avec intervalle rapide"
+  },
   "calendarNotificationTiming": {
     "message": "Notifier",
     "description": "Étiquette pour le paramètre de synchronisation des notifications de calendrier"

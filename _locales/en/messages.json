@@ -123,6 +123,14 @@
     "message": "Long",
     "description": "Option for long notification sound"
   },
+  "soundTypeShortRapid": {
+    "message": "Short (Rapid)",
+    "description": "Option for short notification sound with rapid interval"
+  },
+  "soundTypeLongRapid": {
+    "message": "Long (Rapid)",
+    "description": "Option for long notification sound with rapid interval"
+  },
   "calendarNotificationTiming": {
     "message": "Notify",
     "description": "Label for calendar notification timing setting"
