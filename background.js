@@ -406,7 +406,9 @@ setInterval(checkConcentrationModeStatus, 1000);
 chrome.runtime.onInstalled.addListener((details) => {
   hasNotification = false;
   updateBadge();
-  chrome.storage.local.set({
+
+  // デフォルト設定（既存の設定は上書きしない）
+  const defaults = {
     hasNotification: false,
     enableWave: true,
     enableChat: true,
@@ -417,10 +419,19 @@ chrome.runtime.onInstalled.addListener((details) => {
     isConcentrationMode: false,
     debugMode: false,
     soundType: 'short'
-  });
+  };
 
-  // 初期状態を設定
-  chrome.storage.local.get(['isConcentrationMode'], (result) => {
+  chrome.storage.local.get(Object.keys(defaults), (result) => {
+    const toSet = {};
+    for (const [key, value] of Object.entries(defaults)) {
+      if (result[key] === undefined) {
+        toSet[key] = value;
+      }
+    }
+    if (Object.keys(toSet).length > 0) {
+      chrome.storage.local.set(toSet);
+    }
+
     previousConcentrationMode = result.isConcentrationMode || false;
   });
 
