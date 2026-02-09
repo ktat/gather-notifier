@@ -258,26 +258,24 @@ async function createOffscreen() {
 // 音声再生関数
 async function playNotificationSound(notificationType = 'wave') {
   try {
-    chrome.storage.local.get(['debugMode'], (result) => {
-      if (result.debugMode) {
-        console.log('[DEBUG] [BACKGROUND] playNotificationSound called, type:', notificationType);
-      }
-    });
+    const settings = await chrome.storage.local.get(['debugMode', 'soundType']);
+    const debugMode = settings.debugMode || false;
+    const soundType = settings.soundType || 'short';
+
+    if (debugMode) {
+      console.log('[DEBUG] [BACKGROUND] playNotificationSound called, type:', notificationType, 'soundType:', soundType);
+    }
 
     await createOffscreen();
 
-    chrome.storage.local.get(['debugMode'], (result) => {
-      if (result.debugMode) {
-        console.log('[DEBUG] [BACKGROUND] Sending playSound message to offscreen');
-      }
-    });
+    if (debugMode) {
+      console.log('[DEBUG] [BACKGROUND] Sending playSound message to offscreen');
+    }
 
-    chrome.runtime.sendMessage({ action: 'playSound', notificationType: notificationType }, (response) => {
-      chrome.storage.local.get(['debugMode'], (result) => {
-        if (result.debugMode) {
-          console.log('[DEBUG] [BACKGROUND] playSound response:', response);
-        }
-      });
+    chrome.runtime.sendMessage({ action: 'playSound', notificationType: notificationType, soundType: soundType }, (response) => {
+      if (debugMode) {
+        console.log('[DEBUG] [BACKGROUND] playSound response:', response);
+      }
     });
   } catch (error) {
     console.error('[BACKGROUND] Error playing notification sound:', error);
@@ -417,7 +415,8 @@ chrome.runtime.onInstalled.addListener((details) => {
     calendarNotificationTiming: 5,
     gatherVersion: 'v1',
     isConcentrationMode: false,
-    debugMode: false
+    debugMode: false,
+    soundType: 'short'
   });
 
   // 初期状態を設定

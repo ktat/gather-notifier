@@ -111,6 +111,18 @@
     "message": "誰か",
     "description": "不明なユーザー名のプレースホルダー"
   },
+  "soundType": {
+    "message": "通知音",
+    "description": "通知音タイプ選択のラベル"
+  },
+  "soundTypeShort": {
+    "message": "ショート",
+    "description": "ショート通知音のオプション"
+  },
+  "soundTypeLong": {
+    "message": "ロング",
+    "description": "ロング通知音のオプション"
+  },
   "calendarNotificationTiming": {
     "message": "通知タイミング",
     "description": "カレンダー通知タイミング設定のラベル"

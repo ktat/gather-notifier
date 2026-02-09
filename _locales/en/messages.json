@@ -111,6 +111,18 @@
     "message": "Someone",
     "description": "Unknown user name placeholder"
   },
+  "soundType": {
+    "message": "Notification sound",
+    "description": "Label for notification sound type selection"
+  },
+  "soundTypeShort": {
+    "message": "Short",
+    "description": "Option for short notification sound"
+  },
+  "soundTypeLong": {
+    "message": "Long",
+    "description": "Option for long notification sound"
+  },
   "calendarNotificationTiming": {
     "message": "Notify",
     "description": "Label for calendar notification timing setting"

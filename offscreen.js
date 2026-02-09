@@ -12,8 +12,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log('[OFFSCREEN] Message received:', message);
 
   if (message.action === 'playSound') {
-    console.log('[OFFSCREEN] Playing sound, type:', message.notificationType);
-    playNotificationSound(message.notificationType || 'wave');
+    console.log('[OFFSCREEN] Playing sound, type:', message.notificationType, 'soundType:', message.soundType);
+    playNotificationSound(message.notificationType || 'wave', message.soundType || 'short');
     sendResponse({ success: true });
   } else if (message.action === 'stopSound') {
     console.log('[OFFSCREEN] Stopping sound');
@@ -23,9 +23,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   return true; // Keep the message channel open for async response
 });
 
-function playNotificationSound(notificationType = 'wave') {
+function playNotificationSound(notificationType = 'wave', soundType = 'short') {
   try {
-    console.log('[OFFSCREEN] playNotificationSound started, type:', notificationType);
+    console.log('[OFFSCREEN] playNotificationSound started, type:', notificationType, 'soundType:', soundType);
 
     // 既存の音声を停止
     stopNotificationSound();
@@ -35,20 +35,29 @@ function playNotificationSound(notificationType = 'wave') {
     console.log('[OFFSCREEN] Sound config:', soundConfig);
 
     // 初回の音声を再生
-    playSingleSound(soundConfig);
+    if (soundType === 'long') {
+      playLongSound(soundConfig);
+    } else {
+      playSingleSound(soundConfig);
+    }
     console.log('[OFFSCREEN] Initial sound played');
 
     // ループ音声を作成
+    const loopInterval = soundType === 'long' ? soundConfig.interval + 1500 : soundConfig.interval;
     audioPlayer = setInterval(() => {
       try {
         console.log('[OFFSCREEN] Playing loop sound');
-        playSingleSound(soundConfig);
+        if (soundType === 'long') {
+          playLongSound(soundConfig);
+        } else {
+          playSingleSound(soundConfig);
+        }
       } catch (error) {
         console.error('[OFFSCREEN] Error in audio loop:', error);
       }
-    }, soundConfig.interval);
+    }, loopInterval);
 
-    console.log('[OFFSCREEN] Audio player interval set:', soundConfig.interval, 'ms');
+    console.log('[OFFSCREEN] Audio player interval set:', loopInterval, 'ms');
 
   } catch (error) {
     console.error('[OFFSCREEN] Error playing notification sound:', error);
@@ -112,6 +121,40 @@ function playSingleSound(config) {
     console.log('[OFFSCREEN] Sound oscillator started and scheduled to stop');
   } catch (error) {
     console.error('[OFFSCREEN] Error in playSingleSound:', error);
+  }
+}
+
+function playLongSound(config) {
+  try {
+    console.log('[OFFSCREEN] playLongSound called with config:', config);
+
+    const audioContext = new AudioContext();
+    const beepCount = 3;
+    const beepDuration = 0.3;
+    const beepGap = 0.15;
+
+    for (let i = 0; i < beepCount; i++) {
+      const startTime = audioContext.currentTime + i * (beepDuration + beepGap);
+
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.frequency.setValueAtTime(800, startTime);
+      oscillator.frequency.exponentialRampToValueAtTime(600, startTime + beepDuration * 0.8);
+
+      gainNode.gain.setValueAtTime(config.volume, startTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + beepDuration);
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.start(startTime);
+      oscillator.stop(startTime + beepDuration);
+    }
+
+    console.log('[OFFSCREEN] Long sound (3 beeps) scheduled');
+  } catch (error) {
+    console.error('[OFFSCREEN] Error in playLongSound:', error);
   }
 }
 

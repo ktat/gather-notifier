@@ -111,6 +111,18 @@
     "message": "Quelqu'un",
     "description": "Espace réservé pour un nom d'utilisateur inconnu"
   },
+  "soundType": {
+    "message": "Son de notification",
+    "description": "Étiquette pour la sélection du type de son de notification"
+  },
+  "soundTypeShort": {
+    "message": "Court",
+    "description": "Option pour un son de notification court"
+  },
+  "soundTypeLong": {
+    "message": "Long",
+    "description": "Option pour un son de notification long"
+  },
   "calendarNotificationTiming": {
     "message": "Notifier",
     "description": "Étiquette pour le paramètre de synchronisation des notifications de calendrier"

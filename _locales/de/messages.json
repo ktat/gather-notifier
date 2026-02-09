@@ -111,6 +111,18 @@
     "message": "Jemand",
     "description": "Platzhalter für unbekannten Benutzernamen"
   },
+  "soundType": {
+    "message": "Benachrichtigungston",
+    "description": "Label für Benachrichtigungston-Auswahl"
+  },
+  "soundTypeShort": {
+    "message": "Kurz",
+    "description": "Option für kurzen Benachrichtigungston"
+  },
+  "soundTypeLong": {
+    "message": "Lang",
+    "description": "Option für langen Benachrichtigungston"
+  },
   "calendarNotificationTiming": {
     "message": "Benachrichtigen",
     "description": "Label für Kalenderbenachrichtigung Zeiteinstellung"
