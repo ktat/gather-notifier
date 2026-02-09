@@ -26,13 +26,14 @@ A Chrome extension that displays desktop notifications when you receive wave, ch
 6. **Notification Click**: Click desktop notifications to automatically activate gather.town tab
 7. **Auto Clear**: Automatically clear notifications when gather.town tab becomes active
 8. **Audio Notifications**: Loop audio playback during notifications (stops when notifications are cleared)
-9. **Focus Mode**: Do not disturb mode functionality that disables notifications for a certain period
-10. **Settings Management**: Individual enable/disable toggle for each notification type (Wave, Chat, Call, Calendar)
-11. **Version Selection**: Choose between Gather V1 or V2 for tab creation
-12. **Auto Tab Creation**: Automatic tab creation when gather.town tab is not found (uses selected version)
-13. **Language Selection**: Manual language selection dropdown in popup (Auto/English/Japanese/German/French)
-14. **Debug Mode**: Debug logging toggle for troubleshooting (enabled via checkbox in bottom left of popup)
-15. **Internationalization**: Automatically displays messages in appropriate language based on browser language settings or manual selection
+9. **Sound Type Selection**: Choose from 4 notification sound patterns (Short, Long, Short Rapid, Long Rapid)
+10. **Focus Mode**: Do not disturb mode functionality that disables notifications for a certain period
+11. **Settings Management**: Individual enable/disable toggle for each notification type (Wave, Chat, Call, Calendar)
+12. **Version Selection**: Choose between Gather V1 or V2 for tab creation
+13. **Auto Tab Creation**: Automatic tab creation when gather.town tab is not found (uses selected version)
+14. **Language Selection**: Manual language selection dropdown in popup (Auto/English/Japanese/German/French)
+15. **Debug Mode**: Debug logging toggle for troubleshooting (enabled via checkbox in bottom left of popup)
+16. **Internationalization**: Automatically displays messages in appropriate language based on browser language settings or manual selection
 
 ## Installation
 
@@ -87,6 +88,17 @@ Open `create-icons.html` in your browser to download icons of each size.
 - `README-ja.md` - Japanese version of this README
 
 ## Recent Updates
+
+### Version 2.1 - Sound Type Selection & Settings Preservation
+- **Notification sound type selection**: Choose from 4 sound patterns in the popup settings
+  - **Short**: Quick beep notification (default)
+  - **Long**: Extended 5-beep descending tone pattern
+  - **Short (Rapid)**: Short beep with faster repeat interval
+  - **Long (Rapid)**: Long tone with faster repeat interval
+- **Settings preserved on update**: Extension settings are no longer reset when the extension is updated
+  - Uses merge approach: only sets defaults for new/missing settings
+  - Existing user preferences (notification toggles, sound type, debug mode, etc.) are preserved
+- **Multi-language support**: Sound type labels localized in all 4 supported languages
 
 ### Version 2.0 - Welcome Page & User Onboarding
 - **Welcome page on install/update**: Automatic display of welcome page when extension is installed or updated

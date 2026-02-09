@@ -11,6 +11,7 @@
   - **call** (boolean) - Call通知の有効/無効
   - **calendar** (boolean) - カレンダー通知の有効/無効
 - **calendarNotificationTiming** (number) - カレンダー通知タイミング（0-5分前、デフォルト: 5）
+- **soundType** (string) - 通知音タイプ ('short', 'long', 'short-rapid', 'long-rapid'、デフォルト: 'short')
 
 ## 状態保存
 - `chrome.storage.local` - ブラウザ再起動後も状態保持
@@ -52,7 +53,8 @@
 - アクティブタブ変更監視
 
 ## 初期化
-- 拡張機能インストール時: すべて初期化
+- 拡張機能インストール時: デフォルト値を設定
+- 拡張機能更新時: 既存の設定を保持し、新規キーのみデフォルト値を設定（マージ方式）
 - ブラウザ起動時: ローカルストレージから復元
 
 ## Chrome Storage Local スキーマ
@@ -66,6 +68,7 @@
   enableCall: boolean,            // Call通知の有効性 (デフォルト: true)
   enableCalendar: boolean,        // カレンダー通知の有効性 (デフォルト: true)
   calendarNotificationTiming: number, // カレンダー通知タイミング（何分前に通知するか: 0-5、デフォルト: 5）
+  soundType: string,                 // 通知音タイプ ('short' | 'long' | 'short-rapid' | 'long-rapid', デフォルト: 'short')
 
   // 応答不可モード
   isConcentrationMode: boolean,   // 応答不可モードの状態 (デフォルト: false)
@@ -89,7 +92,7 @@ sequenceDiagram
 
     rect rgb(240, 248, 255)
         Note over install,content: 初期化
-        install->>storage: 初期値設定<br/>{hasNotification: false,<br/> enableWave/Chat/Call: true,<br/> isConcentrationMode: false}
+        install->>storage: デフォルト値をマージ設定<br/>{hasNotification: false,<br/> enableWave/Chat/Call: true,<br/> isConcentrationMode: false,<br/> soundType: 'short'}<br/>（既存設定は上書きしない）
         install->>bg: onInstalled イベント
         bg->>bg: previousConcentrationMode = false
     end

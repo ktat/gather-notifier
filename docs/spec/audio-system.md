@@ -10,26 +10,52 @@ Chrome MV3のService Worker音声制限を回避するためoffscreenドキュ�
 
 ## 音声仕様
 
-### Wave通知
+### 通知タイプ別設定
+
+#### Wave通知
 - **音色**: ベル音（800Hz → 400Hz、0.5秒減衰）
 - **ループ**: より長い間隔で繰り返し
 - **音量**: 0.3（30%）
 
-### Chat通知
+#### Chat通知
 - **音色**: 明瞭で高音のベル音
 - **ループ**: より静かで長い間隔
 - **音量**: 0.3（30%）
 
-### Call通知
+#### Call通知
 - **音色**: ベル音（800Hz → 400Hz、0.5秒減衰）
 - **ループ**: 2秒間隔で繰り返し
 - **音量**: 0.3（30%）
 
+### 通知音タイプ（soundType）
+
+ユーザーが選択可能な4種類の通知音パターン：
+
+#### Short（デフォルト）
+- `playSingleSound()`で単一ビープ音を再生
+- ループ間隔: 通知タイプの`interval`設定値に従う
+
+#### Long
+- `playLongSound()`で5回連続ビープ音を再生
+- 各ビープ: 800Hz → 600Hz（0.35秒間で下降）、0.15秒間隔
+- 総再生時間: 約2.5秒
+- ループ間隔: 通知タイプの`interval` + 2500ms
+
+#### Short (Rapid)
+- `playSingleSound()`で単一ビープ音を再生
+- ループ間隔: 1500ms（固定）
+
+#### Long (Rapid)
+- `playLongSound()`で5回連続ビープ音を再生
+- ループ間隔: 3000ms（固定）
+
 ## メッセージAPI
 ### playSound
 ```javascript
-chrome.runtime.sendMessage({ action: 'playSound' });
+chrome.runtime.sendMessage({ action: 'playSound', notificationType: 'wave', soundType: 'short' });
 ```
+- `notificationType`: 通知タイプ（'wave', 'chat', 'call'）
+- `soundType`: 通知音タイプ（'short', 'long', 'short-rapid', 'long-rapid'）
 
 ### stopSound
 ```javascript
