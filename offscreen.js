@@ -15,6 +15,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log('[OFFSCREEN] Playing sound, type:', message.notificationType, 'soundType:', message.soundType);
     playNotificationSound(message.notificationType || 'wave', message.soundType || 'short');
     sendResponse({ success: true });
+  } else if (message.action === 'previewSound') {
+    console.log('[OFFSCREEN] Preview sound, soundType:', message.soundType);
+    previewSound(message.soundType || 'short');
+    sendResponse({ success: true });
   } else if (message.action === 'stopSound') {
     console.log('[OFFSCREEN] Stopping sound');
     stopNotificationSound();
@@ -155,6 +159,26 @@ function playLongSound(config) {
     console.log('[OFFSCREEN] Long sound (5 beeps) scheduled');
   } catch (error) {
     console.error('[OFFSCREEN] Error in playLongSound:', error);
+  }
+}
+
+function previewSound(soundType = 'short') {
+  try {
+    console.log('[OFFSCREEN] previewSound called, soundType:', soundType);
+
+    // 再生中のループ音があれば停止
+    stopNotificationSound();
+
+    const config = getSoundConfig('wave');
+    const isLong = soundType === 'long' || soundType === 'long-rapid';
+    const playFn = isLong ? playLongSound : playSingleSound;
+
+    // 1回だけ再生（ループしない）
+    playFn(config);
+
+    console.log('[OFFSCREEN] Preview sound played once');
+  } catch (error) {
+    console.error('[OFFSCREEN] Error in previewSound:', error);
   }
 }
 

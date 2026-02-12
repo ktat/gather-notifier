@@ -308,20 +308,31 @@ function checkTextForNotifications(textContent) {
 
   // Calendar detection - multi-language support
   let calendarMatch = null;
+  let isRightNow = false;
+
+  // "Right now" / "今すぐ" / "Agora mesmo" detection (shown when event is ~1 min away)
+  const textLower = textContent.toLowerCase();
+  if (textLower.includes('right now') ||
+      textContent.includes('今すぐ') ||
+      textLower.includes('agora mesmo')) {
+    isRightNow = true;
+  }
 
   // English: "in $n minutes"
-  calendarMatch = textContent.match(/in (\d+) minutes?/);
+  if (!isRightNow) {
+    calendarMatch = textContent.match(/in (\d+) minutes?/i);
+  }
   // Portuguese: "em $n minutos"
-  if (!calendarMatch) {
-    calendarMatch = textContent.match(/em (\d+) minutos?/);
+  if (!isRightNow && !calendarMatch) {
+    calendarMatch = textContent.match(/em (\d+) minutos?/i);
   }
   // Japanese: "$n 分後" (with space)
-  if (!calendarMatch) {
+  if (!isRightNow && !calendarMatch) {
     calendarMatch = textContent.match(/(\d+)\s*分後/);
   }
 
-  if (calendarMatch) {
-    const minutesUntilEvent = parseInt(calendarMatch[1]);
+  if (calendarMatch || isRightNow) {
+    const minutesUntilEvent = isRightNow ? 1 : parseInt(calendarMatch[1]);
 
     console.log('[WAVE-NOTIFIER-CONTENT] DOM-based calendar detection:', textContent.substring(0, 100), 'Minutes:', minutesUntilEvent);
 
@@ -330,7 +341,8 @@ function checkTextForNotifications(textContent) {
       const notificationTiming = result.calendarNotificationTiming !== undefined ? result.calendarNotificationTiming : 5;
 
       // Only notify if the detected minutes match the configured timing
-      if (minutesUntilEvent === notificationTiming) {
+      // "Right now" matches when timing is 1 or less (0 min is not possible since Gather shows "Right now" at ~1 min)
+      if (isRightNow ? notificationTiming <= 1 : minutesUntilEvent === notificationTiming) {
         // Create unique event ID to prevent duplicate notifications
         const eventId = `${textContent.substring(0, 50)}_${minutesUntilEvent}`;
 

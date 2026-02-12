@@ -353,6 +353,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   } else if (message.action === 'waveDetected') {
     // content scriptからのwave検出メッセージ
     handleWaveDetection(message, message.notificationType);
+  } else if (message.action === 'previewSound') {
+    // 通知音プレビュー
+    (async () => {
+      await createOffscreen();
+      chrome.runtime.sendMessage({ action: 'previewSound', soundType: message.soundType });
+    })();
   } else if (message.action === 'toggleConcentrationMode') {
     // 応答不可モード切り替え
     toggleConcentrationMode(message.isConcentrationMode);
