@@ -215,6 +215,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     chrome.storage.local.set({ soundType: soundTypeSelect.value });
   });
 
+  // 通知音プレビューボタン
+  document.getElementById('previewSoundBtn').addEventListener('click', () => {
+    chrome.runtime.sendMessage({ action: 'previewSound', soundType: soundTypeSelect.value });
+  });
+
   gatherVersionSelect.addEventListener('change', () => {
     chrome.storage.local.set({ gatherVersion: gatherVersionSelect.value });
   });

@@ -105,6 +105,42 @@ script.textContent = `
 })();
 `;
 
+// 拡張機能の再読み込み・更新後もページに残る古いcontent scriptを停止するための仕組み
+// (放置すると chrome.* API 呼び出しのたびに "Extension context invalidated." が発生する)
+let extensionContextValid = true;
+const intervalIds = [];
+let notificationObserver = null;
+
+function isExtensionContextValid() {
+  if (!extensionContextValid) {
+    return false;
+  }
+  try {
+    if (chrome.runtime && chrome.runtime.id) {
+      return true;
+    }
+  } catch (error) {
+    // context invalidated
+  }
+  teardownContentScript();
+  return false;
+}
+
+// タイマー・監視・イベントリスナーを全て解除する
+function teardownContentScript() {
+  extensionContextValid = false;
+  intervalIds.forEach((id) => clearInterval(id));
+  intervalIds.length = 0;
+  if (notificationObserver) {
+    notificationObserver.disconnect();
+    notificationObserver = null;
+  }
+  window.removeEventListener('waveDetectedMain', handleWaveDetectedMain);
+  window.removeEventListener('waveDetected', handleWaveDetected);
+  document.removeEventListener('click', handleDocumentClick);
+  console.log('[WAVE-NOTIFIER-CONTENT] Extension context invalidated. Content script stopped. Reload the page to resume notifications.');
+}
+
 // デバッグモードの状態を設定
 chrome.storage.local.get(['debugMode'], (result) => {
   window.debugModeEnabled = result.debugMode || false;
@@ -114,7 +150,10 @@ chrome.storage.local.get(['debugMode'], (result) => {
 (document.head || document.documentElement).appendChild(script);
 
 // カスタムイベントをリッスン（MAIN worldからのイベント）
-window.addEventListener('waveDetectedMain', function(event) {
+function handleWaveDetectedMain(event) {
+  if (!isExtensionContextValid()) {
+    return;
+  }
   chrome.storage.local.get(['debugMode'], (result) => {
     if (result.debugMode) {
       console.log('[WAVE-NOTIFIER-ISOLATED] [DEBUG] Wave event received from main world:', event.detail);
@@ -137,10 +176,14 @@ window.addEventListener('waveDetectedMain', function(event) {
   }).catch(error => {
     console.error('Error sending wave detection message:', error);
   });
-});
+}
+window.addEventListener('waveDetectedMain', handleWaveDetectedMain);
 
 // 従来のカスタムイベントもリッスン
-window.addEventListener('waveDetected', function(event) {
+function handleWaveDetected(event) {
+  if (!isExtensionContextValid()) {
+    return;
+  }
   chrome.storage.local.get(['debugMode'], (result) => {
     if (result.debugMode) {
       console.log('[WAVE-NOTIFIER-ISOLATED] [DEBUG] Wave event received (legacy):', event.detail);
@@ -162,7 +205,8 @@ window.addEventListener('waveDetected', function(event) {
   }).catch(error => {
     console.error('Error sending wave detection message:', error);
   });
-});
+}
+window.addEventListener('waveDetected', handleWaveDetected);
 
 // 注入後にスクリプト要素を削除
 script.remove();
@@ -184,6 +228,10 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 
 // 応答可能にするボタンの状態を監視して自動的に応答不可モードを制御
 function checkResponseButton() {
+  if (!isExtensionContextValid()) {
+    return;
+  }
+
   // V1: "応答可能にする" button
   const responseButton = Array.from(document.querySelectorAll('button')).find(button =>
     button.innerHTML.trim() === "応答可能にする" || button.textContent.trim() === "応答可能にする"
@@ -230,16 +278,19 @@ function checkResponseButton() {
 }
 
 // 5秒ごとに応答可能にするボタンの状態をチェック
-setInterval(checkResponseButton, 5000);
+intervalIds.push(setInterval(checkResponseButton, 5000));
 
 // デバッグ用: テストログを定期的に出力（デバッグモード時のみ）
-setInterval(() => {
+intervalIds.push(setInterval(() => {
+  if (!isExtensionContextValid()) {
+    return;
+  }
   chrome.storage.local.get(['debugMode'], (result) => {
     if (result.debugMode) {
       console.log('[WAVE-NOTIFIER-CONTENT] Monitoring active at', new Date().toLocaleTimeString());
     }
   });
-}, 30000); // 30秒ごと
+}, 30000)); // 30秒ごと
 
 // デバッグ用: 手動テスト関数をウィンドウに追加
 window.testWaveNotifier = function() {
@@ -259,6 +310,9 @@ const notifiedCalendarEvents = new Set();
 // Check text content for notifications
 function checkTextForNotifications(textContent) {
   if (!textContent || textContent.trim().length === 0) {
+    return;
+  }
+  if (!isExtensionContextValid()) {
     return;
   }
 
@@ -308,20 +362,31 @@ function checkTextForNotifications(textContent) {
 
   // Calendar detection - multi-language support
   let calendarMatch = null;
+  let isRightNow = false;
+
+  // "Right now" / "今すぐ" / "Agora mesmo" detection (shown when event is ~1 min away)
+  const textLower = textContent.toLowerCase();
+  if (textLower.includes('right now') ||
+      textContent.includes('今すぐ') ||
+      textLower.includes('agora mesmo')) {
+    isRightNow = true;
+  }
 
   // English: "in $n minutes"
-  calendarMatch = textContent.match(/in (\d+) minutes?/);
+  if (!isRightNow) {
+    calendarMatch = textContent.match(/in (\d+) minutes?/i);
+  }
   // Portuguese: "em $n minutos"
-  if (!calendarMatch) {
-    calendarMatch = textContent.match(/em (\d+) minutos?/);
+  if (!isRightNow && !calendarMatch) {
+    calendarMatch = textContent.match(/em (\d+) minutos?/i);
   }
   // Japanese: "$n 分後" (with space)
-  if (!calendarMatch) {
+  if (!isRightNow && !calendarMatch) {
     calendarMatch = textContent.match(/(\d+)\s*分後/);
   }
 
-  if (calendarMatch) {
-    const minutesUntilEvent = parseInt(calendarMatch[1]);
+  if (calendarMatch || isRightNow) {
+    const minutesUntilEvent = isRightNow ? 1 : parseInt(calendarMatch[1]);
 
     console.log('[WAVE-NOTIFIER-CONTENT] DOM-based calendar detection:', textContent.substring(0, 100), 'Minutes:', minutesUntilEvent);
 
@@ -330,7 +395,8 @@ function checkTextForNotifications(textContent) {
       const notificationTiming = result.calendarNotificationTiming !== undefined ? result.calendarNotificationTiming : 5;
 
       // Only notify if the detected minutes match the configured timing
-      if (minutesUntilEvent === notificationTiming) {
+      // "Right now" matches when timing is 1 or less (0 min is not possible since Gather shows "Right now" at ~1 min)
+      if (isRightNow ? notificationTiming <= 1 : minutesUntilEvent === notificationTiming) {
         // Create unique event ID to prevent duplicate notifications
         const eventId = `${textContent.substring(0, 50)}_${minutesUntilEvent}`;
 
@@ -409,7 +475,10 @@ function setupDOMObserver() {
     }
   });
 
-  const notificationObserver = new MutationObserver((mutations) => {
+  notificationObserver = new MutationObserver((mutations) => {
+    if (!isExtensionContextValid()) {
+      return;
+    }
     chrome.storage.local.get(['debugMode'], (result) => {
       if (result.debugMode) {
         console.log('[WAVE-NOTIFIER-CONTENT] [DEBUG] DOM mutations detected:', mutations.length);
@@ -452,6 +521,11 @@ function setupDOMObserver() {
     console.log('[WAVE-NOTIFIER-CONTENT] document.body not ready, waiting...');
     // Wait for DOM to be ready
     const checkBody = setInterval(() => {
+      if (!notificationObserver) {
+        // teardown済み
+        clearInterval(checkBody);
+        return;
+      }
       if (document.body) {
         clearInterval(checkBody);
         notificationObserver.observe(document.body, {
@@ -470,14 +544,18 @@ function setupDOMObserver() {
 setupDOMObserver();
 
 // gather.townページでのクリック検出
-document.addEventListener('click', function() {
+function handleDocumentClick() {
+  if (!isExtensionContextValid()) {
+    return;
+  }
   // gather.townのページでクリックされた場合、通知をクリア
   chrome.runtime.sendMessage({
     action: 'clearNotificationOnClick'
   }).catch(error => {
     console.error('Error sending clear notification message:', error);
   });
-});
+}
+document.addEventListener('click', handleDocumentClick);
 
 // Note: Ctrl+U functionality removed due to browser security restrictions
 // Chrome extensions cannot programmatically trigger browser keyboard shortcuts
